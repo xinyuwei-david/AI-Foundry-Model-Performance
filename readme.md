@@ -36,7 +36,11 @@ We know that the Azure AI Foundry Model Catalog allows the deployment of over 1,
 | Content safety                    | Use Azure AI Content Safety service APIs.                    | Azure AI Content Safety filters are available integrated with inference APIs. Azure AI Content Safety filters are billed separately. |
 | Network isolation                 | [Configure managed networks for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network). | Managed compute follow your hub's public network access (PNA) flag setting. For more information, see the [Network isolation for models deployed via Serverless APIs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/model-catalog-overview#network-isolation-for-models-deployed-via-serverless-apis) section later in this article. |
 
+When using the AI Foundry Model Catalog, you can create your own registry or use the default AML..
 
+### Create your own Model Registry
+
+You can skip this step if you want to use the model's AML registry. 
 
 ```
 #cat registry.yml
@@ -174,7 +178,9 @@ Class RegistryRegionDetailsSchema: This is an experimental class, and may change
   },
 ```
 
+### Create models from the AML registry
 
+View the models in the AML registry
 
 ```
 (aml_env) root@davidwei:~/AML_MAAP_benchmark# az ml model list --registry-name AzureML --query "[?contains(name, 'Phi-3')]" --output table
@@ -192,14 +198,27 @@ Phi-3-mini-4k-instruct                     15
 Phi-3-mini-128k-instruct                   13
 ```
 
+To create a model deployment using a program, you need to specify the model name, subscription ID, resource group name, VM SKU, and the number of VMs.
 
+Check usage first
+
+```
+# python deploy_infra.py
+2025-02-24 21:39:20,774 - ERROR - Usage: python deploy_infra.py <model_name> <model_version> <subscription_id> <resource_group> <workspace_name> <instance_type> <instance_count>
+2025-02-24 21:39:20,775 - ERROR - instance_type options: Standard_NC24ads_A100_v4, Standard_NC48ads_A100_v4, Standard_NC96ads_A100_v4, Standard_NC40ads_H100_v5, Standard_NC80ads_H100_v5
+```
+
+Next, deploy the "Phi-3-medium-4k-instruct" deployment using the VM SKU "Standard_NC24ads_A100_v4" with a quantity of 1.
 
 ```
 # python deploy_infra.py "Phi-3-medium-4k-instruct" "6" "08f95cfd-64fe-4187-99bb-7b3e661c4cde" "rg-admin-2776_ai" "admin-0046" "Standard_NC24ads_A100_v4" 1
 
 ```
 
+View the source code of the program.:
+
 ```
+
 (aml_env) root@davidwei:~/AML_MAAP_benchmark# cat deploy_infra.py
 import os
 import sys
@@ -313,10 +332,24 @@ logger.info(example_code)
 logger.info("Deployment completed.")
 ```
 
+### Test the performance of the deployment AI model
 
+First, check the usage instructions of the `concurrency_test.py` program.
 
 ```
-python concurrency_test.py --endpoint_url "https://xinyuwei-9556-jyhjv.westeurope.inference.ml.azure.com/score" --api_key "A2ZdX5yDwbu11ZYKeuznMqoU69GHyRZvU7IbaDPZDkmYH2J1Ia6VJQQJ99BBAAAAAAAAAAAAINFRAZML5E10" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results.csv" --max_concurrency 10
+(aml_env) root@davidwei:~/AML_MAAP_benchmark# python concurrency_test.py
+usage: concurrency_test.py [-h] --endpoint_url ENDPOINT_URL --api_key API_KEY [--initial_concurrency INITIAL_CONCURRENCY]
+                           [--prompt_sizes PROMPT_SIZES [PROMPT_SIZES ...]] [--response_sizes RESPONSE_SIZES [RESPONSE_SIZES ...]] [--max_tests MAX_TESTS]
+                           [--output_file OUTPUT_FILE] [--max_concurrency MAX_CONCURRENCY]
+concurrency_test.py: error: the following arguments are required: --endpoint_url, --api_key
+```
+
+
+
+Invoke `concurrency_test.py` to stress test the deployment, configuring parameters such as input and output tokens.
+
+```
+#python concurrency_test.py --endpoint_url "https://xinyuwei-9556-jyhjv.westeurope.inference.ml.azure.com/score" --api_key "A2ZdX5yDwbu11ZYKeuznMqoU69GHyRZvU7IbaDPZDkmYH2J1Ia6VJQQJ99BBAAAAAAAAAAAAINFRAZML5E10" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results.csv" --max_concurrency 10
 
 
 --------------------------------------------------
@@ -346,10 +379,117 @@ Test completed. Results saved to results.csv
 
 ```
 
+Check the final test result：
 
+| concurrency | prompt_size | response_size | successful_requests | failed_requests | avg_latency | avg_ttft | throughput | total_execution_time | error_status_codes |
+| ----------- | ----------- | ------------- | ------------------- | --------------- | ----------- | -------- | ---------- | -------------------- | ------------------ |
+| 1           | 1024        | 2048          | 1                   | 0               | 2.181651    | 2.18167  | 23.37211   | 2.182088375          | {}                 |
+| 2           | 1024        | 2048          | 2                   | 0               | 2.659276    | 2.659293 | 28.54849   | 3.082474232          | {}                 |
+| 3           | 1024        | 2048          | 3                   | 0               | 4.709896    | 4.709919 | 34.3977    | 7.587716579          | {}                 |
+| 4           | 1024        | 2048          | 4                   | 0               | 4.48061     | 4.480646 | 38.37763   | 13.15870714          | {}                 |
+| 5           | 1024        | 2048          | 5                   | 0               | 3.949267    | 3.949291 | 33.49872   | 18.8066864           | {}                 |
+| 6           | 1024        | 2048          | 6                   | 0               | 6.224106    | 6.224127 | 41.00855   | 25.21425176          | {}                 |
+| 7           | 1024        | 2048          | 7                   | 0               | 3.935237    | 3.93527  | 25.43518   | 27.0098393           | {}                 |
+| 8           | 1024        | 2048          | 8                   | 0               | 5.495956    | 5.495985 | 36.95024   | 27.90239167          | {}                 |
+| 9           | 1024        | 2048          | 9                   | 0               | 3.207933    | 3.207955 | 40.74859   | 15.70606422          | {}                 |
+| 10          | 1024        | 2048          | 10                  | 0               | 3.45364     | 3.453665 | 24.30065   | 27.7770319           | {}                 |
+| 1           | 2048        | 64            | 1                   | 0               | 2.753683    | 2.753703 | 19.9696    | 2.75418663           | {}                 |
+| 2           | 2048        | 64            | 2                   | 0               | 3.243599    | 3.243613 | 27.65017   | 3.905944109          | {}                 |
+| 3           | 2048        | 64            | 3                   | 0               | 3.541899    | 3.541919 | 20.01485   | 7.74424839           | {}                 |
+| 4           | 2048        | 64            | 4                   | 0               | 3.211296    | 3.211316 | 29.36803   | 7.42303896           | {}                 |
+| 5           | 2048        | 64            | 5                   | 0               | 3.1162      | 3.116215 | 19.03373   | 14.29041672          | {}                 |
+| 6           | 2048        | 64            | 6                   | 0               | 3.155113    | 3.155133 | 19.44056   | 16.2032392           | {}                 |
+| 7           | 2048        | 64            | 7                   | 0               | 2.955534    | 2.955553 | 14.62544   | 24.9565115           | {}                 |
+| 8           | 2048        | 64            | 8                   | 0               | 3.374602    | 3.374641 | 15.41315   | 26.53578424          | {}                 |
+| 9           | 2048        | 64            | 9                   | 0               | 3.223261    | 3.223279 | 17.0901    | 26.85765004          | {}                 |
+| 10          | 2048        | 64            | 10                  | 0               | 3.240726    | 3.240743 | 13.64551   | 37.4482038           | {}                 |
+| 1           | 1024        | 1024          | 1                   | 0               | 8.905204    | 8.905224 | 50.97897   | 8.905632257          | {}                 |
+| 2           | 1024        | 1024          | 2                   | 0               | 3.82329     | 3.823306 | 20.46571   | 4.299874306          | {}                 |
+| 3           | 1024        | 1024          | 3                   | 0               | 4.291468    | 4.29149  | 43.74643   | 8.206383705          | {}                 |
+| 4           | 1024        | 1024          | 4                   | 0               | 5.83485     | 5.834883 | 49.99117   | 14.84262228          | {}                 |
+| 5           | 1024        | 1024          | 5                   | 0               | 3.832849    | 3.832875 | 37.71236   | 14.00071311          | {}                 |
+| 6           | 1024        | 1024          | 6                   | 0               | 3.091236    | 3.09126  | 29.50247   | 15.62581229          | {}                 |
+| 7           | 1024        | 1024          | 7                   | 0               | 3.985303    | 3.985327 | 24.42945   | 31.92867732          | {}                 |
+| 8           | 1024        | 1024          | 8                   | 0               | 2.955142    | 2.955167 | 17.13504   | 27.37081718          | {}                 |
+| 9           | 1024        | 1024          | 9                   | 0               | 3.793313    | 3.793339 | 33.02927   | 26.09806323          | {}                 |
+| 10          | 1024        | 1024          | 10                  | 0               | 3.553602    | 3.553631 | 27.23539   | 30.14460588          | {}                 |
+| 1           | 2048        | 1024          | 1                   | 0               | 4.298271    | 4.298286 | 35.82447   | 4.298737764          | {}                 |
+| 2           | 2048        | 1024          | 2                   | 0               | 3.961102    | 3.961128 | 33.69973   | 4.836833477          | {}                 |
+| 3           | 2048        | 1024          | 3                   | 0               | 8.210444    | 8.210467 | 52.85939   | 17.02630162          | {}                 |
+| 4           | 2048        | 1024          | 4                   | 0               | 9.815956    | 9.815979 | 44.56057   | 27.53555703          | {}                 |
+| 5           | 2048        | 1024          | 5                   | 0               | 6.560005    | 6.560024 | 40.88134   | 20.40050721          | {}                 |
+| 6           | 2048        | 1024          | 6                   | 0               | 5.739161    | 5.739182 | 37.97911   | 26.43558216          | {}                 |
+| 7           | 2048        | 1024          | 7                   | 0               | 6.897866    | 6.897887 | 46.87257   | 30.01755333          | {}                 |
+| 8           | 2048        | 1024          | 8                   | 0               | 7.597272    | 7.597297 | 38.04828   | 37.24215508          | {}                 |
+| 9           | 2048        | 1024          | 9                   | 0               | 6.396977    | 6.396999 | 46.64886   | 42.05890155          | {}                 |
+| 10          | 2048        | 1024          | 10                  | 0               | 7.478377    | 7.478397 | 38.48196   | 51.29676986          | {}                 |
+| 1           | 64          | 1024          | 1                   | 0               | 5.192025    | 5.192043 | 50.8426    | 5.192496538          | {}                 |
+| 2           | 64          | 1024          | 2                   | 0               | 3.015155    | 3.015171 | 37.99386   | 3.605846167          | {}                 |
+| 3           | 64          | 1024          | 3                   | 0               | 2.770903    | 2.770927 | 32.94883   | 5.827218294          | {}                 |
+| 4           | 64          | 1024          | 4                   | 0               | 3.669078    | 3.669098 | 35.94048   | 11.35210299          | {}                 |
+| 5           | 64          | 1024          | 5                   | 0               | 4.519947    | 4.519993 | 36.70499   | 16.45552635          | {}                 |
+| 6           | 64          | 1024          | 6                   | 0               | 5.526716    | 5.52674  | 45.81613   | 20.40766168          | {}                 |
+| 7           | 64          | 1024          | 7                   | 0               | 2.854245    | 2.854279 | 20.08975   | 24.44031954          | {}                 |
+| 8           | 64          | 1024          | 8                   | 0               | 4.422138    | 4.422167 | 21.32232   | 38.03525805          | {}                 |
+| 9           | 64          | 1024          | 9                   | 0               | 4.831736    | 4.831768 | 36.06449   | 36.21291065          | {}                 |
+| 10          | 64          | 1024          | 10                  | 0               | 4.365419    | 4.365444 | 27.69334   | 37.40971231          | {}                 |
+| 1           | 64          | 2048          | 1                   | 0               | 3.783458    | 3.783475 | 39.64163   | 3.783900738          | {}                 |
+| 2           | 64          | 2048          | 2                   | 0               | 2.917082    | 2.917104 | 37.96118   | 3.529922009          | {}                 |
+| 3           | 64          | 2048          | 3                   | 0               | 3.69923     | 3.699253 | 41.81922   | 8.967169285          | {}                 |
+| 4           | 64          | 2048          | 4                   | 0               | 5.208706    | 5.208734 | 40.68387   | 15.33777308          | {}                 |
+| 5           | 64          | 2048          | 5                   | 0               | 3.047798    | 3.04783  | 27.12727   | 13.67627382          | {}                 |
+| 6           | 64          | 2048          | 6                   | 0               | 4.871371    | 4.871394 | 28.578     | 27.32871723          | {}                 |
+| 7           | 64          | 2048          | 7                   | 0               | 3.790402    | 3.790425 | 28.72959   | 27.32374406          | {}                 |
+| 8           | 64          | 2048          | 8                   | 0               | 6.158503    | 6.158533 | 30.64515   | 50.05685687          | {}                 |
+| 9           | 64          | 2048          | 9                   | 0               | 3.78984     | 3.789892 | 21.48182   | 37.79939628          | {}                 |
+| 10          | 64          | 2048          | 10                  | 0               | 4.94908     | 4.949111 | 38.50745   | 39.70660496          | {}                 |
+| 1           | 64          | 64            | 1                   | 0               | 3.321778    | 3.321802 | 15.04972   | 3.3223207            | {}                 |
+| 2           | 64          | 64            | 2                   | 0               | 2.895008    | 2.895078 | 32.98165   | 3.365507841          | {}                 |
+| 3           | 64          | 64            | 3                   | 0               | 2.60884     | 2.608863 | 25.18071   | 6.433495283          | {}                 |
+| 4           | 64          | 64            | 4                   | 0               | 2.639774    | 2.639804 | 30.15736   | 7.261909246          | {}                 |
+| 5           | 64          | 64            | 5                   | 0               | 2.542551    | 2.542575 | 22.89394   | 12.09927177          | {}                 |
+| 6           | 64          | 64            | 6                   | 0               | 3.070914    | 3.070936 | 21.29448   | 15.77873421          | {}                 |
+| 7           | 64          | 64            | 7                   | 0               | 2.627481    | 2.627503 | 26.9233    | 14.22559643          | {}                 |
+| 8           | 64          | 64            | 8                   | 0               | 2.674476    | 2.674501 | 16.97603   | 25.8599925           | {}                 |
+| 9           | 64          | 64            | 9                   | 0               | 2.706192    | 2.706214 | 13.36653   | 37.25723648          | {}                 |
+| 10          | 64          | 64            | 10                  | 0               | 2.633372    | 2.633397 | 14.85681   | 37.22199941          | {}                 |
+| 1           | 2048        | 4096          | 1                   | 0               | 4.666986    | 4.667016 | 35.13607   | 4.667567492          | {}                 |
+| 2           | 2048        | 4096          | 2                   | 0               | 4.750616    | 4.750636 | 19.22022   | 5.410969257          | {}                 |
+| 3           | 2048        | 4096          | 3                   | 0               | 8.137676    | 8.137692 | 39.69637   | 17.70942569          | {}                 |
+| 4           | 2048        | 4096          | 4                   | 0               | 5.468486    | 5.468511 | 40.08852   | 15.46577311          | {}                 |
+| 5           | 2048        | 4096          | 5                   | 0               | 5.470666    | 5.470684 | 39.45249   | 18.12306428          | {}                 |
+| 6           | 2048        | 4096          | 6                   | 0               | 5.921795    | 5.921815 | 30.75044   | 29.49551463          | {}                 |
+| 7           | 2048        | 4096          | 7                   | 0               | 7.974852    | 7.974875 | 53.19904   | 29.75617766          | {}                 |
+| 8           | 2048        | 4096          | 8                   | 0               | 6.627603    | 6.627624 | 37.50555   | 46.07317686          | {}                 |
+| 9           | 2048        | 4096          | 9                   | 0               | 5.164328    | 5.164353 | 26.40785   | 41.91935372          | {}                 |
+| 10          | 2048        | 4096          | 10                  | 0               | 7.520934    | 7.520956 | 40.60979   | 53.48464084          | {}                 |
+| 1           | 64          | 4096          | 1                   | 0               | 3.687285    | 3.6873   | 42.57328   | 3.687758923          | {}                 |
+| 2           | 64          | 4096          | 2                   | 0               | 5.182035    | 5.182054 | 42.92568   | 6.220052481          | {}                 |
+| 3           | 64          | 4096          | 3                   | 0               | 3.335014    | 3.335035 | 28.9469    | 7.807399035          | {}                 |
+| 4           | 64          | 4096          | 4                   | 0               | 3.189085    | 3.189113 | 33.31      | 12.36865664          | {}                 |
+| 5           | 64          | 4096          | 5                   | 0               | 4.2263      | 4.226328 | 48.76822   | 12.63117766          | {}                 |
+| 6           | 64          | 4096          | 6                   | 0               | 3.679967    | 3.679999 | 33.43512   | 16.15068221          | {}                 |
+| 7           | 64          | 4096          | 7                   | 0               | 4.724797    | 4.724826 | 32.22914   | 28.42148399          | {}                 |
+| 8           | 64          | 4096          | 8                   | 0               | 4.929248    | 4.929276 | 47.36196   | 27.0259068           | {}                 |
+| 9           | 64          | 4096          | 9                   | 0               | 4.212567    | 4.212596 | 25.17346   | 39.84354281          | {}                 |
+| 10          | 64          | 4096          | 10                  | 0               | 5.931706    | 5.931734 | 38.23398   | 51.1586802           | {}                 |
+| 1           | 1024        | 128           | 1                   | 0               | 2.374724    | 2.374737 | 22.73488   | 2.375204802          | {}                 |
+| 2           | 1024        | 128           | 2                   | 0               | 3.090174    | 3.09019  | 36.67964   | 4.116725683          | {}                 |
+| 3           | 1024        | 128           | 3                   | 0               | 3.479532    | 3.479552 | 24.23492   | 7.262248993          | {}                 |
+| 4           | 1024        | 128           | 4                   | 0               | 2.793226    | 2.793246 | 32.55438   | 6.635052681          | {}                 |
+| 5           | 1024        | 128           | 5                   | 0               | 3.323107    | 3.323134 | 27.36045   | 13.99830818          | {}                 |
+| 6           | 1024        | 128           | 6                   | 0               | 3.702325    | 3.702346 | 30.32033   | 15.86394095          | {}                 |
+| 7           | 1024        | 128           | 7                   | 0               | 2.912894    | 2.912918 | 17.71729   | 24.72160792          | {}                 |
+| 8           | 1024        | 128           | 8                   | 0               | 3.403699    | 3.403722 | 19.62896   | 27.4084816           | {}                 |
+| 9           | 1024        | 128           | 9                   | 0               | 3.305229    | 3.305251 | 16.09414   | 36.72143459          | {}                 |
+| 10          | 1024        | 128           | 10                  | 0               | 3.437237    | 3.437261 | 21.74256   | 37.20812988          | {}                 |
+
+
+
+View the source code of the program.:
 
 ```
-(aml_env) root@davidwei:~/AML_MAAP_benchmark# cat concurrency_test_final1.py
+(aml_env) root@davidwei:~/AML_MAAP_benchmark# cat concurrency_test.py
 import os
 import json
 import ssl
