@@ -2,26 +2,143 @@
 
 This repository is designed to test the performance of open-source models from the Azure AI Foundry Model Catalog when deployed using Managed Compute across different VBM SKUs. The scripts in this repository consist of two parts: deploying the Managed Compute endpoint and testing the performance of the Managed Compute endpoint. After completing the tests, you should delete it promptly to avoid incurring additional costs.
 
-## How to Fast Deploy Model on AI Foundry
+### How to Fast Deploy Model on AI Foundry Model Catalog
 
+***Refer to：***
 
+*https://learn.microsoft.com/en-us/cli/azure/ml/registry?view=azure-cli-latest*
+
+Before creating a Managed Compute and serverless API, you need to create a resource group in Azure and then visit ai.azure.com to create a Hub and a Project. These common steps will not be elaborated upon in this repository.
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/1.png)
+
+Next, prepare the Python environment for running the program. You need to install the required Python packages in this environment and log in to Azure through it. 
 
 ```
 #conda create -n aml_env python=3.9 -y
 #conda activate aml_env
 #pip install azure-ai-ml azure-identity requests python-dotenv pyyaml humanfriendly numpy aiohttp  
-#apt-get update  
 #apt-get install -y jq  
 ```
+
+Next, log in to Azure.
 
 ```
 #az login
 ```
 
+We know that the Azure AI Foundry Model Catalog allows the deployment of over 1,700 AI models. When deploying, you can choose either the Serverless mode or the Managed Compute mode.
+
+| Features                          | Managed compute                                              | Serverless API (pay-per-token)                               |
+| :-------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Deployment experience and billing | Model weights are deployed to dedicated virtual machines with managed compute. A managed compute, which can have one or more deployments, makes available a REST API for inference. You're billed for the virtual machine core hours that the deployments use. | Access to models is through a deployment that provisions an API to access the model. The API provides access to the model that Microsoft hosts and manages, for inference. You're billed for inputs and outputs to the APIs, typically in tokens. Pricing information is provided before you deploy. |
+| API authentication                | Keys and Microsoft Entra authentication.                     | Keys only.                                                   |
+| Content safety                    | Use Azure AI Content Safety service APIs.                    | Azure AI Content Safety filters are available integrated with inference APIs. Azure AI Content Safety filters are billed separately. |
+| Network isolation                 | [Configure managed networks for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network). | Managed compute follow your hub's public network access (PNA) flag setting. For more information, see the [Network isolation for models deployed via Serverless APIs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/model-catalog-overview#network-isolation-for-models-deployed-via-serverless-apis) section later in this article. |
+
 
 
 ```
-# az ml model list --registry-name AzureML --resource-group rg-admin-2776_ai
+#cat registry.yml
+name: xinyuwei-registry1
+tags:
+  description: Basic registry with one primary region and to additional regions
+  foo: bar
+location: eastus
+replication_locations:
+  - location: eastus
+  - location: eastus2
+  - location: westus
+```
+
+
+
+```
+(aml_env) root@davidwei:~/AML_MAAP_benchmark# az ml registry create --resource-group rg-admin-2776_ai --file registry.yml
+```
+
+```
+Class RegistryRegionDetailsSchema: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
+{
+  "containerRegistry": null,
+  "description": null,
+  "discoveryUrl": "https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/xinyuwei-registry1/discovery",
+  "identity": {
+    "principalId": "4d455e6e-22c9-4281-b1c7-d5f9c7641797",
+    "tenantId": "9812d5f8-3c48-49c9-aada-e7174b336629",
+    "type": "SystemAssigned",
+    "userAssignedIdentities": null
+  },
+  "intellectualProperty": null,
+  "location": "eastus",
+  "managedResourceGroup": {
+    "resourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418"
+  },
+  "mlflowRegistryUri": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/rg-admin-2776_ai/providers/Microsoft.MachineLearningServices/registries/xinyuwei-registry1",
+  "name": "xinyuwei-registry1",
+  "properties": {},
+  "publicNetworkAccess": "Enabled",
+  "replicationLocations": [
+    {
+      "acrConfig": [
+        {
+          "acrAccountSku": "Premium",
+          "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.ContainerRegistry/registries/de35df4bd6e"
+        }
+      ],
+      "location": "eastus",
+      "storageConfig": {
+        "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.Storage/storageAccounts/471837b7de9",
+        "replicatedIds": null,
+        "replicationCount": 1,
+        "storageAccountHns": false,
+        "storageAccountType": "standard_lrs"
+      }
+    },
+    {
+      "acrConfig": [
+        {
+          "acrAccountSku": "Premium",
+          "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.ContainerRegistry/registries/de35df4bd6e"
+        }
+      ],
+      "location": "eastus2",
+      "storageConfig": {
+        "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.Storage/storageAccounts/7a7c0937565",
+        "replicatedIds": null,
+        "replicationCount": 1,
+        "storageAccountHns": false,
+        "storageAccountType": "standard_lrs"
+      }
+    },
+    {
+      "acrConfig": [
+        {
+          "acrAccountSku": "Premium",
+          "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.ContainerRegistry/registries/de35df4bd6e"
+        }
+      ],
+      "location": "westus",
+      "storageConfig": {
+        "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.Storage/storageAccounts/33ee5e64e33",
+        "replicatedIds": null,
+        "replicationCount": 1,
+        "storageAccountHns": false,
+        "storageAccountType": "standard_lrs"
+      }
+    }
+  ],
+  "tags": {
+    "description": "Basic registry with one primary region and to additional regions",
+    "foo": "bar"
+  }
+}
+```
+
+
+
+```
+# az ml model list --registry-name  xinyuwei-registry1 --resource-group rg-admin-2776_ai
 ```
 
 ```
