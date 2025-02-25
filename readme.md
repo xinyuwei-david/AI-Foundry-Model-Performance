@@ -1,6 +1,18 @@
-# AI Foundry performance
+# AI Foundry Model Catalog Endpoint performance
 
 This repository is designed to test the performance of open-source models from the Azure AI Foundry Model Catalog when deployed using Managed Compute across different VBM SKUs. The scripts in this repository consist of two parts: deploying the Managed Compute endpoint and testing the performance of the Managed Compute endpoint. After completing the tests, you should delete it promptly to avoid incurring additional costs.
+
+## Overall conclusion
+
+In the AI Foundry model catalog, many models have published performance metrics, which determine the inference performance of a single deployment instance of such models, whether serverless or managed compute.This is because the factor that determines peak throughput is not the underlying GPU resources of Managed Compute, but the TPM of the model in the Model Catalog.
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/2.png)
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/3.png)
+
+Regarding the issue of exposing the `max_concurrent_requests_per_instance` parameter of Managed Compute to users, PG has not yet provided a response. I speculate that this feature might not be supported at this stage, as the entire product is still in the Preview phase.
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/4.png)
 
 ### How to Fast Deploy Model on AI Foundry Model Catalog
 
@@ -40,7 +52,7 @@ When using the AI Foundry Model Catalog, you can create your own registry or use
 
 ### Create your own Model Registry
 
-You can skip this step if you want to use the model's AML registry. 
+You can **skip this step** if you want to use the model's AML registry. 
 
 ```
 #cat registry.yml
@@ -229,7 +241,7 @@ from azure.ai.ml import MLClient
 from azure.ai.ml.entities import ManagedOnlineEndpoint, ManagedOnlineDeployment
 from azure.identity import DefaultAzureCredential
 
-# 设置日志记录
+# Setting up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -247,8 +259,8 @@ if len(sys.argv) != 8:
     logger.error(f"instance_type options: {', '.join(INSTANCE_TYPES)}")
     sys.exit(1)
 
-model_name = sys.argv[1]           # 例如："Phi-3-medium-4k-instruct"
-model_version = sys.argv[2]        # 例如："6"
+model_name = sys.argv[1]           # "Phi-3-medium-4k-instruct"，eg
+model_version = sys.argv[2]        # "6", eg.
 subscription_id = sys.argv[3]
 resource_group = sys.argv[4]
 workspace_name = sys.argv[5]
@@ -750,7 +762,7 @@ if __name__ == '__main__':
     parser.add_argument('--response_sizes', type=int, nargs='+', default=[64, 128, 256], help="List of output response sizes in tokens")
     parser.add_argument('--max_tests', type=int, default=30, help="Maximum number of tests to perform")
     parser.add_argument('--output_file', type=str, default="concurrency_test_final_results.csv", help="Output CSV file")
-    parser.add_argument('--max_concurrency', type=int, default=50, help="Maximum concurrency level to test")  # 新增的参数
+    parser.add_argument('--max_concurrency', type=int, default=50, help="Maximum concurrency level to test") 
     args = parser.parse_args()
 
     # Run the main function
@@ -762,28 +774,26 @@ if __name__ == '__main__':
         response_sizes=args.response_sizes,
         max_tests=args.max_tests,
         output_file=args.output_file,
-        max_concurrency=args.max_concurrency  # 传入最大并发参数
+        max_concurrency=args.max_concurrency  # Pass the maximum concurrency parameter
     )
 ```
 
-### Extra testing
+### Extra testing cli
+
+On Standard_NC48ads_A100_v4, results refer to : *results-NC24.csv*
 
 ```
 python concurrency_test.py --endpoint_url "https://admin-0046-kslbq-48.eastus2.inference.ml.azure.com/score" --api_key "ENsUl1bg6BBj4ZxixddaQK1bz9ytFOhhnvqwfk2on9KzOGkLc4arJQQJ99BBAAAAAAAAAAAAINFRAZML4CVw" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results.csv" --max_concurrency 10
 
 ```
 
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/5.png)
 
-
-
-
-
-
-
+on Standard_NC24ads_A100_v4, results refer to : *results-NC48.csv*
 
 ```
 python concurrency_test.py --endpoint_url "https://admin-0046-tlgxw.eastus2.inference.ml.azure.com/score" --api_key "6onqC7rYjmAI95zBymMPJTPFk3NtbdCqjav6S96WsxSWWDN0nLZqJQQJ99BBAAAAAAAAAAAAINFRAZML2X1J" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results-24.csv" --max_concurrency 10
 ```
 
-
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/6.png)
 
