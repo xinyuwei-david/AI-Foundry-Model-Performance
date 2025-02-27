@@ -780,7 +780,7 @@ if __name__ == '__main__':
 
 ### Extra testing cli
 
-Phi-3-small-8k-instruct on Standard_NC24ads_A100_v4, results refer to : *results-NC24.csv*
+Phi-3-small-8k-instruct(7.39B) on Standard_NC24ads_A100_v4, results refer to : ***results-NC24-phi3.csv***
 
 ```
 python concurrency_test.py --endpoint_url "https://admin-0046-kslbq-48.eastus2.inference.ml.azure.com/score" --api_key "ENsUl1bg6BBj4ZxixddaQK1bz9ytFOhhnvqwfk2on9KzOGkLc4arJQQJ99BBAAAAAAAAAAAAINFRAZML4CVw" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results.csv" --max_concurrency 10
@@ -789,7 +789,7 @@ python concurrency_test.py --endpoint_url "https://admin-0046-kslbq-48.eastus2.i
 
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/5.png)
 
-Phi-3-small-8k-instruct on  on Standard_NC24ads_A100_v4, results refer to : *results-NC48.csv*
+Phi-3-small-8k-instruct(7.39B) on  on Standard_NC24ads_A100_v4, results refer to : ***results-NC48-phi3.csv***
 
 ```
 python concurrency_test.py --endpoint_url "https://admin-0046-tlgxw.eastus2.inference.ml.azure.com/score" --api_key "6onqC7rYjmAI95zBymMPJTPFk3NtbdCqjav6S96WsxSWWDN0nLZqJQQJ99BBAAAAAAAAAAAAINFRAZML2X1J" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results-24.csv" --max_concurrency 10
@@ -797,10 +797,17 @@ python concurrency_test.py --endpoint_url "https://admin-0046-tlgxw.eastus2.infe
 
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/6.png)
 
-Phi-4 on  on Standard_NC24ads_A100_v4, results refer to : *results-NC24-phi4.csv*
+Phi-4(14.7B ) on  on Standard_NC24ads_A100_v4, results refer to : ***results-NC24-phi4.csv***
 
 ```
 python concurrency_test.py --endpoint_url "https://admin-0046-jerzt-24.eastus2.inference.ml.azure.com/score" --api_key "3hD2mSgz2LpriF9ZI4MhiCjjDlEihyFvLwvJZuugIGln2fz19KxhJQQJ99BBAAAAAAAAAAAAINFRAZML1bl3" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results-24.csv" --max_concurrency 10
+
+```
+
+Phi-4(14.7B ) on  on Standard_NC48ads_A100_v4, results refer to : ***results-NC48-phi4.csv***
+
+```
+python concurrency_test.py --endpoint_url "https://admin-0046-tvznu-48.eastus2.inference.ml.azure.com/score" --api_key "FfQh320Ggp8KuLhHiurDzRZhXcP6zLBsdl53ajQAPtbxFJMeIV6LJQQJ99BBAAAAAAAAAAAAINFRAZMLabJg" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results-48-phi4.csv" --max_concurrency 10
 
 ```
 
