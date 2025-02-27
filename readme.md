@@ -806,6 +806,8 @@ python concurrency_test.py --endpoint_url "https://admin-0046-jerzt-24.eastus2.i
 
 Phi-4(14.7B ) on  on Standard_NC48ads_A100_v4, results refer to : ***results-NC48-phi4.csv***
 
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/10.png)
+
 ```
 python concurrency_test.py --endpoint_url "https://admin-0046-tvznu-48.eastus2.inference.ml.azure.com/score" --api_key "FfQh320Ggp8KuLhHiurDzRZhXcP6zLBsdl53ajQAPtbxFJMeIV6LJQQJ99BBAAAAAAAAAAAAINFRAZMLabJg" --initial_concurrency 1 --prompt_sizes 64 128 1024 2048 4096 --response_sizes 64 128 1024 2048 4096  --max_tests 100 --output_file "results-48-phi4.csv" --max_concurrency 10
 
