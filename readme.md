@@ -1,18 +1,130 @@
-# AI Foundry Model Catalog Endpoint performance
+# AI Foundry Model Catalog Model performance
 
-This repository is designed to test the performance of open-source models from the Azure AI Foundry Model Catalog when deployed using Managed Compute across different VBM SKUs. The scripts in this repository consist of two parts: deploying the Managed Compute endpoint and testing the performance of the Managed Compute endpoint. After completing the tests, you should delete it promptly to avoid incurring additional costs.
+This repository is designed to test the performance of open-source models from the Azure AI Foundry Model Catalog. 
 
-## Overall conclusion
 
-In the AI Foundry model catalog, many models have published performance metrics, which determine the inference performance of a single deployment instance of such models, whether serverless or managed compute.This is because the factor that determines peak throughput is not the underlying GPU resources of Managed Compute, but the TPM of the model in the Model Catalog.
 
-![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/2.png)
+## Deploying models Methods
 
-![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/3.png)
+https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/deployments-overview
 
-Regarding the issue of exposing the `max_concurrent_requests_per_instance` parameter of Managed Compute to users, PG has not yet provided a response. I speculate that this feature might not be supported at this stage, as the entire product is still in the Preview phase.
+| Name                          | Azure OpenAI service                                         | Azure AI model inference                                     | Serverless API                                               | Managed compute                                              |
+| :---------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Which models can be deployed? | [Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models) | [Azure OpenAI models and Models as a Service](https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/concepts/models) | [Models as a Service](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/model-catalog-overview#content-safety-for-models-deployed-via-serverless-apis) | [Open and custom models](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/model-catalog-overview#availability-of-models-for-deployment-as-managed-compute) |
+| Deployment resource           | Azure OpenAI resource                                        | Azure AI services resource                                   | AI project resource                                          | AI project resource                                          |
+| Best suited when              | You are planning to use only OpenAI models                   | You are planning to take advantage of the flagship models in Azure AI catalog, including OpenAI. | You are planning to use a single model from a specific provider (excluding OpenAI). | If you plan to use open models and you have enough compute quota available in your subscription. |
+| Billing bases                 | Token usage & PTU                                            | Token usage                                                  | Token usage                                                  | Compute core hours                                           |
+| Deployment instructions       | [Deploy to Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-openai) | [Deploy to Azure AI model inference](https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/how-to/create-model-deployments) | [Deploy to Serverless API](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-serverless) | [Deploy to Managed compute](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-managed) |
 
-![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/4.png)
+Currently, an increasing number of new flagship models in the Azure AI catalog, including OpenAI, will be deployed using the Azure AI model inference method. Models deployed in this way can be accessed via the AI Inference SDK (which now supports stream mode: https://learn.microsoft.com/en-us/python/api/overview/azure/ai-inference-readme?view=azure-python-preview). Open-source models include DeepSeek R1, V3, Phi, Mistral, and more. For a detailed list of models, please refer to:
+
+***https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/concepts/models***
+
+
+
+### Performance test on Azure AI model inference
+
+Azure AI model inference has a default quota. If you feel that the quota for the model is insufficient, you can apply for an increase separately. 
+
+***https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/quotas-limits#request-increases-to-the-default-limits***
+
+| Limit name              | Applies to          | Limit value                                                  |
+| ----------------------- | ------------------- | ------------------------------------------------------------ |
+| Tokens per minute       | Azure OpenAI models | Varies per model and SKU. See [limits for Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits). |
+| Requests per minute     | Azure OpenAI models | Varies per model and SKU. See [limits for Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits). |
+| **Tokens per minute**   | **DeepSeek models** | **5.000.000**                                                |
+| **Requests per minute** | **DeepSeek models** | **5.000**                                                    |
+| **Concurrent requests** | **DeepSeek models** | **300**                                                      |
+| Tokens per minute       | Rest of models      | 200.000                                                      |
+| Requests per minute     | Rest of models      | 1.000                                                        |
+| Concurrent requests     | Rest of models      | 300                                                          |
+
+After you have deployed models on Azure AI model inference, you can check their invocation methods：
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/11.png)
+
+Prepare test env:
+
+```
+#conda create -n AImodelinference python=3.11 -y
+#conda activate AImodelinference
+#pip install azure-ai-inference
+```
+
+Run test script, after entering the following three variables, the stress test will begin:
+
+```
+#python callaiinference.py
+Please enter the Azure AI key: 
+Please enter the Azure AI endpoint URL:
+Please enter the deployment name:
+```
+
+I will use the test results of DeeSeek R1 on Azure AI model inference  as an example:
+
+  **Max performance:**
+
+• When the concurrency is 300 and the prompt length is 1024, TPS = 2110.77, TTFT = 2.201s.
+ • When the concurrency is 300 and the prompt length is 2048, TPS = 1330.94, TTFT = 1.861s.
+
+**Overall performance:** 
+
+The overall throughput averages 735.12 tokens/s, with a P90 of 1184.06 tokens/s, full test result is as following:
+
+| **Concurrency** | **Prompt Length** | **Total Requests** | **Success Count** | **Fail Count** | **Average latency (s)** | **Average TTFT (s)** | **Average token throughput (tokens/s)** | **Overall throughput (tokens/s)** |
+| --------------- | ----------------- | ------------------ | ----------------- | -------------- | ----------------------- | -------------------- | --------------------------------------- | --------------------------------- |
+| 300             | 1024              | 110                | 110               | 0              | 75.579                  | 2.580                | 22.54                                   | 806.84                            |
+| 300             | 1024              | 110                | 110               | 0              | 71.378                  | 71.378               | 24.53                                   | 1028.82                           |
+| 300             | 1024              | 110                | 110               | 0              | 76.622                  | 2.507                | 23.24                                   | 979.97                            |
+| 300             | 1024              | 120                | 120               | 0              | 68.750                  | 68.750               | 24.91                                   | 540.66                            |
+| 300             | 1024              | 120                | 120               | 0              | 72.164                  | 2.389                | 22.71                                   | 1094.90                           |
+| 300             | 1024              | 130                | 130               | 0              | 72.245                  | 72.245               | 23.68                                   | 1859.91                           |
+| 300             | 1024              | 130                | 130               | 0              | 82.714                  | 2.003                | 20.18                                   | 552.08                            |
+| 300             | 1024              | 140                | 140               | 0              | 71.458                  | 71.458               | 23.79                                   | 642.92                            |
+| 300             | 1024              | 140                | 140               | 0              | 71.565                  | 2.400                | 22.93                                   | 488.49                            |
+| 300             | 1024              | 150                | 150               | 0              | 71.958                  | 71.958               | 24.21                                   | 1269.10                           |
+| 300             | 1024              | 150                | 150               | 0              | 73.712                  | 2.201                | 22.35                                   | 2110.77                           |
+| 300             | 2048              | 10                 | 10                | 0              | 68.811                  | 68.811               | 24.24                                   | 196.78                            |
+| 300             | 2048              | 10                 | 10                | 0              | 70.189                  | 1.021                | 23.18                                   | 172.92                            |
+| 300             | 2048              | 20                 | 20                | 0              | 73.138                  | 73.138               | 24.14                                   | 390.96                            |
+| 300             | 2048              | 20                 | 20                | 0              | 69.649                  | 1.150                | 24.22                                   | 351.31                            |
+| 300             | 2048              | 30                 | 30                | 0              | 66.883                  | 66.883               | 26.13                                   | 556.12                            |
+| 300             | 2048              | 30                 | 30                | 0              | 68.918                  | 1.660                | 23.46                                   | 571.63                            |
+| 300             | 2048              | 40                 | 40                | 0              | 72.485                  | 72.485               | 23.85                                   | 716.53                            |
+| 300             | 2048              | 40                 | 40                | 0              | 65.228                  | 1.484                | 24.87                                   | 625.16                            |
+| 300             | 2048              | 50                 | 50                | 0              | 68.223                  | 68.223               | 25.12                                   | 887.64                            |
+| 300             | 2048              | 50                 | 50                | 0              | 66.288                  | 1.815                | 24.38                                   | 976.17                            |
+| 300             | 2048              | 60                 | 60                | 0              | 66.736                  | 66.736               | 25.85                                   | 547.70                            |
+| 300             | 2048              | 60                 | 60                | 0              | 69.355                  | 2.261                | 23.94                                   | 615.81                            |
+| 300             | 2048              | 70                 | 70                | 0              | 66.689                  | 66.689               | 25.66                                   | 329.90                            |
+| 300             | 2048              | 70                 | 70                | 0              | 67.061                  | 2.128                | 23.89                                   | 1373.11                           |
+| 300             | 2048              | 80                 | 80                | 0              | 68.091                  | 68.091               | 25.68                                   | 1516.27                           |
+| 300             | 2048              | 80                 | 80                | 0              | 67.413                  | 1.861                | 24.01                                   | 1330.94                           |
+| 300             | 2048              | 90                 | 90                | 0              | 66.603                  | 66.603               | 25.51                                   | 418.81                            |
+| 300             | 2048              | 90                 | 90                | 0              | 70.072                  | 2.346                | 23.41                                   | 1047.53                           |
+| 300             | 2048              | 100                | 100               | 0              | 70.516                  | 70.516               | 24.29                                   | 456.66                            |
+| 300             | 2048              | 100                | 100               | 0              | 86.862                  | 2.802                | 20.03                                   | 899.38                            |
+| 300             | 2048              | 110                | 110               | 0              | 84.602                  | 84.602               | 21.16                                   | 905.59                            |
+| 300             | 2048              | 110                | 110               | 0              | 77.883                  | 2.179                | 21.17                                   | 803.93                            |
+| 300             | 2048              | 120                | 120               | 0              | 73.814                  | 73.814               | 23.73                                   | 541.03                            |
+| 300             | 2048              | 120                | 120               | 0              | 86.787                  | 4.413                | 20.32                                   | 650.57                            |
+| 300             | 2048              | 130                | 130               | 0              | 78.222                  | 78.222               | 22.61                                   | 613.27                            |
+| 300             | 2048              | 130                | 130               | 0              | 83.670                  | 2.131                | 20.16                                   | 1463.81                           |
+| 300             | 2048              | 140                | 140               | 0              | 77.429                  | 77.429               | 22.74                                   | 1184.06                           |
+| 300             | 2048              | 140                | 140               | 0              | 77.234                  | 3.891                | 21.90                                   | 821.34                            |
+| 300             | 2048              | 150                | 150               | 0              | 72.753                  | 72.753               | 23.69                                   | 698.50                            |
+| 300             | 2048              | 150                | 150               | 0              | 73.674                  | 2.425                | 22.74                                   | 1012.25                           |
+| 300             | 4096              | 10                 | 10                | 0              | 83.003                  | 83.003               | 25.52                                   | 221.28                            |
+| 300             | 4096              | 10                 | 10                | 0              | 89.713                  | 1.084                | 24.70                                   | 189.29                            |
+| 300             | 4096              | 20                 | 20                | 0              | 82.342                  | 82.342               | 26.65                                   | 337.85                            |
+| 300             | 4096              | 20                 | 20                | 0              | 84.526                  | 1.450                | 24.81                                   | 376.17                            |
+| 300             | 4096              | 30                 | 30                | 0              | 87.979                  | 87.979               | 24.46                                   | 322.62                            |
+| 300             | 4096              | 30                 | 30                | 0              | 84.767                  | 1.595                | 24.28                                   | 503.01                            |
+| 300             | 4096              | 40                 | 40                | 0              | 85.231                  | 85.231               | 26.03                                   | 733.50                            |
+| 300             | 4096              | 40                 | 40                | 0              | 81.514                  | 1.740                | 24.17                                   | 710.79                            |
+| 300             | 4096              | 50                 | 50                | 0              | 91.253                  | 91.253               | 24.53                                   | 279.55                            |
+
+## Legacy None-Azure AI model inference model
 
 ### How to Fast Deploy Model on AI Foundry Model Catalog
 
@@ -50,167 +162,7 @@ We know that the Azure AI Foundry Model Catalog allows the deployment of over 1,
 
 When using the AI Foundry Model Catalog, you can create your own registry or use the default AML..
 
-### Create your own Model Registry
 
-You can **skip this step** if you want to use the model's AML registry. 
-
-```
-#cat registry.yml
-name: xinyuwei-registry1
-tags:
-  description: Basic registry with one primary region and to additional regions
-  foo: bar
-location: eastus
-replication_locations:
-  - location: eastus
-  - location: eastus2
-  - location: westus
-```
-
-
-
-```
-(aml_env) root@davidwei:~/AML_MAAP_benchmark# az ml registry create --resource-group rg-admin-2776_ai --file registry.yml
-```
-
-```
-Class RegistryRegionDetailsSchema: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
-{
-  "containerRegistry": null,
-  "description": null,
-  "discoveryUrl": "https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/xinyuwei-registry1/discovery",
-  "identity": {
-    "principalId": "4d455e6e-22c9-4281-b1c7-d5f9c7641797",
-    "tenantId": "9812d5f8-3c48-49c9-aada-e7174b336629",
-    "type": "SystemAssigned",
-    "userAssignedIdentities": null
-  },
-  "intellectualProperty": null,
-  "location": "eastus",
-  "managedResourceGroup": {
-    "resourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418"
-  },
-  "mlflowRegistryUri": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/rg-admin-2776_ai/providers/Microsoft.MachineLearningServices/registries/xinyuwei-registry1",
-  "name": "xinyuwei-registry1",
-  "properties": {},
-  "publicNetworkAccess": "Enabled",
-  "replicationLocations": [
-    {
-      "acrConfig": [
-        {
-          "acrAccountSku": "Premium",
-          "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.ContainerRegistry/registries/de35df4bd6e"
-        }
-      ],
-      "location": "eastus",
-      "storageConfig": {
-        "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.Storage/storageAccounts/471837b7de9",
-        "replicatedIds": null,
-        "replicationCount": 1,
-        "storageAccountHns": false,
-        "storageAccountType": "standard_lrs"
-      }
-    },
-    {
-      "acrConfig": [
-        {
-          "acrAccountSku": "Premium",
-          "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.ContainerRegistry/registries/de35df4bd6e"
-        }
-      ],
-      "location": "eastus2",
-      "storageConfig": {
-        "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.Storage/storageAccounts/7a7c0937565",
-        "replicatedIds": null,
-        "replicationCount": 1,
-        "storageAccountHns": false,
-        "storageAccountType": "standard_lrs"
-      }
-    },
-    {
-      "acrConfig": [
-        {
-          "acrAccountSku": "Premium",
-          "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.ContainerRegistry/registries/de35df4bd6e"
-        }
-      ],
-      "location": "westus",
-      "storageConfig": {
-        "armResourceId": "/subscriptions/08f95cfd-64fe-4187-99bb-7b3e661c4cde/resourceGroups/azureml-rg-xinyuwei-registry1_fc12d3b8-b1e4-44e1-a461-cf28bb2fc418/providers/Microsoft.Storage/storageAccounts/33ee5e64e33",
-        "replicatedIds": null,
-        "replicationCount": 1,
-        "storageAccountHns": false,
-        "storageAccountType": "standard_lrs"
-      }
-    }
-  ],
-  "tags": {
-    "description": "Basic registry with one primary region and to additional regions",
-    "foo": "bar"
-  }
-}
-```
-
-
-
-```
-# az ml model list --registry-name  xinyuwei-registry1 --resource-group rg-admin-2776_ai
-```
-
-```
-  {
-    "creation_context": {
-      "created_at": "2024-12-13T00:56:50.995337+00:00",
-      "created_by": "azureml",
-      "created_by_type": "User",
-      "last_modified_at": "0001-01-01T00:00:00+00:00"
-    },
-    "description": "",
-    "id": "azureml://registries/AzureML/models/Phi-4",
-    "latest version": "3",
-    "name": "Phi-4",
-    "properties": {},
-    "stage": null,
-    "tags": {}
-  },
-  {
-    "creation_context": {
-      "created_at": "2024-12-06T17:14:18.513744+00:00",
-      "created_by": "azureml",
-      "created_by_type": "User",
-      "last_modified_at": "0001-01-01T00:00:00+00:00"
-    },
-    "description": "",
-    "id": "azureml://registries/AzureML/models/supply-chain-trade-regulations",
-    "latest version": "2",
-    "name": "supply-chain-trade-regulations",
-    "properties": {},
-    "stage": null,
-    "tags": {}
-  },
-```
-
-### Create models from the AML registry
-
-View the models in the AML registry
-
-```
-(aml_env) root@davidwei:~/AML_MAAP_benchmark# az ml model list --registry-name AzureML --query "[?contains(name, 'Phi-3')]" --output table
-Name                        Description    Latest version
---------------------------  -------------  ----------------
-Phi-3.5-vision-instruct                    2
-Phi-3.5-mini-instruct                      6
-Phi-3.5-MoE-instruct                       5
-Phi-3-vision-128k-instruct                 2
-Phi-3-small-8k-instruct                    5
-Phi-3-small-128k-instruct                  5
-Phi-3-medium-4k-instruct                   6
-Phi-3-medium-128k-instruct                 7
-Phi-3-mini-4k-instruct                     15
-Phi-3-mini-128k-instruct                   13
-```
-
-To create a model deployment using a program, you need to specify the model name, subscription ID, resource group name, VM SKU, and the number of VMs.
 
 Check usage first
 
@@ -224,7 +176,6 @@ Next, deploy the "Phi-3-medium-4k-instruct" deployment using the VM SKU "Standar
 
 ```
 # python deploy_infra.py "Phi-3-medium-4k-instruct" "6" "08f95cfd-64fe-4187-99bb-7b3e661c4cde" "rg-admin-2776_ai" "admin-0046" "Standard_NC24ads_A100_v4" 1
-
 ```
 
 View the source code of the program.:
