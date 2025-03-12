@@ -66,6 +66,10 @@ Before deployment, you need to check which region under your subscription has th
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/16.png)
 
 ```
+(aml_env) root@pythonvm:~/AIFperformance# python checkgpuquota.py
+```
+
+```
 Please input RESOURCE_GROUP: A100VM_group
 Please inpu WORKSPACE_NAME: david-workspace-westeurope
 Region,ResourceName,LocalizedValue,Usage,Limit
