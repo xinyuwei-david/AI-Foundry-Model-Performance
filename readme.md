@@ -26,6 +26,8 @@ Currently, an increasing number of new flagship models in the Azure AI catalog, 
 
 Azure AI model inference has a default quota. If you feel that the quota for the model is insufficient, you can apply for an increase separately. 
 
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/14.png)
+
 ***https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/quotas-limits#request-increases-to-the-default-limits***
 
 | Limit name              | Applies to          | Limit value                                                  |
@@ -59,6 +61,10 @@ Please enter the Azure AI key:
 Please enter the Azure AI endpoint URL:
 Please enter the deployment name:
 ```
+
+
+
+### Performance on DS 671B
 
 I will use the test results of DeeSeek R1 on Azure AI model inference  as an example:
 
@@ -123,6 +129,81 @@ The overall throughput averages 735.12 tokens/s, with a P90 of 1184.06 tokens/s,
 | 300             | 4096              | 40                 | 40                | 0              | 85.231                  | 85.231               | 26.03                                   | 733.50                            |
 | 300             | 4096              | 40                 | 40                | 0              | 81.514                  | 1.740                | 24.17                                   | 710.79                            |
 | 300             | 4096              | 50                 | 50                | 0              | 91.253                  | 91.253               | 24.53                                   | 279.55                            |
+
+
+
+### Performance Phi-4
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/12.png)
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/13.png)
+
+```
+(AIF) root@pythonvm:~/AIFperformance# python callapinormal.py 
+Please enter the Azure AI key: G485wnXwMrAYQKMQPSYpzf7PNLm3sui8qgsXcYFv5Yd3HOmvzZ2GJQQJ99BCACPV0roXJ3w3AAAAACOG9kt1
+Please enter the Azure AI endpoint URL: https://xinyu-m7zxv3ow-germanywestcentra.services.ai.azure.com/models
+Please enter the deployment name: Phi-4
+
+>>> Testing Concurrency: 200, Prompt Length: 128, Total Requests: 10 <<<
+=== Non-Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 10 ===
+  Success count: 10, Fail count: 0
+  Average latency (s): 23.822
+  Average TTFT (s): 23.822
+  Average token throughput (tokens/s): 27.91
+  Overall throughput (tokens/s): 249.26
+
+=== Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 10 ===
+  Success count: 10, Fail count: 0
+  Average latency (s): 23.547
+  Average TTFT (s): 0.419
+  Average token throughput (tokens/s): 27.00
+  Overall throughput (tokens/s): 222.52
+
+
+>>> Testing Concurrency: 200, Prompt Length: 128, Total Requests: 20 <<<
+=== Non-Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 20 ===
+  Success count: 20, Fail count: 0
+  Average latency (s): 22.429
+  Average TTFT (s): 22.429
+  Average token throughput (tokens/s): 30.64
+  Overall throughput (tokens/s): 463.46
+
+Unable to stream download: Response ended prematurely
+Attempt 1 failed: Response ended prematurely
+=== Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 20 ===
+  Success count: 20, Fail count: 0
+  Average latency (s): 21.512
+  Average TTFT (s): 0.970
+  Average token throughput (tokens/s): 29.54
+  Overall throughput (tokens/s): 417.09
+
+
+>>> Testing Concurrency: 200, Prompt Length: 128, Total Requests: 30 <<<
+=== Non-Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 30 ===
+  Success count: 30, Fail count: 0
+  Average latency (s): 23.560
+  Average TTFT (s): 23.560
+  Average token throughput (tokens/s): 28.28
+  Overall throughput (tokens/s): 698.09
+
+=== Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 30 ===
+  Success count: 30, Fail count: 0
+  Average latency (s): 22.677
+  Average TTFT (s): 1.143
+  Average token throughput (tokens/s): 27.74
+  Overall throughput (tokens/s): 628.50
+```
+
+  **Max performance:**
+
+• When the concurrency is 300 and the prompt length is 1024, TPS = 2110.77, TTFT = 2.201s.
+ • When the concurrency is 300 and the prompt length is 2048, TPS = 1330.94, TTFT = 1.861s.
+
+**Overall performance:** 
+
+The overall throughput averages 735.12 tokens/s, with a P90 of 1184.06 tokens/s, full test result is as following:
+
+
 
 ## Legacy None-Azure AI model inference model
 
