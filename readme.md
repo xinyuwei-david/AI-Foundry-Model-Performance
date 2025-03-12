@@ -687,23 +687,6 @@ Message: The operation was timeout.
 
 Before creating a Managed Compute and serverless API, you need to create a resource group in Azure and then visit ai.azure.com to create a Hub and a Project. These common steps will not be elaborated upon in this repository.
 
-![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/1.png)
-
-Next, prepare the Python environment for running the program. You need to install the required Python packages in this environment and log in to Azure through it. 
-
-```
-#conda create -n aml_env python=3.9 -y
-#conda activate aml_env
-#pip install azure-ai-ml azure-identity requests python-dotenv pyyaml humanfriendly numpy aiohttp  
-#apt-get install -y jq  
-```
-
-Next, log in to Azure.
-
-```
-#az login
-```
-
 We know that the Azure AI Foundry Model Catalog allows the deployment of over 1,700 AI models. When deploying, you can choose either the Serverless mode or the Managed Compute mode.
 
 | Features                          | Managed compute                                              | Serverless API (pay-per-token)                               |
@@ -714,6 +697,40 @@ We know that the Azure AI Foundry Model Catalog allows the deployment of over 1,
 | Network isolation                 | [Configure managed networks for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network). | Managed compute follow your hub's public network access (PNA) flag setting. For more information, see the [Network isolation for models deployed via Serverless APIs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/model-catalog-overview#network-isolation-for-models-deployed-via-serverless-apis) section later in this article. |
 
 When using the AI Foundry Model Catalog, you can create your own registry or use the default AML..
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/1.png)
+
+Next, prepare the Python environment for running the program. You need to install the required Python packages in this environment and log in to Azure through it. 
+
+```
+#conda create -n aml_env python=3.9 -y
+#conda activate aml_env
+#pip install azure-ai-ml azure-identity requests python-dotenv pyyaml humanfriendly numpy aiohttp  
+#apt-get install -y jq  
+#curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+```
+
+Next, log in to Azure.
+
+```
+#az login
+```
+
+Check available model first, for example, you want to deploy phi-4 series:
+
+```
+(aml_env) root@pythonvm:~/AIFperformance# az ml model list --registry-name AzureML --query "[?contains(name, 'Phi-4')]" --output tableName                       Description    Latest version
+-------------------------  -------------  ----------------
+Phi-4-multimodal-instruct                 1
+Phi-4-mini-instruct                       1
+Phi-4                                     7
+```
+
+To create a model deployment using a program, you need to specify the model name, subscription ID, resource group name, VM SKU, and the number of VMs.
+
+Before deployment, you need to check which region under your subscription has the quota for deploying AML GPU VMs. If your quota is in a specific region, then the workspace and resource group you select below should also be in the same region to ensure a successful deployment. If none of the regions have a quota, you will need to submit a request on the Azure portal. 
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/16.png)
 
 
 
@@ -727,8 +744,10 @@ Check usage first
 
 Next, deploy the "Phi-3-medium-4k-instruct" deployment using the VM SKU "Standard_NC24ads_A100_v4" with a quantity of 1.
 
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/15.png)
+
 ```
-# python deploy_infra.py "Phi-3-medium-4k-instruct" "6" "08f95cfd-64fe-4187-99bb-7b3e661c4cde" "rg-admin-2776_ai" "admin-0046" "Standard_NC24ads_A100_v4" 1
+# python deploy_infra.py "Phi-4-mini-instruct" "1" "08f95cfd-64fe-4187-99bb-7b3e661c4cde" "A100VM_group" "david-workspace-westeurope" "Standard_NC24ads_A100_v4" 1
 ```
 
 View the source code of the program.:
