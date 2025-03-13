@@ -50,16 +50,111 @@ Next, prepare the Python environment for running the program. You need to instal
 ```
 #conda create -n aml_env python=3.9 -y
 #conda activate aml_env
-#pip install azure-ai-ml azure-identity requests python-dotenv pyyaml humanfriendly numpy aiohttp  
-#apt-get install -y jq  
-#curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+#pip install -r requirements.txt  
+```
+
+#cat requirements.txt  
+
+```
+azure-ai-ml  
+azure-identity  
+requests  
+pyyaml  
+tabulate  
 ```
 
 Next, log in to Azure.
 
 ```
-#az login
+#az login --use-device
 ```
+
+Next, you need to execute a script for end-to-end model deployment. Before running the script, you need to create an AML workspace. This script will help you check the GPU VM quota for AML under your subscription, prompt you to select the model you want to deploy, and specify the SKU to be used for deployment. It will then provide you with the endpoint and key of the successfully deployed model, allowing you to proceed with performance testing. 
+
+```
+#python deploymodels.py
+```
+
+The deploy process:
+
+```
+========== Enter Basic Information ==========
+Subscription ID: 53039473-9bbd-499d-90d7-d046d4fa63b6
+Resource Group: AIrg1
+Workspace Name: aml-david-1
+
+========== Model Name Examples ==========
+ - Phi-4
+ - Phi-3.5-vision-instruct
+ - financial-reports-analysis
+ - databricks-dbrx-instruct
+ - Llama-3.2-11B-Vision-Instruct
+ - Phi-3-small-8k-instruct
+ - Phi-3-vision-128k-instruct
+ - microsoft-swinv2-base-patch4-window12-192-22k
+ - mistralai-Mixtral-8x7B-Instruct-v01
+ - Muse
+ - openai-whisper-large
+ - snowflake-arctic-base
+ - Nemotron-3-8B-Chat-4k-SteerLM
+ - stabilityai-stable-diffusion-xl-refiner-1-0
+ - microsoft-Orca-2-7b
+==========================================
+
+Enter the model name to search (e.g., 'Phi-4'): Phi-4
+
+========== Matching Models ==========
+Name                       Description    Latest version
+-------------------------  -------------  ----------------
+Phi-4-multimodal-instruct                 1
+Phi-4-mini-instruct                       1
+Phi-4                                     7
+
+Note: The above table is for reference only. Enter the exact model name below:
+Enter full model name (case-sensitive): Phi-4
+Enter model version (e.g., 7): 7
+2025-03-13 15:42:02,438 - INFO - User-specified model: name='Phi-4', version='7'
+
+========== GPU Quota (Limit > 1) ==========
+Region,ResourceName,LocalizedValue,Usage,Limit
+westeurope,standardNCADSH100v5Family,,0,100
+polandcentral,standardNCADSA100v4Family,,0,100
+
+========== A100 / H100 SKU Information ==========
+SKU Name                            GPU Count  GPU Memory (VRAM)    CPU Cores
+----------------------------------- ---------- -------------------- ----------
+Standard_NC24ads_A100_v4            1          80 GB                24
+Standard_NC48ads_A100_v4            2          1600 GB (2x80 GB)    48
+Standard_NC96ads_A100_v4            4          320 GB (4x80 GB)     96
+Standard_NC40ads_H100_v5            1          80 GB                40
+Standard_NC80ads_H100_v5            2          160 GB (2x80 GB)     80
+
+Available SKUs:
+ - Standard_NC24ads_A100_v4
+ - Standard_NC48ads_A100_v4
+ - Standard_NC96ads_A100_v4
+ - Standard_NC40ads_H100_v5
+ - Standard_NC80ads_H100_v5
+
+Enter the SKU to use: Standard_NC24ads_A100_v4
+Enter the number of instances (integer): 1
+2025-03-13 15:52:42,333 - INFO - Model ID: azureml://registries/AzureML/models/Phi-4/versions/7
+2025-03-13 15:52:42,333 - INFO - No environment configuration found.
+2025-03-13 15:52:42,366 - INFO - ManagedIdentityCredential will use IMDS
+2025-03-13 15:52:42,379 - INFO - Creating Endpoint: custom-endpoint-1741852362
+2025-03-13 15:52:43,008 - INFO - Request URL: 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=REDACTED&resource=REDACTED'
+```
+
+After 3 minutes, you will get the final results:
+
+```
+```
+
+
+
+
+
+
 
 Before deployment, you need to check which region under your subscription has the quota for deploying AML GPU VMs. If your quota is in a specific region, then the workspace and resource group you select below should also be in the same region to ensure a successful deployment. If none of the regions have a quota, you will need to submit a request on the Azure portal. 
 
