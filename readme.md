@@ -145,12 +145,34 @@ Enter the number of instances (integer): 1
 2025-03-13 15:52:43,008 - INFO - Request URL: 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=REDACTED&resource=REDACTED'
 ```
 
-After 3 minutes, you will get the final results:
+After 3-5 minutes, you will get the final results:
 
 ```
+----- Deployment Information -----
+ENDPOINT_NAME=custom-endpoint-1741863106
+SCORING_URI=https://custom-endpoint-1741863106.polandcentral.inference.ml.azure.com/score
+PRIMARY_KEY=DRxHMd1jbbSdNoXiYOaWRQ66erYZfejzKhdyDVRuh58v2hXILOcYJQQJ99BCAAAAAAAAAAAAINFRAZML3m1v
+SECONDARY_KEY=4dhy3og6WfVzkIijMU7FFUDLpz4WIWEYgIlXMGYUzgwafsW6GPrMJQQJ99BCAAAAAAAAAAAAINFRAZMLxOpO
 ```
 
 
+
+
+
+
+
+Backup cli
+
+```
+(aml_env) PS C:\Users\xinyuwei> az ml online-endpoint show --name "custom-endpoint-1741852362" --resource-group "AIrg1" --workspace-name "aml-david-1" --subscription "53039473-9bbd-499d-90d7-d046d4fa63b6" --query "scoring_uri" --output tsv
+https://custom-endpoint-1741852362.polandcentral.inference.ml.azure.com/score
+(aml_env) PS C:\Users\xinyuwei> az ml online-endpoint get-credentials --name "custom-endpoint-1741852362" --resource-group "AIrg1" --workspace-name "aml-david-1" --subscription "53039473-9bbd-499d-90d7-d046d4fa63b6" --output json
+{
+  "primaryKey": "5RegBW6MoJ40EPa3FmAqCn2wx7tJnKEimWvoKkATDrGBx1qKcHtYJQQJ99BCAAAAAAAAAAAAINFRAZMLyndR",
+  "secondaryKey": "7H3hhLy65SKSikS5hlpsVMxCaTyI40WTTF7sukK5p3OHlBeRAPegJQQJ99BCAAAAAAAAAAAAINFRAZML20M1"
+}
+(aml_env) PS C:\Users\xinyuwei>
+```
 
 
 
