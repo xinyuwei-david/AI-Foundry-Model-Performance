@@ -41,9 +41,7 @@ We know that the Azure AI Foundry Model Catalog allows the deployment of over 1,
 | Content safety                    | Use Azure AI Content Safety service APIs.                    | Azure AI Content Safety filters are available integrated with inference APIs. Azure AI Content Safety filters are billed separately. |
 | Network isolation                 | [Configure managed networks for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network). | Managed compute follow your hub's public network access (PNA) flag setting. For more information, see the [Network isolation for models deployed via Serverless APIs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/model-catalog-overview#network-isolation-for-models-deployed-via-serverless-apis) section later in this article. |
 
-When using the AI Foundry Model Catalog, you can create your own registry or use the default AML..
 
-![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/1.png)
 
 Next, prepare the Python environment for running the program. You need to install the required Python packages in this environment and log in to Azure through it. 
 
@@ -61,6 +59,8 @@ azure-identity
 requests  
 pyyaml  
 tabulate  
+torch
+transformers
 ```
 
 Next, log in to Azure.
@@ -172,6 +172,186 @@ https://custom-endpoint-1741852362.polandcentral.inference.ml.azure.com/score
   "secondaryKey": "7H3hhLy65SKSikS5hlpsVMxCaTyI40WTTF7sukK5p3OHlBeRAPegJQQJ99BCAAAAAAAAAAAAINFRAZML20M1"
 }
 (aml_env) PS C:\Users\xinyuwei>
+```
+
+
+
+##  Performance Test
+
+After deploying the Endpoint, we can proceed with performance testing. The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution.
+
+Before officially starting the test, you need to log in to HF on your terminal.
+
+```
+huggingface-cli  login
+```
+
+### Phi Series
+
+
+
+
+
+
+
+**Test result for depoy phi4 on NC24 A100 VM (When concurrency exceeds 1, a 429 error will occur.):**
+
+```
+Scenario: Text Generation, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 22.938 s
+  Average tokens/s per request: 45.21
+  Overall throughput: 45.16 tokens/s
+
+Scenario: Question Answering, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 12.212 s
+  Average tokens/s per request: 43.64
+  Overall throughput: 43.58 tokens/s
+
+Scenario: Translation, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 9.069 s
+  Average tokens/s per request: 41.79
+  Overall throughput: 41.71 tokens/s
+
+Scenario: Text Summarization, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 3.681 s
+  Average tokens/s per request: 33.14
+  Overall throughput: 32.99 tokens/s
+
+Scenario: Code Generation, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 11.789 s
+  Average tokens/s per request: 46.65
+  Overall throughput: 46.58 tokens/s
+
+Scenario: Chatbot, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 5.828 s
+  Average tokens/s per request: 40.32
+  Overall throughput: 40.20 tokens/s
+
+Scenario: Sentiment Analysis / Classification, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 1.371 s
+  Average tokens/s per request: 11.67
+  Overall throughput: 11.53 tokens/s
+
+Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 9.888 s
+  Average tokens/s per request: 45.81
+  Overall throughput: 45.73 tokens/s	
+```
+
+
+
+**Test result for depoy phi4 on NC48 A100 VM:**
+
+```
+(aml_env) root@pythonvm:~/AIFperformance# python press-phi4-0314.py 
+Please enter the API service URL: https://david-workspace-westeurop-ldvdq.westeurope.inference.ml.azure.com/score
+Please enter the API Key: 1MXokUWmTN0TcFDIPlXCH5qndiMXKzEJKqkuv18rrCo994e3bQGDJQQJ99BCAAAAAAAAAAAAINFRAZML1Kgr
+Please enter the full name of the HuggingFace model for tokenizer loading: microsoft/phi-4
+Tokenizer loaded successfully: microsoft/phi-4
+Scenario: Text Generation, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 8.608 s
+  Average tokens/s per request: 67.15
+  Overall throughput: 66.96 tokens/s
+
+Scenario: Text Generation, Concurrency: 2
+  Success: 2, Fails: 0
+  Average TTFT: 15.679 s
+  Average tokens/s per request: 52.80
+  Overall throughput: 72.20 tokens/s
+
+Scenario: Question Answering, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 7.952 s
+  Average tokens/s per request: 66.52
+  Overall throughput: 66.36 tokens/s
+
+Scenario: Question Answering, Concurrency: 2
+  Success: 2, Fails: 0
+  Average TTFT: 14.324 s
+  Average tokens/s per request: 50.65
+  Overall throughput: 71.55 tokens/s
+
+Scenario: Translation, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 5.935 s
+  Average tokens/s per request: 62.00
+  Overall throughput: 61.79 tokens/s
+
+Scenario: Translation, Concurrency: 2
+  Success: 2, Fails: 0
+  Average TTFT: 7.082 s
+  Average tokens/s per request: 42.38
+  Overall throughput: 66.54 tokens/s
+
+Scenario: Text Summarization, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 4.211 s
+  Average tokens/s per request: 56.05
+  Overall throughput: 55.81 tokens/s
+
+Scenario: Text Summarization, Concurrency: 2
+  Success: 2, Fails: 0
+  Average TTFT: 4.131 s
+  Average tokens/s per request: 37.94
+  Overall throughput: 56.59 tokens/s
+
+Scenario: Code Generation, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 6.719 s
+  Average tokens/s per request: 70.99
+  Overall throughput: 70.81 tokens/s
+
+Scenario: Code Generation, Concurrency: 2
+  Success: 2, Fails: 0
+  Average TTFT: 8.582 s
+  Average tokens/s per request: 52.72
+  Overall throughput: 71.97 tokens/s
+
+Scenario: Chatbot, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 2.793 s
+  Average tokens/s per request: 45.11
+  Overall throughput: 44.84 tokens/s
+
+Scenario: Chatbot, Concurrency: 2
+  Success: 2, Fails: 0
+  Average TTFT: 3.659 s
+  Average tokens/s per request: 37.24
+  Overall throughput: 55.14 tokens/s
+
+Scenario: Sentiment Analysis / Classification, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 1.185 s
+  Average tokens/s per request: 5.90
+  Overall throughput: 5.82 tokens/s
+
+Scenario: Sentiment Analysis / Classification, Concurrency: 2
+  Success: 2, Fails: 0
+  Average TTFT: 1.312 s
+  Average tokens/s per request: 7.03
+  Overall throughput: 12.48 tokens/s
+
+Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 1
+  Success: 1, Fails: 0
+  Average TTFT: 6.431 s
+  Average tokens/s per request: 68.88
+  Overall throughput: 68.70 tokens/s
+
+Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 2
+Attempt 1 failed: The read operation timed out
+  Success: 2, Fails: 0
+  Average TTFT: 17.819 s
+  Average tokens/s per request: 76.69
+  Overall throughput: 56.62 tokens/s
 ```
 
 
