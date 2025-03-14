@@ -1,6 +1,6 @@
 # AI Foundry Model Catalog Model performance
 
-This repository is designed to test the performance of open-source models from the Azure AI Foundry Model Catalog. 
+This repository is designed to test the performance of open-source models from the Azure Machine Learning Model Catalog. 
 
 
 
@@ -16,40 +16,41 @@ https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/deployments-overview
 | Billing bases                 | Token usage & PTU                                            | Token usage                                                  | Token usage                                                  | Compute core hours                                           |
 | Deployment instructions       | [Deploy to Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-openai) | [Deploy to Azure AI model inference](https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/how-to/create-model-deployments) | [Deploy to Serverless API](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-serverless) | [Deploy to Managed compute](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-managed) |
 
-Currently, an increasing number of new flagship models in the Azure AI catalog, including OpenAI, will be deployed using the Azure AI model inference method. Models deployed in this way can be accessed via the AI Inference SDK (which now supports stream mode: https://learn.microsoft.com/en-us/python/api/overview/azure/ai-inference-readme?view=azure-python-preview). Open-source models include DeepSeek R1, V3, Phi, Mistral, and more. For a detailed list of models, please refer to:
+Currently, an increasing number of new flagship models in the Azure AI Foundry model catalog, including OpenAI, will be deployed using the Azure AI model inference method. Models deployed in this way can be accessed via the AI Inference SDK (which now supports stream mode: https://learn.microsoft.com/en-us/python/api/overview/azure/ai-inference-readme?view=azure-python-preview). Open-source models include DeepSeek R1, V3, Phi, Mistral, and more. For a detailed list of models, please refer to:
 
 ***https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/concepts/models***
 
 If you care about the performance data of this method, please skip to the last section of this repo.
 
-## AI models on Managed Compute
-
-### How to Fast Deploy Model on AI Foundry Model Catalog
-
-***Refer to：***
-
-*https://learn.microsoft.com/en-us/cli/azure/ml/registry?view=azure-cli-latest*
-
-Before creating a Managed Compute and serverless API, you need to create a resource group in Azure and then visit ai.azure.com to create a Hub and a Project. These common steps will not be elaborated upon in this repository.
-
-We know that the Azure AI Foundry Model Catalog allows the deployment of over 1,700 AI models. When deploying, you can choose either the Serverless mode or the Managed Compute mode.
-
-| Features                          | Managed compute                                              | Serverless API (pay-per-token)                               |
-| :-------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| Deployment experience and billing | Model weights are deployed to dedicated virtual machines with managed compute. A managed compute, which can have one or more deployments, makes available a REST API for inference. You're billed for the virtual machine core hours that the deployments use. | Access to models is through a deployment that provisions an API to access the model. The API provides access to the model that Microsoft hosts and manages, for inference. You're billed for inputs and outputs to the APIs, typically in tokens. Pricing information is provided before you deploy. |
-| API authentication                | Keys and Microsoft Entra authentication.                     | Keys only.                                                   |
-| Content safety                    | Use Azure AI Content Safety service APIs.                    | Azure AI Content Safety filters are available integrated with inference APIs. Azure AI Content Safety filters are billed separately. |
-| Network isolation                 | [Configure managed networks for Azure AI Foundry hubs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network). | Managed compute follow your hub's public network access (PNA) flag setting. For more information, see the [Network isolation for models deployed via Serverless APIs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/model-catalog-overview#network-isolation-for-models-deployed-via-serverless-apis) section later in this article. |
 
 
+## Performance test of AI models in Azure Machine Learning
 
-Next, prepare the Python environment for running the program. You need to install the required Python packages in this environment and log in to Azure through it. 
+In this section, we focus on the models deployed on Managed Compute in the Model Catalogue on AML.
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/19.png)
+
+Next, we will use a Python script to automate the deployment of the model and use another program to evaluate the model's performance.
+
+### Fast Deploy AI Model on AML Model Catalog via Azure GPU VM
+
+**Clone code and prepare shell environment**
+
+First, you need to create an Azure Machine Learning service in the Azure Portal. When selecting the region for the service, you should choose a region under the AML category in your subscription quota that has a GPU VM quota available.
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/20.png)
+
+Next, find a shell environment where you can execute `az login` to log in to your Azure subscription.
 
 ```
+#git clone https://github.com/xinyuwei-david/AI-Foundry-Model-Performance.git
 #conda create -n aml_env python=3.9 -y
 #conda activate aml_env
+#cd AI-Foundry-Model-Performance
 #pip install -r requirements.txt  
 ```
+
+==Backup info for developing========
 
 #cat requirements.txt  
 
@@ -63,16 +64,23 @@ torch
 transformers
 ```
 
-Next, log in to Azure.
+Login to Azure.
 
 ```
 #az login --use-device
 ```
 
-Next, you need to execute a script for end-to-end model deployment. Before running the script, you need to create an AML workspace. This script will help you check the GPU VM quota for AML under your subscription, prompt you to select the model you want to deploy, and specify the SKU to be used for deployment. It will then provide you with the endpoint and key of the successfully deployed model, allowing you to proceed with performance testing. 
+**Deploy model Automatically**
+
+Next, you need to execute a script for end-to-end model deployment. This script will: 
+
+- Help you check the GPU VM quota for AML under your subscription
+- Prompt you to select the model you want to deploy
+- Specify the Azure GPU VM SKU and quantity to be used for deployment. 
+- Provide you with the endpoint and key of the successfully deployed model, allowing you to proceed with performance testing. 
 
 ```
-#python deploymodels.py
+#python deploymodels-linux.py
 ```
 
 The deploy process:
@@ -155,13 +163,7 @@ PRIMARY_KEY=DRxHMd1jbbSdNoXiYOaWRQ66erYZfejzKhdyDVRuh58v2hXILOcYJQQJ99BCAAAAAAAA
 SECONDARY_KEY=4dhy3og6WfVzkIijMU7FFUDLpz4WIWEYgIlXMGYUzgwafsW6GPrMJQQJ99BCAAAAAAAAAAAAINFRAZMLxOpO
 ```
 
-
-
-
-
-
-
-Backup cli
+======Backup cli for developing=============
 
 ```
 (aml_env) PS C:\Users\xinyuwei> az ml online-endpoint show --name "custom-endpoint-1741852362" --resource-group "AIrg1" --workspace-name "aml-david-1" --subscription "53039473-9bbd-499d-90d7-d046d4fa63b6" --query "scoring_uri" --output tsv
@@ -176,9 +178,11 @@ https://custom-endpoint-1741852362.polandcentral.inference.ml.azure.com/score
 
 
 
-##  Performance Test
+###  Fast Performance Test AI Model on AML Model Catalog
 
-After deploying the Endpoint, we can proceed with performance testing. The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution.
+The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution.
+
+
 
 Before officially starting the test, you need to log in to HF on your terminal.
 
@@ -186,177 +190,326 @@ Before officially starting the test, you need to log in to HF on your terminal.
 huggingface-cli  login
 ```
 
-### Phi Series
+#### Phi-4 Series test
 
-
-
-
-
-
-
-**Test result for depoy phi4 on NC24 A100 VM (When concurrency exceeds 1, a 429 error will occur.):**
+**Run the test script:**
 
 ```
-Scenario: Text Generation, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 22.938 s
-  Average tokens/s per request: 45.21
-  Overall throughput: 45.16 tokens/s
-
-Scenario: Question Answering, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 12.212 s
-  Average tokens/s per request: 43.64
-  Overall throughput: 43.58 tokens/s
-
-Scenario: Translation, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 9.069 s
-  Average tokens/s per request: 41.79
-  Overall throughput: 41.71 tokens/s
-
-Scenario: Text Summarization, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 3.681 s
-  Average tokens/s per request: 33.14
-  Overall throughput: 32.99 tokens/s
-
-Scenario: Code Generation, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 11.789 s
-  Average tokens/s per request: 46.65
-  Overall throughput: 46.58 tokens/s
-
-Scenario: Chatbot, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 5.828 s
-  Average tokens/s per request: 40.32
-  Overall throughput: 40.20 tokens/s
-
-Scenario: Sentiment Analysis / Classification, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 1.371 s
-  Average tokens/s per request: 11.67
-  Overall throughput: 11.53 tokens/s
-
-Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 9.888 s
-  Average tokens/s per request: 45.81
-  Overall throughput: 45.73 tokens/s	
-```
-
-
-
-**Test result for depoy phi4 on NC48 A100 VM:**
-
-```
-(aml_env) root@pythonvm:~/AIFperformance# python press-phi4-0314.py 
+(aml_env) root@pythonvm:~/AIFperformance# python press-phi4-0314.py
 Please enter the API service URL: https://david-workspace-westeurop-ldvdq.westeurope.inference.ml.azure.com/score
-Please enter the API Key: 1MXokUWmTN0TcFDIPlXCH5qndiMXKzEJKqkuv18rrCo994e3bQGDJQQJ99BCAAAAAAAAAAAAINFRAZML1Kgr
+Please enter the API Key: Ef9DFpATsXs4NiWyoVhEXeR4PWPvFy17xcws5ySCvV2H8uOUfgV4JQQJ99BCAAAAAAAAAAAAINFRAZML3eIO
 Please enter the full name of the HuggingFace model for tokenizer loading: microsoft/phi-4
 Tokenizer loaded successfully: microsoft/phi-4
+```
+
+**Test result for deploy phi4 on NC24 A100 VM:**
+
+
+
+
+
+
+
+
+
+
+
+
+
+**Test result for deploy phi4 on NC48 A100 VM( (When concurrency exceeds 2, a 429 error will occur.):**
+
+```
+Tokenizer loaded successfully: microsoft/phi-4
+
 Scenario: Text Generation, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 8.608 s
-  Average tokens/s per request: 67.15
-  Overall throughput: 66.96 tokens/s
+  Request 1:
+    TTFT          : 16.574 s
+    Latency       : 16.574 s
+    Throughput    : 73.85 tokens/s
+    Prompt tokens : 132, Output tokens: 1224
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 16.574 s
+    Average throughput per req   : 73.85 tokens/s
+    Overall throughput (sum)     : 73.85 tokens/s
+    Batch duration (wall-clock)  : 16.598 s
 
 Scenario: Text Generation, Concurrency: 2
-  Success: 2, Fails: 0
-  Average TTFT: 15.679 s
-  Average tokens/s per request: 52.80
-  Overall throughput: 72.20 tokens/s
+  Request 1:
+    TTFT          : 14.147 s
+    Latency       : 14.147 s
+    Throughput    : 71.11 tokens/s
+    Prompt tokens : 132, Output tokens: 1006
+  Request 2:
+    TTFT          : 26.707 s
+    Latency       : 26.707 s
+    Throughput    : 35.95 tokens/s
+    Prompt tokens : 132, Output tokens: 960
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 20.427 s
+    Average throughput per req   : 53.53 tokens/s
+    Overall throughput (sum)     : 107.06 tokens/s
+    Batch duration (wall-clock)  : 26.736 s
 
 Scenario: Question Answering, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 7.952 s
-  Average tokens/s per request: 66.52
-  Overall throughput: 66.36 tokens/s
+  Request 1:
+    TTFT          : 8.325 s
+    Latency       : 8.325 s
+    Throughput    : 69.19 tokens/s
+    Prompt tokens : 114, Output tokens: 576
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 8.325 s
+    Average throughput per req   : 69.19 tokens/s
+    Overall throughput (sum)     : 69.19 tokens/s
+    Batch duration (wall-clock)  : 8.344 s
 
 Scenario: Question Answering, Concurrency: 2
-  Success: 2, Fails: 0
-  Average TTFT: 14.324 s
-  Average tokens/s per request: 50.65
-  Overall throughput: 71.55 tokens/s
+  Request 1:
+    TTFT          : 8.197 s
+    Latency       : 8.197 s
+    Throughput    : 67.34 tokens/s
+    Prompt tokens : 114, Output tokens: 552
+  Request 2:
+    TTFT          : 16.817 s
+    Latency       : 16.817 s
+    Throughput    : 39.90 tokens/s
+    Prompt tokens : 114, Output tokens: 671
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 12.507 s
+    Average throughput per req   : 53.62 tokens/s
+    Overall throughput (sum)     : 107.24 tokens/s
+    Batch duration (wall-clock)  : 16.842 s
 
 Scenario: Translation, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 5.935 s
-  Average tokens/s per request: 62.00
-  Overall throughput: 61.79 tokens/s
+  Request 1:
+    TTFT          : 2.582 s
+    Latency       : 2.582 s
+    Throughput    : 44.15 tokens/s
+    Prompt tokens : 85, Output tokens: 114
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 2.582 s
+    Average throughput per req   : 44.15 tokens/s
+    Overall throughput (sum)     : 44.15 tokens/s
+    Batch duration (wall-clock)  : 2.600 s
 
 Scenario: Translation, Concurrency: 2
-  Success: 2, Fails: 0
-  Average TTFT: 7.082 s
-  Average tokens/s per request: 42.38
-  Overall throughput: 66.54 tokens/s
+  Request 1:
+    TTFT          : 5.242 s
+    Latency       : 5.242 s
+    Throughput    : 60.86 tokens/s
+    Prompt tokens : 85, Output tokens: 319
+  Request 2:
+    TTFT          : 6.886 s
+    Latency       : 6.886 s
+    Throughput    : 17.14 tokens/s
+    Prompt tokens : 85, Output tokens: 118
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 6.064 s
+    Average throughput per req   : 39.00 tokens/s
+    Overall throughput (sum)     : 77.99 tokens/s
+    Batch duration (wall-clock)  : 6.911 s
 
 Scenario: Text Summarization, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 4.211 s
-  Average tokens/s per request: 56.05
-  Overall throughput: 55.81 tokens/s
+  Request 1:
+    TTFT          : 2.943 s
+    Latency       : 2.943 s
+    Throughput    : 48.25 tokens/s
+    Prompt tokens : 90, Output tokens: 142
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 2.943 s
+    Average throughput per req   : 48.25 tokens/s
+    Overall throughput (sum)     : 48.25 tokens/s
+    Batch duration (wall-clock)  : 2.961 s
 
 Scenario: Text Summarization, Concurrency: 2
-  Success: 2, Fails: 0
-  Average TTFT: 4.131 s
-  Average tokens/s per request: 37.94
-  Overall throughput: 56.59 tokens/s
+  Request 1:
+    TTFT          : 2.947 s
+    Latency       : 2.947 s
+    Throughput    : 48.18 tokens/s
+    Prompt tokens : 90, Output tokens: 142
+  Request 2:
+    TTFT          : 4.873 s
+    Latency       : 4.873 s
+    Throughput    : 28.32 tokens/s
+    Prompt tokens : 90, Output tokens: 138
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 3.910 s
+    Average throughput per req   : 38.25 tokens/s
+    Overall throughput (sum)     : 76.51 tokens/s
+    Batch duration (wall-clock)  : 4.897 s
 
 Scenario: Code Generation, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 6.719 s
-  Average tokens/s per request: 70.99
-  Overall throughput: 70.81 tokens/s
+  Request 1:
+    TTFT          : 16.100 s
+    Latency       : 16.100 s
+    Throughput    : 81.05 tokens/s
+    Prompt tokens : 79, Output tokens: 1305
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 16.100 s
+    Average throughput per req   : 81.05 tokens/s
+    Overall throughput (sum)     : 81.05 tokens/s
+    Batch duration (wall-clock)  : 16.120 s
 
 Scenario: Code Generation, Concurrency: 2
-  Success: 2, Fails: 0
-  Average TTFT: 8.582 s
-  Average tokens/s per request: 52.72
-  Overall throughput: 71.97 tokens/s
+Attempt 1 failed: The read operation timed out
+  Request 1:
+    TTFT          : 15.476 s
+    Latency       : 15.476 s
+    Throughput    : 79.99 tokens/s
+    Prompt tokens : 79, Output tokens: 1238
+  Request 2:
+    TTFT          : 17.931 s
+    Latency       : 17.931 s
+    Throughput    : 72.28 tokens/s
+    Prompt tokens : 79, Output tokens: 1296
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 16.703 s
+    Average throughput per req   : 76.14 tokens/s
+    Overall throughput (sum)     : 152.27 tokens/s
+    Batch duration (wall-clock)  : 49.681 s
 
 Scenario: Chatbot, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 2.793 s
-  Average tokens/s per request: 45.11
-  Overall throughput: 44.84 tokens/s
+  Request 1:
+    TTFT          : 5.741 s
+    Latency       : 5.741 s
+    Throughput    : 64.62 tokens/s
+    Prompt tokens : 60, Output tokens: 371
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 5.741 s
+    Average throughput per req   : 64.62 tokens/s
+    Overall throughput (sum)     : 64.62 tokens/s
+    Batch duration (wall-clock)  : 5.759 s
 
 Scenario: Chatbot, Concurrency: 2
-  Success: 2, Fails: 0
-  Average TTFT: 3.659 s
-  Average tokens/s per request: 37.24
-  Overall throughput: 55.14 tokens/s
+  Request 1:
+    TTFT          : 6.790 s
+    Latency       : 6.790 s
+    Throughput    : 66.57 tokens/s
+    Prompt tokens : 60, Output tokens: 452
+  Request 2:
+    TTFT          : 11.256 s
+    Latency       : 11.256 s
+    Throughput    : 30.65 tokens/s
+    Prompt tokens : 60, Output tokens: 345
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 9.023 s
+    Average throughput per req   : 48.61 tokens/s
+    Overall throughput (sum)     : 97.22 tokens/s
+    Batch duration (wall-clock)  : 11.281 s
 
 Scenario: Sentiment Analysis / Classification, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 1.185 s
-  Average tokens/s per request: 5.90
-  Overall throughput: 5.82 tokens/s
+  Request 1:
+    TTFT          : 1.254 s
+    Latency       : 1.254 s
+    Throughput    : 11.96 tokens/s
+    Prompt tokens : 82, Output tokens: 15
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 1.254 s
+    Average throughput per req   : 11.96 tokens/s
+    Overall throughput (sum)     : 11.96 tokens/s
+    Batch duration (wall-clock)  : 1.270 s
 
 Scenario: Sentiment Analysis / Classification, Concurrency: 2
-  Success: 2, Fails: 0
-  Average TTFT: 1.312 s
-  Average tokens/s per request: 7.03
-  Overall throughput: 12.48 tokens/s
+  Request 1:
+    TTFT          : 1.274 s
+    Latency       : 1.274 s
+    Throughput    : 12.56 tokens/s
+    Prompt tokens : 82, Output tokens: 16
+  Request 2:
+    TTFT          : 1.522 s
+    Latency       : 1.522 s
+    Throughput    : 6.57 tokens/s
+    Prompt tokens : 82, Output tokens: 10
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 1.398 s
+    Average throughput per req   : 9.57 tokens/s
+    Overall throughput (sum)     : 19.13 tokens/s
+    Batch duration (wall-clock)  : 1.546 s
 
 Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 1
-  Success: 1, Fails: 0
-  Average TTFT: 6.431 s
-  Average tokens/s per request: 68.88
-  Overall throughput: 68.70 tokens/s
+  Request 1:
+    TTFT          : 12.958 s
+    Latency       : 12.958 s
+    Throughput    : 74.39 tokens/s
+    Prompt tokens : 99, Output tokens: 964
+
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 12.958 s
+    Average throughput per req   : 74.39 tokens/s
+    Overall throughput (sum)     : 74.39 tokens/s
+    Batch duration (wall-clock)  : 12.977 s
 
 Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 2
-Attempt 1 failed: The read operation timed out
-  Success: 2, Fails: 0
-  Average TTFT: 17.819 s
-  Average tokens/s per request: 76.69
-  Overall throughput: 56.62 tokens/s
+  Request 1:
+    TTFT          : 15.063 s
+    Latency       : 15.063 s
+    Throughput    : 74.35 tokens/s
+    Prompt tokens : 99, Output tokens: 1120
+  Request 2:
+    TTFT          : 28.922 s
+    Latency       : 28.922 s
+    Throughput    : 38.86 tokens/s
+    Prompt tokens : 99, Output tokens: 1124
+
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 21.993 s
+    Average throughput per req   : 56.61 tokens/s
+    Overall throughput (sum)     : 113.22 tokens/s
+    Batch duration (wall-clock)  : 28.948 s
 ```
 
 
 
 
+
+
+
+======================        Under developing part              =======================
 
 Before deployment, you need to check which region under your subscription has the quota for deploying AML GPU VMs. If your quota is in a specific region, then the workspace and resource group you select below should also be in the same region to ensure a successful deployment. If none of the regions have a quota, you will need to submit a request on the Azure portal. 
 
