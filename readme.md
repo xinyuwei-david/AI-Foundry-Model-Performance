@@ -62,11 +62,13 @@ pyyaml
 tabulate  
 torch
 transformers
+
 ```
 
 Login to Azure.
 
 ```
+#curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash  
 #az login --use-device
 ```
 
