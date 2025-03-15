@@ -202,308 +202,41 @@ Please enter the full name of the HuggingFace model for tokenizer loading: micro
 Tokenizer loaded successfully: microsoft/phi-4
 ```
 
-**Test result for deploy phi4 on NC24 A100 VM:**
+
+
+Test result analyze：
+
+### **Performance Comparison: Single Request Metrics (TTFT and tokens/s)**
+
+ 
+
+| Scenario                 | Concurrency | VM 1 (1-nc48) TTFT (s) | VM 2 (2-nc24) TTFT (s) | VM 3 (1-nc24) TTFT (s) | VM 1 (1-nc48) tokens/s | VM 2 (2-nc24) tokens/s | VM 3 (1-nc24) tokens/s |
+| ------------------------ | ----------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
+| **Text Generation**      | 1           | 12.473                 | 19.546                 | 19.497                 | 68.07                  | 44.66                  | 44.78                  |
+| **Question Answering**   | 1           | 11.914                 | 15.552                 | 15.943                 | 72.10                  | 44.56                  | 46.04                  |
+| **Translation**          | 1           | 2.499                  | 3.241                  | 3.411                  | 47.62                  | 33.32                  | 34.59                  |
+| **Text Summarization**   | 1           | 2.811                  | 4.630                  | 3.369                  | 50.16                  | 37.36                  | 33.84                  |
+| **Code Generation**      | 1           | 20.441                 | 27.685                 | 26.504                 | 83.12                  | 51.58                  | 52.26                  |
+| **Chatbot**              | 1           | 5.035                  | 9.349                  | 8.366                  | 64.55                  | 43.96                  | 41.24                  |
+| **Sentiment Analysis**   | 1           | 1.009                  | 1.235                  | 1.241                  | 5.95                   | 12.96                  | 12.89                  |
+| **Multi-turn Reasoning** | 1           | 13.148                 | 20.184                 | 19.793                 | 76.44                  | 47.12                  | 47.29                  |
 
 
 
+### **Performance Comparison: Overall Throughput at Concurrency = 2**
 
+ 
 
-
-
-
-
-
-
-
-
-**Test result for deploy phi4 on NC48 A100 VM( (When concurrency exceeds 2, a 429 error will occur.):**
-
-```
-Tokenizer loaded successfully: microsoft/phi-4
-
-Scenario: Text Generation, Concurrency: 1
-  Request 1:
-    TTFT          : 16.574 s
-    Latency       : 16.574 s
-    Throughput    : 73.85 tokens/s
-    Prompt tokens : 132, Output tokens: 1224
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 16.574 s
-    Average throughput per req   : 73.85 tokens/s
-    Overall throughput (sum)     : 73.85 tokens/s
-    Batch duration (wall-clock)  : 16.598 s
-
-Scenario: Text Generation, Concurrency: 2
-  Request 1:
-    TTFT          : 14.147 s
-    Latency       : 14.147 s
-    Throughput    : 71.11 tokens/s
-    Prompt tokens : 132, Output tokens: 1006
-  Request 2:
-    TTFT          : 26.707 s
-    Latency       : 26.707 s
-    Throughput    : 35.95 tokens/s
-    Prompt tokens : 132, Output tokens: 960
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 20.427 s
-    Average throughput per req   : 53.53 tokens/s
-    Overall throughput (sum)     : 107.06 tokens/s
-    Batch duration (wall-clock)  : 26.736 s
-
-Scenario: Question Answering, Concurrency: 1
-  Request 1:
-    TTFT          : 8.325 s
-    Latency       : 8.325 s
-    Throughput    : 69.19 tokens/s
-    Prompt tokens : 114, Output tokens: 576
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 8.325 s
-    Average throughput per req   : 69.19 tokens/s
-    Overall throughput (sum)     : 69.19 tokens/s
-    Batch duration (wall-clock)  : 8.344 s
-
-Scenario: Question Answering, Concurrency: 2
-  Request 1:
-    TTFT          : 8.197 s
-    Latency       : 8.197 s
-    Throughput    : 67.34 tokens/s
-    Prompt tokens : 114, Output tokens: 552
-  Request 2:
-    TTFT          : 16.817 s
-    Latency       : 16.817 s
-    Throughput    : 39.90 tokens/s
-    Prompt tokens : 114, Output tokens: 671
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 12.507 s
-    Average throughput per req   : 53.62 tokens/s
-    Overall throughput (sum)     : 107.24 tokens/s
-    Batch duration (wall-clock)  : 16.842 s
-
-Scenario: Translation, Concurrency: 1
-  Request 1:
-    TTFT          : 2.582 s
-    Latency       : 2.582 s
-    Throughput    : 44.15 tokens/s
-    Prompt tokens : 85, Output tokens: 114
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 2.582 s
-    Average throughput per req   : 44.15 tokens/s
-    Overall throughput (sum)     : 44.15 tokens/s
-    Batch duration (wall-clock)  : 2.600 s
-
-Scenario: Translation, Concurrency: 2
-  Request 1:
-    TTFT          : 5.242 s
-    Latency       : 5.242 s
-    Throughput    : 60.86 tokens/s
-    Prompt tokens : 85, Output tokens: 319
-  Request 2:
-    TTFT          : 6.886 s
-    Latency       : 6.886 s
-    Throughput    : 17.14 tokens/s
-    Prompt tokens : 85, Output tokens: 118
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 6.064 s
-    Average throughput per req   : 39.00 tokens/s
-    Overall throughput (sum)     : 77.99 tokens/s
-    Batch duration (wall-clock)  : 6.911 s
-
-Scenario: Text Summarization, Concurrency: 1
-  Request 1:
-    TTFT          : 2.943 s
-    Latency       : 2.943 s
-    Throughput    : 48.25 tokens/s
-    Prompt tokens : 90, Output tokens: 142
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 2.943 s
-    Average throughput per req   : 48.25 tokens/s
-    Overall throughput (sum)     : 48.25 tokens/s
-    Batch duration (wall-clock)  : 2.961 s
-
-Scenario: Text Summarization, Concurrency: 2
-  Request 1:
-    TTFT          : 2.947 s
-    Latency       : 2.947 s
-    Throughput    : 48.18 tokens/s
-    Prompt tokens : 90, Output tokens: 142
-  Request 2:
-    TTFT          : 4.873 s
-    Latency       : 4.873 s
-    Throughput    : 28.32 tokens/s
-    Prompt tokens : 90, Output tokens: 138
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 3.910 s
-    Average throughput per req   : 38.25 tokens/s
-    Overall throughput (sum)     : 76.51 tokens/s
-    Batch duration (wall-clock)  : 4.897 s
-
-Scenario: Code Generation, Concurrency: 1
-  Request 1:
-    TTFT          : 16.100 s
-    Latency       : 16.100 s
-    Throughput    : 81.05 tokens/s
-    Prompt tokens : 79, Output tokens: 1305
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 16.100 s
-    Average throughput per req   : 81.05 tokens/s
-    Overall throughput (sum)     : 81.05 tokens/s
-    Batch duration (wall-clock)  : 16.120 s
-
-Scenario: Code Generation, Concurrency: 2
-Attempt 1 failed: The read operation timed out
-  Request 1:
-    TTFT          : 15.476 s
-    Latency       : 15.476 s
-    Throughput    : 79.99 tokens/s
-    Prompt tokens : 79, Output tokens: 1238
-  Request 2:
-    TTFT          : 17.931 s
-    Latency       : 17.931 s
-    Throughput    : 72.28 tokens/s
-    Prompt tokens : 79, Output tokens: 1296
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 16.703 s
-    Average throughput per req   : 76.14 tokens/s
-    Overall throughput (sum)     : 152.27 tokens/s
-    Batch duration (wall-clock)  : 49.681 s
-
-Scenario: Chatbot, Concurrency: 1
-  Request 1:
-    TTFT          : 5.741 s
-    Latency       : 5.741 s
-    Throughput    : 64.62 tokens/s
-    Prompt tokens : 60, Output tokens: 371
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 5.741 s
-    Average throughput per req   : 64.62 tokens/s
-    Overall throughput (sum)     : 64.62 tokens/s
-    Batch duration (wall-clock)  : 5.759 s
-
-Scenario: Chatbot, Concurrency: 2
-  Request 1:
-    TTFT          : 6.790 s
-    Latency       : 6.790 s
-    Throughput    : 66.57 tokens/s
-    Prompt tokens : 60, Output tokens: 452
-  Request 2:
-    TTFT          : 11.256 s
-    Latency       : 11.256 s
-    Throughput    : 30.65 tokens/s
-    Prompt tokens : 60, Output tokens: 345
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 9.023 s
-    Average throughput per req   : 48.61 tokens/s
-    Overall throughput (sum)     : 97.22 tokens/s
-    Batch duration (wall-clock)  : 11.281 s
-
-Scenario: Sentiment Analysis / Classification, Concurrency: 1
-  Request 1:
-    TTFT          : 1.254 s
-    Latency       : 1.254 s
-    Throughput    : 11.96 tokens/s
-    Prompt tokens : 82, Output tokens: 15
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 1.254 s
-    Average throughput per req   : 11.96 tokens/s
-    Overall throughput (sum)     : 11.96 tokens/s
-    Batch duration (wall-clock)  : 1.270 s
-
-Scenario: Sentiment Analysis / Classification, Concurrency: 2
-  Request 1:
-    TTFT          : 1.274 s
-    Latency       : 1.274 s
-    Throughput    : 12.56 tokens/s
-    Prompt tokens : 82, Output tokens: 16
-  Request 2:
-    TTFT          : 1.522 s
-    Latency       : 1.522 s
-    Throughput    : 6.57 tokens/s
-    Prompt tokens : 82, Output tokens: 10
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 1.398 s
-    Average throughput per req   : 9.57 tokens/s
-    Overall throughput (sum)     : 19.13 tokens/s
-    Batch duration (wall-clock)  : 1.546 s
-
-Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 1
-  Request 1:
-    TTFT          : 12.958 s
-    Latency       : 12.958 s
-    Throughput    : 74.39 tokens/s
-    Prompt tokens : 99, Output tokens: 964
-
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 12.958 s
-    Average throughput per req   : 74.39 tokens/s
-    Overall throughput (sum)     : 74.39 tokens/s
-    Batch duration (wall-clock)  : 12.977 s
-
-Scenario: Multi-turn Reasoning / Complex Tasks, Concurrency: 2
-  Request 1:
-    TTFT          : 15.063 s
-    Latency       : 15.063 s
-    Throughput    : 74.35 tokens/s
-    Prompt tokens : 99, Output tokens: 1120
-  Request 2:
-    TTFT          : 28.922 s
-    Latency       : 28.922 s
-    Throughput    : 38.86 tokens/s
-    Prompt tokens : 99, Output tokens: 1124
-
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 21.993 s
-    Average throughput per req   : 56.61 tokens/s
-    Overall throughput (sum)     : 113.22 tokens/s
-    Batch duration (wall-clock)  : 28.948 s
-```
-
-
+| Scenario                 | VM 1 (1-nc48) Total TTFT (s) | VM 2 (2-nc24) Total TTFT (s) | VM 3 (1-nc24) Total TTFT (s) | VM 1 (1-nc48) Total tokens/s | VM 2 (2-nc24) Total tokens/s | VM 3 (1-nc24) Total tokens/s |
+| ------------------------ | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- |
+| **Text Generation**      | 19.291                       | 19.978                       | 24.576                       | 110.94                       | 90.13                        | 79.26                        |
+| **Question Answering**   | 14.165                       | 15.906                       | 21.774                       | 109.94                       | 90.87                        | 66.67                        |
+| **Translation**          | 3.341                        | 4.513                        | 10.924                       | 76.45                        | 53.95                        | 68.54                        |
+| **Text Summarization**   | 3.494                        | 3.664                        | 6.317                        | 77.38                        | 69.60                        | 59.45                        |
+| **Code Generation**      | 16.693                       | 26.310                       | 27.772                       | 162.72                       | 104.37                       | 53.22                        |
+| **Chatbot**              | 8.688                        | 9.537                        | 12.064                       | 100.09                       | 87.67                        | 67.23                        |
+| **Sentiment Analysis**   | 1.251                        | 1.157                        | 1.229                        | 19.99                        | 20.09                        | 16.60                        |
+| **Multi-turn Reasoning** | 20.233                       | 23.655                       | 22.880                       | 110.84                       | 94.47                        | 88.79                        |
 
 
 
