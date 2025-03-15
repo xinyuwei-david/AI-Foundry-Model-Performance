@@ -62,7 +62,6 @@ pyyaml
 tabulate  
 torch
 transformers
-
 ```
 
 Login to Azure.
@@ -84,6 +83,14 @@ Next, you need to execute a script for end-to-end model deployment. This script 
 ```
 #python deploymodels-linux.py
 ```
+
+If you do test on powershell,  you should use:
+
+```
+#python deploymodels-powershell.py
+```
+
+
 
 The deploy process:
 
