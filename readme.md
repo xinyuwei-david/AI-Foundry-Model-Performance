@@ -213,11 +213,9 @@ Tokenizer loaded successfully: microsoft/phi-4
 
 
 
-Test result analyze：
+**Test result analyze：**
 
-### **Performance Comparison: Single Request Metrics (TTFT and tokens/s)**
-
- 
+Concurrency = 1
 
 | Scenario                 | Concurrency | VM 1 (1-nc48) TTFT (s) | VM 2 (2-nc24) TTFT (s) | VM 3 (1-nc24) TTFT (s) | VM 1 (1-nc48) tokens/s | VM 2 (2-nc24) tokens/s | VM 3 (1-nc24) tokens/s |
 | ------------------------ | ----------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
@@ -230,11 +228,7 @@ Test result analyze：
 | **Sentiment Analysis**   | 1           | 1.009                  | 1.235                  | 1.241                  | 5.95                   | 12.96                  | 12.89                  |
 | **Multi-turn Reasoning** | 1           | 13.148                 | 20.184                 | 19.793                 | 76.44                  | 47.12                  | 47.29                  |
 
-
-
-### **Performance Comparison: Overall Throughput at Concurrency = 2**
-
- 
+###### Concurrency = 2
 
 | Scenario                 | VM 1 (1-nc48) Total TTFT (s) | VM 2 (2-nc24) Total TTFT (s) | VM 3 (1-nc24) Total TTFT (s) | VM 1 (1-nc48) Total tokens/s | VM 2 (2-nc24) Total tokens/s | VM 3 (1-nc24) Total tokens/s |
 | ------------------------ | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- |
@@ -246,6 +240,79 @@ Test result analyze：
 | **Chatbot**              | 8.688                        | 9.537                        | 12.064                       | 100.09                       | 87.67                        | 67.23                        |
 | **Sentiment Analysis**   | 1.251                        | 1.157                        | 1.229                        | 19.99                        | 20.09                        | 16.60                        |
 | **Multi-turn Reasoning** | 20.233                       | 23.655                       | 22.880                       | 110.84                       | 94.47                        | 88.79                        |
+
+Full original test results are here:
+
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/phi4-test-results.md*
+
+
+
+#### Phi-3.5-vision-instruct Series test
+
+Deploy process:
+
+```
+(aml_env) PS C:\Users\xinyuwei> python .\deploy6.py
+========== Enter Basic Information ==========
+Subscription ID: 53039473-9bbd-499d-90d7-d046d4fa63b6
+Resource Group: AIrg1
+Workspace Name: aml-david-2
+
+========== Model Name Examples ==========
+ - Phi-4
+ - Phi-3.5-vision-instruct
+ - financial-reports-analysis
+ - databricks-dbrx-instruct
+ - Llama-3.2-11B-Vision-Instruct
+ - Phi-3-small-8k-instruct
+ - Phi-3-vision-128k-instruct
+ - microsoft-swinv2-base-patch4-window12-192-22k
+ - mistralai-Mixtral-8x7B-Instruct-v01
+ - Muse
+ - openai-whisper-large
+ - snowflake-arctic-base
+ - Nemotron-3-8B-Chat-4k-SteerLM
+ - stabilityai-stable-diffusion-xl-refiner-1-0
+ - microsoft-Orca-2-7b
+==========================================
+
+Enter the model name to search (e.g., 'Phi-4'): Phi-3.5-vision-instruct
+
+========== Matching Models ==========
+Name                     Description    Latest version
+-----------------------  -------------  ----------------
+Phi-3.5-vision-instruct                 2
+
+Note: The above table is for reference only. Enter the exact model name below:
+Enter full model name (case-sensitive): Phi-3.5-vision-instruct
+Enter model version (e.g., 7): 2
+2025-03-15 14:50:17,839 - INFO - User-specified model: name='Phi-3.5-vision-instruct', version='2'
+
+========== GPU Quota (Limit > 1) ==========
+Region,ResourceName,LocalizedValue,Usage,Limit
+westeurope,standardNCADSH100v5Family,,0,100
+polandcentral,standardNCADSA100v4Family,,0,100
+
+========== A100 / H100 SKU Information ==========
+SKU Name                            GPU Count  GPU Memory (VRAM)    CPU Cores
+----------------------------------- ---------- -------------------- ----------
+Standard_NC24ads_A100_v4            1          80 GB                24
+Standard_NC48ads_A100_v4            2          160 GB (2x80 GB)     48
+Standard_NC96ads_A100_v4            4          320 GB (4x80 GB)     96
+Standard_NC40ads_H100_v5            1          80 GB                40
+Standard_NC80ads_H100_v5            2          160 GB (2x80 GB)     80
+
+Available SKUs:
+ - Standard_NC24ads_A100_v4
+ - Standard_NC48ads_A100_v4
+ - Standard_NC96ads_A100_v4
+ - Standard_NC40ads_H100_v5
+ - Standard_NC80ads_H100_v5
+
+Enter the SKU to use: Standard_NC24ads_A100_v4
+Enter the number of instances (integer): 1
+2025-03-15 14:58:27,679 - INFO - Model ID: azureml://registries/AzureML/models/Phi-3.5-vision-instruct/versions/2
+```
 
 
 
