@@ -34,24 +34,24 @@ Next, we will use a Python script to automate the deployment of the model and us
 
 ### Fast Deploy AI Model on AML Model Catalog via Azure GPU VM
 
-```
-| Model Name on AML                    | Model on HF                                      | Azure GPU VM SKU                                      |  
-|--------------------------------------|--------------------------------------------------|-------------------------------------------------------|  
-| Phi-4                                | microsoft/phi-4                                  | NC24/48/96 A100                                       |  
-| Phi-3.5-vision-instruct              | microsoft/Phi-3.5-vision-instruct                | NC24/48/96 A100                                       |  
-| financial-reports-analysis           | microsoft/wham                                   | NC24/48/96 A100                                       |  
-| Llama-3.2-11B-Vision-Instruct        | meta-llama/Llama-3.2-11B-Vision-Instruct         | NC24/48/96 A100                                       |  
-| Phi-3-small-8k-instruct              | microsoft/Phi-3-small-8k-instruct                | NC24/48/96 A100                                       |  
-| Phi-3-vision-128k-instruct           | microsoft/Phi-3-vision-128k-instruct             | NC48 A100 or NC96 A100                                |  
-| microsoft-swinv2-base-patch4-window12-192-22k | microsoft/swinv2-base-patch4-window12-192-22k    | NC24/48/96 A100                                       |  
-| mistralai-Mixtral-8x7B-Instruct-v01  | mistralai/Mixtral-8x7B-Instruct-v0.1             | NC24/48/96 A100                                       |  
-| Muse                                 | -                                                | NC24/48/96 A100                                       |  
-| openai-whisper-large                 | openai/whisper-large                             | NC48 A100 or NC96 A100                                |  
-| snowflake-arctic-base                | -                                                | NC24/48/96 A100                                       |  
-| Nemotron-3-8B-Chat-4k-SteerLM        | -                                                | NC24/48/96 A100                                       |  
-| stabilityai-stable-diffusion-xl-refiner-1-0 | stabilityai/stable-diffusion-xl-refiner-1-0    | Standard_ND96amsr_A100_v4 or Standard_ND96asr_v4      |  
-| microsoft-Orca-2-7b                  | -                                                | NC24/48/96 A100                                       |  
-```
+By now, the AML names tested in this repo, their full names on Hugging Face, and the Azure GPU VM SKUs that can be deployed on AML are as follows: 
+
+| **Model Name on AML**                         | **Model on HF**                               | **Azure GPU VM SKU**                             |
+| --------------------------------------------- | --------------------------------------------- | ------------------------------------------------ |
+| Phi-4                                         | microsoft/phi-4                               | NC24/48/96 A100                                  |
+| Phi-3.5-vision-instruct                       | microsoft/Phi-3.5-vision-instruct             | NC24/48/96 A100                                  |
+| financial-reports-analysis                    |                                               | NC24/48/96 A100                                  |
+| Llama-3.2-11B-Vision-Instruct                 | meta-llama/Llama-3.2-11B-Vision-Instruct      | NC24/48/96 A100                                  |
+| Phi-3-small-8k-instruct                       | microsoft/Phi-3-small-8k-instruct             | NC24/48/96 A100                                  |
+| Phi-3-vision-128k-instruct                    | microsoft/Phi-3-vision-128k-instruct          | NC48 A100 or NC96 A100                           |
+| microsoft-swinv2-base-patch4-window12-192-22k | microsoft/swinv2-base-patch4-window12-192-22k | NC24/48/96 A100                                  |
+| mistralai-Mixtral-8x7B-Instruct-v01           | mistralai/Mixtral-8x7B-Instruct-v0.1          | NC24/48/96 A100                                  |
+| Muse                                          | microsoft/wham                                | NC24/48/96 A100                                  |
+| openai-whisper-large                          | openai/whisper-large                          | NC48 A100 or NC96 A100                           |
+| snowflake-arctic-base                         | Snowflake/snowflake-arctic-base               | NC24/48/96 A100                                  |
+| Nemotron-3-8B-Chat-4k-SteerLM                 | nvidia/nemotron-3-8b-chat-4k-steerlm          | NC24/48/96 A100                                  |
+| stabilityai-stable-diffusion-xl-refiner-1-0   | stabilityai/stable-diffusion-xl-refiner-1.0   | Standard_ND96amsr_A100_v4 or Standard_ND96asr_v4 |
+| microsoft-Orca-2-7b                           | microsoft/Orca-2-7b                           | NC24/48/96 A100                                  |
 
 
 
@@ -270,83 +270,23 @@ Full original test results are here:
 
 #### Phi-3.5-vision-instruct Series test
 
-Deploy process:
-
 ```
-(aml_env) PS C:\Users\xinyuwei> python .\deploy6.py
-========== Enter Basic Information ==========
-Subscription ID: 53039473-9bbd-499d-90d7-d046d4fa63b6
-Resource Group: AIrg1
-Workspace Name: aml-david-2
-
-========== Model Name Examples ==========
- - Phi-4
- - Phi-3.5-vision-instruct
- - financial-reports-analysis
- - databricks-dbrx-instruct
- - Llama-3.2-11B-Vision-Instruct
- - Phi-3-small-8k-instruct
- - Phi-3-vision-128k-instruct
- - microsoft-swinv2-base-patch4-window12-192-22k
- - mistralai-Mixtral-8x7B-Instruct-v01
- - Muse
- - openai-whisper-large
- - snowflake-arctic-base
- - Nemotron-3-8B-Chat-4k-SteerLM
- - stabilityai-stable-diffusion-xl-refiner-1-0
- - microsoft-Orca-2-7b
-==========================================
-
-Enter the model name to search (e.g., 'Phi-4'): Phi-3.5-vision-instruct
-
-========== Matching Models ==========
-Name                     Description    Latest version
------------------------  -------------  ----------------
-Phi-3.5-vision-instruct                 2
-
-Note: The above table is for reference only. Enter the exact model name below:
-Enter full model name (case-sensitive): Phi-3.5-vision-instruct
-Enter model version (e.g., 7): 2
-2025-03-15 14:50:17,839 - INFO - User-specified model: name='Phi-3.5-vision-instruct', version='2'
-
-========== GPU Quota (Limit > 1) ==========
-Region,ResourceName,LocalizedValue,Usage,Limit
-westeurope,standardNCADSH100v5Family,,0,100
-polandcentral,standardNCADSA100v4Family,,0,100
-
-========== A100 / H100 SKU Information ==========
-SKU Name                            GPU Count  GPU Memory (VRAM)    CPU Cores
------------------------------------ ---------- -------------------- ----------
-Standard_NC24ads_A100_v4            1          80 GB                24
-Standard_NC48ads_A100_v4            2          160 GB (2x80 GB)     48
-Standard_NC96ads_A100_v4            4          320 GB (4x80 GB)     96
-Standard_NC40ads_H100_v5            1          80 GB                40
-Standard_NC80ads_H100_v5            2          160 GB (2x80 GB)     80
-
-Available SKUs:
- - Standard_NC24ads_A100_v4
- - Standard_NC48ads_A100_v4
- - Standard_NC96ads_A100_v4
- - Standard_NC40ads_H100_v5
- - Standard_NC80ads_H100_v5
-
-Enter the SKU to use: Standard_NC24ads_A100_v4
-Enter the number of instances (integer): 1
-2025-03-15 14:58:27,679 - INFO - Model ID: azureml://registries/AzureML/models/Phi-3.5-vision-instruct/versions/2
+#python press-phi3v-20250315.py
 ```
 
-After 4 minutes later, you could get the results:
+Test result analyze：
 
-```
------ Deployment Information -----
-ENDPOINT_NAME=custom-endpoint-1742021907
-SCORING_URI=https://custom-endpoint-1742021907.polandcentral.inference.ml.azure.com/score
-PRIMARY_KEY=9Eo9xzYpxkY6KZOaSJT5QPeK9OaTBTW8SuMhz6yCfjPJ3yKS0PJeJQQJ99BCAAAAAAAAAAAAINFRAZML1W5R
-SECONDARY_KEY=AdWJLPALd6W0YBYM0i8pBjUf3CCnYm9RXV4l6Z8X90ucnCLfRnKgJQQJ99BCAAAAAAAAAAAAINFRAZML1oPs
-(aml_env) PS C:\Users\xinyuwei>
-```
+| **Scenario**         | **Concurrency** | **VM 1 (1-NC48) TTFT (s)** | **VM 2 (2-NC24) TTFT (s)** | **VM 3 (1-NC24) TTFT (s)** | **VM 1 (1-NC48) tokens/s per req** | **VM 2 (2-NC24) tokens/s per req** | **VM 3 (1-NC24) tokens/s per req** | **VM 1 (1-NC48) Overall Throughput** | **VM 2 (2-NC24) Overall Throughput** | **VM 3 (1-NC24) Overall Throughput** |
+| -------------------- | --------------- | -------------------------- | -------------------------- | -------------------------- | ---------------------------------- | ---------------------------------- | ---------------------------------- | ------------------------------------ | ------------------------------------ | ------------------------------------ |
+| Single Request       | 1               | 5.687                      | 3.963                      | 4.029                      | 40.62                              | 34.82                              | 37.23                              | 40.62                                | 34.82                                | 37.23                                |
+| Low Concurrency      | 2               | 6.791                      | 5.303                      | 3.894                      | 30.89                              | 25.57                              | 35.02                              | 61.78                                | 51.13                                | 70.05                                |
+| Moderate Concurrency | 3               | 5.873                      | 5.257                      | 5.409                      | 24.58                              | 31.57                              | 24.58                              | 73.74                                | 94.71                                | 73.74                                |
+| Higher Concurrency   | 4               | 5.453                      | 5.553                      | 5.823                      | 25.99                              | 27.50                              | 30.01                              | 77.96                                | 110.02                               | 150.03                               |
+| Peak Concurrency     | 5               | 5.896                      | 6.466                      | 5.823                      | 28.77                              | 29.06                              | 30.01                              | 86.31                                | 145.30*                              | 150.03                               |
 
+Full original test results are here:
 
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/phi3-v-results.md*
 
 
 
@@ -354,7 +294,7 @@ SECONDARY_KEY=AdWJLPALd6W0YBYM0i8pBjUf3CCnYm9RXV4l6Z8X90ucnCLfRnKgJQQJ99BCAAAAAA
 
 
 
-### Performance test on Azure AI model inference
+## Performance test on Azure AI model inference
 
 Azure AI model inference has a default quota. If you feel that the quota for the model is insufficient, you can apply for an increase separately. 
 
@@ -534,8 +474,6 @@ Attempt 1 failed: Response ended prematurely
 **Overall performance:**
 
 The overall throughput averages 735.12 tokens/s, with a P90 of 1184.06 tokens/s. Full test results are as follows:
-
-
 
 ```
 >>> Testing Concurrency: 300, Prompt Length: 128, Total Requests: 20 <<<
@@ -1008,5 +946,3 @@ Message: The operation was timeout.
 
 
 
-
-## 
