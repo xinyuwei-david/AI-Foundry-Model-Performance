@@ -1,3 +1,20 @@
+======Backup cli for developing=============
+
+```
+(aml_env) PS C:\Users\xinyuwei> az ml online-endpoint show --name "custom-endpoint-1741852362" --resource-group "AIrg1" --workspace-name "aml-david-1" --subscription "53039473-9bbd-499d-90d7-d046d4fa63b6" --query "scoring_uri" --output tsv
+https://custom-endpoint-1741852362.polandcentral.inference.ml.azure.com/score
+(aml_env) PS C:\Users\xinyuwei> az ml online-endpoint get-credentials --name "custom-endpoint-1741852362" --resource-group "AIrg1" --workspace-name "aml-david-1" --subscription "53039473-9bbd-499d-90d7-d046d4fa63b6" --output json
+{
+  "primaryKey": "5RegBW6MoJ40EPa3FmAqCn2wx7tJnKEimWvoKkATDrGBx1qKcHtYJQQJ99BCAAAAAAAAAAAAINFRAZMLyndR",
+  "secondaryKey": "7H3hhLy65SKSikS5hlpsVMxCaTyI40WTTF7sukK5p3OHlBeRAPegJQQJ99BCAAAAAAAAAAAAINFRAZML20M1"
+}
+(aml_env) PS C:\Users\xinyuwei>
+```
+
+
+
+
+
 Before deployment, you need to check which region under your subscription has the quota for deploying AML GPU VMs. If your quota is in a specific region, then the workspace and resource group you select below should also be in the same region to ensure a successful deployment. If none of the regions have a quota, you will need to submit a request on the Azure portal. 
 
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/16.png)
