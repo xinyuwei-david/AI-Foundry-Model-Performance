@@ -279,13 +279,419 @@ Full original test results are here:
 
 **financial-reports-analysis Series test**
 
+```
+#python press-phi3v-20250315.py
+```
+
+Test result analyze：
+
+```
+(base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc48.txt |grep -A 7 "Summary for concurrency"
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 8.347 s
+    Average throughput per req   : 74.76 tokens/s
+    Overall throughput (sum)     : 74.76 tokens/s
+    Batch duration (wall-clock)  : 8.352 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 16.248 s
+    Average throughput per req   : 63.78 tokens/s
+    Overall throughput (sum)     : 127.56 tokens/s
+    Batch duration (wall-clock)  : 21.386 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 13.939 s
+    Average throughput per req   : 65.47 tokens/s
+    Overall throughput (sum)     : 130.95 tokens/s
+    Batch duration (wall-clock)  : 18.746 s
+
+--
+  Summary for concurrency 4:
+    Successful requests          : 2
+    Failed requests              : 2
+    Average TTFT per request     : 17.377 s
+    Average throughput per req   : 60.21 tokens/s
+    Overall throughput (sum)     : 120.42 tokens/s
+    Batch duration (wall-clock)  : 22.402 s
+
+--
+  Summary for concurrency 5:
+    Successful requests          : 2
+    Failed requests              : 3
+    Average TTFT per request     : 14.266 s
+    Average throughput per req   : 65.39 tokens/s
+    Overall throughput (sum)     : 130.77 tokens/s
+    Batch duration (wall-clock)  : 18.840 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 8.835 s
+    Average throughput per req   : 79.23 tokens/s
+    Overall throughput (sum)     : 79.23 tokens/s
+    Batch duration (wall-clock)  : 8.839 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 14.554 s
+    Average throughput per req   : 62.45 tokens/s
+    Overall throughput (sum)     : 124.91 tokens/s
+    Batch duration (wall-clock)  : 19.864 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 15.182 s
+    Average throughput per req   : 60.29 tokens/s
+    Overall throughput (sum)     : 120.58 tokens/s
+    Batch duration (wall-clock)  : 19.113 s
+
+--
+  Summary for concurrency 4:
+    Successful requests          : 2
+    Failed requests              : 2
+    Average TTFT per request     : 17.206 s
+    Average throughput per req   : 62.18 tokens/s
+    Overall throughput (sum)     : 124.37 tokens/s
+    Batch duration (wall-clock)  : 20.955 s
+
+--
+  Summary for concurrency 5:
+    Successful requests          : 2
+    Failed requests              : 3
+    Average TTFT per request     : 15.526 s
+    Average throughput per req   : 61.92 tokens/s
+    Overall throughput (sum)     : 123.84 tokens/s
+    Batch duration (wall-clock)  : 19.806 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 13.329 s
+    Average throughput per req   : 86.73 tokens/s
+    Overall throughput (sum)     : 86.73 tokens/s
+    Batch duration (wall-clock)  : 13.334 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 14.185 s
+    Average throughput per req   : 63.47 tokens/s
+    Overall throughput (sum)     : 126.93 tokens/s
+    Batch duration (wall-clock)  : 19.196 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 15.376 s
+    Average throughput per req   : 61.93 tokens/s
+    Overall throughput (sum)     : 123.86 tokens/s
+    Batch duration (wall-clock)  : 20.004 s
+
+--
+  Summary for concurrency 4:
+    Successful requests          : 2
+    Failed requests              : 2
+    Average TTFT per request     : 15.405 s
+    Average throughput per req   : 64.14 tokens/s
+    Overall throughput (sum)     : 128.29 tokens/s
+    Batch duration (wall-clock)  : 20.872 s
+
+--
+  Summary for concurrency 5:
+    Successful requests          : 2
+    Failed requests              : 3
+    Average TTFT per request     : 14.909 s
+    Average throughput per req   : 63.94 tokens/s
+    Overall throughput (sum)     : 127.89 tokens/s
+    Batch duration (wall-clock)  : 19.572 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 8.002 s
+    Average throughput per req   : 81.48 tokens/s
+    Overall throughput (sum)     : 81.48 tokens/s
+    Batch duration (wall-clock)  : 8.006 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 16.834 s
+    Average throughput per req   : 64.28 tokens/s
+    Overall throughput (sum)     : 128.56 tokens/s
+    Batch duration (wall-clock)  : 21.731 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 11.225 s
+    Average throughput per req   : 60.16 tokens/s
+    Overall throughput (sum)     : 120.33 tokens/s
+    Batch duration (wall-clock)  : 14.274 s
+
+--
+  Summary for concurrency 4:
+    Successful requests          : 2
+    Failed requests              : 2
+    Average TTFT per request     : 13.520 s
+    Average throughput per req   : 64.58 tokens/s
+    Overall throughput (sum)     : 129.16 tokens/s
+    Batch duration (wall-clock)  : 17.599 s
+
+--
+  Summary for concurrency 5:
+    Successful requests          : 2
+    Failed requests              : 3
+    Average TTFT per request     : 13.541 s
+    Average throughput per req   : 59.00 tokens/s
+    Overall throughput (sum)     : 118.00 tokens/s
+    Batch duration (wall-clock)  : 16.613 s
+
+```
 
 
 
+```
+(base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-2-nc24.txt |grep -A 7 "Summary for concurrency"
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 9.659 s
+    Average throughput per req   : 62.63 tokens/s
+    Overall throughput (sum)     : 62.63 tokens/s
+    Batch duration (wall-clock)  : 9.664 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 11.663 s
+    Average throughput per req   : 65.23 tokens/s
+    Overall throughput (sum)     : 130.46 tokens/s
+    Batch duration (wall-clock)  : 13.617 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 3
+    Failed requests              : 0
+    Average TTFT per request     : 20.658 s
+    Average throughput per req   : 55.25 tokens/s
+    Overall throughput (sum)     : 165.74 tokens/s
+    Batch duration (wall-clock)  : 28.926 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 16.593 s
+    Average throughput per req   : 53.76 tokens/s
+    Overall throughput (sum)     : 53.76 tokens/s
+    Batch duration (wall-clock)  : 16.597 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 20.202 s
+    Average throughput per req   : 50.54 tokens/s
+    Overall throughput (sum)     : 101.09 tokens/s
+    Batch duration (wall-clock)  : 26.650 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 3
+    Failed requests              : 0
+    Average TTFT per request     : 19.131 s
+    Average throughput per req   : 58.53 tokens/s
+    Overall throughput (sum)     : 175.59 tokens/s
+    Batch duration (wall-clock)  : 29.766 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 12.825 s
+    Average throughput per req   : 66.27 tokens/s
+    Overall throughput (sum)     : 66.27 tokens/s
+    Batch duration (wall-clock)  : 12.829 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 12.664 s
+    Average throughput per req   : 67.27 tokens/s
+    Overall throughput (sum)     : 134.54 tokens/s
+    Batch duration (wall-clock)  : 13.328 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 3
+    Failed requests              : 0
+    Average TTFT per request     : 17.639 s
+    Average throughput per req   : 59.10 tokens/s
+    Overall throughput (sum)     : 177.30 tokens/s
+    Batch duration (wall-clock)  : 25.248 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 10.546 s
+    Average throughput per req   : 68.65 tokens/s
+    Overall throughput (sum)     : 68.65 tokens/s
+    Batch duration (wall-clock)  : 10.550 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 16.594 s
+    Average throughput per req   : 48.65 tokens/s
+    Overall throughput (sum)     : 97.31 tokens/s
+    Batch duration (wall-clock)  : 20.664 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 3
+    Failed requests              : 0
+    Average TTFT per request     : 16.779 s
+    Average throughput per req   : 56.99 tokens/s
+    Overall throughput (sum)     : 170.98 tokens/s
+    Batch duration (wall-clock)  : 23.796 s
+
+```
 
 
 
+```
+(base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc24.txt |grep -A 7 "Summary for concurrency"
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 13.339 s
+    Average throughput per req   : 71.15 tokens/s
+    Overall throughput (sum)     : 71.15 tokens/s
+    Batch duration (wall-clock)  : 13.344 s
 
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 21.675 s
+    Average throughput per req   : 49.30 tokens/s
+    Overall throughput (sum)     : 98.61 tokens/s
+    Batch duration (wall-clock)  : 27.741 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 19.226 s
+    Average throughput per req   : 52.44 tokens/s
+    Overall throughput (sum)     : 104.88 tokens/s
+    Batch duration (wall-clock)  : 26.149 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 14.241 s
+    Average throughput per req   : 69.38 tokens/s
+    Overall throughput (sum)     : 69.38 tokens/s
+    Batch duration (wall-clock)  : 14.245 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 17.212 s
+    Average throughput per req   : 51.91 tokens/s
+    Overall throughput (sum)     : 103.82 tokens/s
+    Batch duration (wall-clock)  : 23.023 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 19.061 s
+    Average throughput per req   : 52.79 tokens/s
+    Overall throughput (sum)     : 105.58 tokens/s
+    Batch duration (wall-clock)  : 25.372 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 10.762 s
+    Average throughput per req   : 65.88 tokens/s
+    Overall throughput (sum)     : 65.88 tokens/s
+    Batch duration (wall-clock)  : 10.765 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 20.992 s
+    Average throughput per req   : 52.80 tokens/s
+    Overall throughput (sum)     : 105.59 tokens/s
+    Batch duration (wall-clock)  : 28.139 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 19.811 s
+    Average throughput per req   : 47.85 tokens/s
+    Overall throughput (sum)     : 95.71 tokens/s
+    Batch duration (wall-clock)  : 24.749 s
+
+--
+  Summary for concurrency 1:
+    Successful requests          : 1
+    Failed requests              : 0
+    Average TTFT per request     : 10.182 s
+    Average throughput per req   : 66.19 tokens/s
+    Overall throughput (sum)     : 66.19 tokens/s
+    Batch duration (wall-clock)  : 10.187 s
+
+--
+  Summary for concurrency 2:
+    Successful requests          : 2
+    Failed requests              : 0
+    Average TTFT per request     : 18.303 s
+    Average throughput per req   : 52.05 tokens/s
+    Overall throughput (sum)     : 104.10 tokens/s
+    Batch duration (wall-clock)  : 24.445 s
+
+--
+  Summary for concurrency 3:
+    Successful requests          : 2
+    Failed requests              : 1
+    Average TTFT per request     : 11.118 s
+    Average throughput per req   : 48.83 tokens/s
+    Overall throughput (sum)     : 97.65 tokens/s
+    Batch duration (wall-clock)  : 14.555 s
+```
 
 
 
