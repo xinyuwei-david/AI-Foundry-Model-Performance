@@ -275,7 +275,9 @@ Full original test results are here:
 | Multi-turn Reasoning / Complex Tasks | 1           | 16.343                 | 26.220                 | 11.602                 | 72.45                  | 73.91                  | 72.23                  |
 | Multi-turn Reasoning / Complex Tasks | 2           | 16.808                 | 12.774                 | 18.725                 | 149.10                 | 145.65                 | 136.84                 |
 
+Full original test results are here:
 
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/Phi-3-small-8k-instruct-test-results.md*
 
 
 
