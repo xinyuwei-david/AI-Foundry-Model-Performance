@@ -83,6 +83,7 @@ pyyaml
 tabulate  
 torch
 transformers
+tiktoken
 ```
 
 Login to Azure.
@@ -207,7 +208,7 @@ Before officially starting the test, you need to log in to HF on your terminal.
 huggingface-cli  login
 ```
 
-#### Phi-4 Series test
+#### Phi Text2Text Series 
 
 **Run the test script:**
 
@@ -219,9 +220,9 @@ Please enter the full name of the HuggingFace model for tokenizer loading: micro
 Tokenizer loaded successfully: microsoft/phi-4
 ```
 
-
-
 **Test result analyze：**
+
+**microsoft/phi-4**
 
 Concurrency = 1
 
@@ -252,6 +253,29 @@ Concurrency = 1
 Full original test results are here:
 
 *https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/phi4-test-results.md*
+
+**microsoft/Phi-3-small-8k-instruct**
+
+| Scenario                             | Concurrency | VM 1 (1-nc48) TTFT (s) | VM 2 (2-nc24) TTFT (s) | VM 3 (1-nc24) TTFT (s) | VM 1 (1-nc48) tokens/s | VM 2 (2-nc24) tokens/s | VM 3 (1-nc24) tokens/s |
+| ------------------------------------ | ----------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
+| Text Generation                      | 1           | 9.530                  | 9.070                  | 9.727                  | 68.41                  | 69.79                  | 66.31                  |
+| Text Generation                      | 2           | 12.526                 | 13.902                 | 15.290                 | 105.02                 | 101.46                 | 92.11                  |
+| Question Answering                   | 1           | 6.460                  | 7.401                  | 6.041                  | 65.64                  | 68.50                  | 65.22                  |
+| Question Answering                   | 2           | 8.282                  | 6.851                  | 10.502                 | 89.15                  | 135.39                 | 103.23                 |
+| Translation                          | 1           | 6.983                  | 8.552                  | 5.640                  | 67.02                  | 69.57                  | 66.13                  |
+| Translation                          | 2           | 3.416                  | 5.951                  | 7.472                  | 73.14                  | 117.58                 | 82.20                  |
+| Text Summarization                   | 1           | 2.570                  | 2.690                  | 2.004                  | 44.36                  | 55.39                  | 42.42                  |
+| Text Summarization                   | 2           | 3.567                  | 3.197                  | 3.705                  | 75.13                  | 77.44                  | 81.46                  |
+| Code Generation                      | 1           | 5.757                  | 1.991                  | 13.481                 | 74.69                  | 42.19                  | 83.15                  |
+| Code Generation                      | 2           | 11.920                 | 14.886                 | 23.472                 | 91.85                  | 162.29                 | 115.73                 |
+| Chatbot                              | 1           | 3.691                  | 3.160                  | 4.172                  | 54.46                  | 60.13                  | 62.80                  |
+| Chatbot                              | 2           | 6.593                  | 3.633                  | 6.296                  | 92.07                  | 116.56                 | 100.43                 |
+| Sentiment Analysis / Classification  | 1           | 0.957                  | 0.792                  | 0.783                  | 5.22                   | 6.31                   | 6.38                   |
+| Sentiment Analysis / Classification  | 2           | 1.189                  | 1.015                  | 2.102                  | 8.44                   | 9.90                   | 52.12                  |
+| Multi-turn Reasoning / Complex Tasks | 1           | 16.343                 | 26.220                 | 11.602                 | 72.45                  | 73.91                  | 72.23                  |
+| Multi-turn Reasoning / Complex Tasks | 2           | 16.808                 | 12.774                 | 18.725                 | 149.10                 | 145.65                 | 136.84                 |
+
+
 
 
 
