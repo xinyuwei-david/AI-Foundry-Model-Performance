@@ -36,7 +36,7 @@ Next, we will use a Python script to automate the deployment of the model and us
 
 By now, the AML names tested in this repo, their full names on Hugging Face, and the Azure GPU VM SKUs that can be deployed on AML are as follows: 
 
-| **Model Name on AML**                         | **Model on HF**                               | **Azure GPU VM SKU**                             |
+| **Model Name on AML**                         | **Model on HF** (tokenizers name)             | **Azure GPU VM SKU Support in AML**              |
 | --------------------------------------------- | --------------------------------------------- | ------------------------------------------------ |
 | Phi-4                                         | microsoft/phi-4                               | NC24/48/96 A100                                  |
 | Phi-3.5-vision-instruct                       | microsoft/Phi-3.5-vision-instruct             | NC24/48/96 A100                                  |
@@ -55,7 +55,7 @@ By now, the AML names tested in this repo, their full names on Hugging Face, and
 
 
 
-**Clone code and prepare shell environment**
+#### **Clone code and prepare shell environment**
 
 First, you need to create an Azure Machine Learning service in the Azure Portal. When selecting the region for the service, you should choose a region under the AML category in your subscription quota that has a GPU VM quota available.
 
@@ -93,7 +93,7 @@ Login to Azure.
 #az login --use-device
 ```
 
-**Deploy model Automatically**
+#### **Deploy model Automatically**
 
 Next, you need to execute a script for end-to-end model deployment. This script will: 
 
@@ -198,9 +198,7 @@ SECONDARY_KEY=4dhy3og6WfVzkIijMU7FFUDLpz4WIWEYgIlXMGYUzgwafsW6GPrMJQQJ99BCAAAAAA
 
 ###  Fast Performance Test AI Model on AML Model Catalog
 
-The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution.
-
-
+The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution(Refer to upper table of tokenizers name).
 
 Before officially starting the test, you need to log in to HF on your terminal.
 
@@ -208,7 +206,7 @@ Before officially starting the test, you need to log in to HF on your terminal.
 huggingface-cli  login
 ```
 
-#### Phi Text2Text Series 
+#### Phi Text2Text Series (Phi-4/Phi-3-small-8k-instruct)
 
 **Run the test script:**
 
@@ -281,449 +279,140 @@ Full original test results are here:
 
 
 
-#### Phi-3.5-vision-instruct Series test
+#### Phi vision series (Phi-3.5-vision-instruct/Phi-3-vision-128k-instruct)
+
+```
+# python press-phi35and0v-20250323.py
+```
+
+**Phi-3.5-vision-instruct with single image input test result analyze:**
+
+**on NC24 A100 VM:**
+
+| Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
+| ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
+| 1           | 1                   | 0               | 2.117            | 57.17                                 | 57.17                       | 2.126              |
+| 2           | 2                   | 0               | 4.348            | 18.85                                 | 37.71                       | 7.722              |
+| 3           | 3                   | 0               | 3.389            | 49.50                                 | 148.50                      | 6.354              |
+| 4           | 4                   | 0               | 2.898            | 49.22                                 | 196.86                      | 7.207              |
+| 5           | 4                   | 1               | 2.708            | 41.63                                 | 166.53                      | 8.942              |
+| 6           | 5                   | 1               | 2.095            | 32.30                                 | 161.52                      | 8.951              |
+| 7           | 5                   | 2               | 2.774            | 48.95                                 | 244.75                      | 8.966              |
+| 8           | 4                   | 4               | 2.841            | 48.30                                 | 193.21                      | 8.953              |
+| 9           | 4                   | 5               | 2.996            | 41.86                                 | 167.43                      | 8.960              |
+| 10          | 4                   | 6               | 2.874            | 45.60                                 | 182.38                      | 8.958              |
+
+
+
+**Phi-3-vision-128k-instruct with single image input test result analyze：**
+
+**On NC48 VM：**
+
+| Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
+| ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
+| 1           | 1                   | 0               | 2.124            | 46.13                                 | 46.13                       | 2.130              |
+| 2           | 2                   | 0               | 2.828            | 44.21                                 | 88.41                       | 3.858              |
+| 3           | 3                   | 0               | 3.432            | 47.35                                 | 142.04                      | 6.437              |
+| 4           | 4                   | 0               | 2.497            | 42.99                                 | 171.96                      | 7.060              |
+| 5           | 4                   | 1               | 3.447            | 47.35                                 | 189.39                      | 8.948              |
+| 6           | 5                   | 1               | 2.291            | 38.98                                 | 194.92                      | 8.964              |
+| 7           | 4                   | 3               | 3.099            | 41.58                                 | 166.34                      | 8.956              |
+| 8           | 4                   | 4               | 2.247            | 34.58                                 | 138.31                      | 8.960              |
+| 9           | 5                   | 4               | 2.321            | 36.79                                 | 183.96                      | 8.952              |
+| 10          | 5                   | 5               | 2.466            | 36.55                                 | 182.77                      | 8.950              |
+
+#### **financial-reports-analysis Series test**
 
 ```
 #python press-phi3v-20250315.py
 ```
 
-Test result analyze：
+**1-nc48**
 
-| **Scenario**         | **Concurrency** | **VM 1 (1-NC48) TTFT (s)** | **VM 2 (2-NC24) TTFT (s)** | **VM 3 (1-NC24) TTFT (s)** | **VM 1 (1-NC48) tokens/s per req** | **VM 2 (2-NC24) tokens/s per req** | **VM 3 (1-NC24) tokens/s per req** | **VM 1 (1-NC48) Overall Throughput** | **VM 2 (2-NC24) Overall Throughput** | **VM 3 (1-NC24) Overall Throughput** |
-| -------------------- | --------------- | -------------------------- | -------------------------- | -------------------------- | ---------------------------------- | ---------------------------------- | ---------------------------------- | ------------------------------------ | ------------------------------------ | ------------------------------------ |
-| Single Request       | 1               | 5.687                      | 3.963                      | 4.029                      | 40.62                              | 34.82                              | 37.23                              | 40.62                                | 34.82                                | 37.23                                |
-| Low Concurrency      | 2               | 6.791                      | 5.303                      | 3.894                      | 30.89                              | 25.57                              | 35.02                              | 61.78                                | 51.13                                | 70.05                                |
-| Moderate Concurrency | 3               | 5.873                      | 5.257                      | 5.409                      | 24.58                              | 31.57                              | 24.58                              | 73.74                                | 94.71                                | 73.74                                |
-| Higher Concurrency   | 4               | 5.453                      | 5.553                      | 5.823                      | 25.99                              | 27.50                              | 30.01                              | 77.96                                | 110.02                               | 150.03                               |
-| Peak Concurrency     | 5               | 5.896                      | 6.466                      | 5.823                      | 28.77                              | 29.06                              | 30.01                              | 86.31                                | 145.30*                              | 150.03                               |
+| Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
+| ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
+| 1           | 1                   | 0               | 8.347            | 74.76                                 | 74.76                       | 8.352              |
+| 2           | 2                   | 0               | 16.248           | 63.78                                 | 127.56                      | 21.386             |
+| 3           | 2                   | 1               | 13.939           | 65.47                                 | 130.95                      | 18.746             |
+| 4           | 2                   | 2               | 17.377           | 60.21                                 | 120.42                      | 22.402             |
+| 5           | 2                   | 3               | 14.266           | 65.39                                 | 130.77                      | 18.840             |
+| 1           | 1                   | 0               | 8.835            | 79.23                                 | 79.23                       | 8.839              |
+| 2           | 2                   | 0               | 14.554           | 62.45                                 | 124.91                      | 19.864             |
+| 3           | 2                   | 1               | 15.182           | 60.29                                 | 120.58                      | 19.113             |
+| 4           | 2                   | 2               | 17.206           | 62.18                                 | 124.37                      | 20.955             |
+| 5           | 2                   | 3               | 15.526           | 61.92                                 | 123.84                      | 19.806             |
+| 1           | 1                   | 0               | 13.329           | 86.73                                 | 86.73                       | 13.334             |
+| 2           | 2                   | 0               | 14.185           | 63.47                                 | 126.93                      | 19.196             |
+| 3           | 2                   | 1               | 15.376           | 61.93                                 | 123.86                      | 20.004             |
+| 4           | 2                   | 2               | 15.405           | 64.14                                 | 128.29                      | 20.872             |
+| 5           | 2                   | 3               | 14.909           | 63.94                                 | 127.89                      | 19.572             |
+| 1           | 1                   | 0               | 8.002            | 81.48                                 | 81.48                       | 8.006              |
+| 2           | 2                   | 0               | 16.834           | 64.28                                 | 128.56                      | 21.731             |
+| 3           | 2                   | 1               | 11.225           | 60.16                                 | 120.33                      | 14.274             |
+| 4           | 2                   | 2               | 13.520           | 64.58                                 | 129.16                      | 17.599             |
+| 5           | 2                   | 3               | 13.541           | 59.00                                 | 118.00                      | 16.613             |
 
-Full original test results are here:
-
-*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/phi3-v-results.md*
-
-
-
-**financial-reports-analysis Series test**
+​	
 
 ```
-#python press-phi3v-20250315.py
+(base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc48.txt |grep -A 7 
 ```
 
-Test result analyze：
+2-nc24
+
+| Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
+| ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
+| 1           | 1                   | 0               | 9.659            | 62.63                                 | 62.63                       | 9.664              |
+| 2           | 2                   | 0               | 11.663           | 65.23                                 | 130.46                      | 13.617             |
+| 3           | 3                   | 0               | 20.658           | 55.25                                 | 165.74                      | 28.926             |
+| 1           | 1                   | 0               | 16.593           | 53.76                                 | 53.76                       | 16.597             |
+| 2           | 2                   | 0               | 20.202           | 50.54                                 | 101.09                      | 26.650             |
+| 3           | 3                   | 0               | 19.131           | 58.53                                 | 175.59                      | 29.766             |
+| 1           | 1                   | 0               | 12.825           | 66.27                                 | 66.27                       | 12.829             |
+| 2           | 2                   | 0               | 12.664           | 67.27                                 | 134.54                      | 13.328             |
+| 3           | 3                   | 0               | 17.639           | 59.10                                 | 177.30                      | 25.248             |
+| 1           | 1                   | 0               | 10.546           | 68.65                                 | 68.65                       | 10.550             |
+| 2           | 2                   | 0               | 16.594           | 48.65                                 | 97.31                       | 20.664             |
+| 3           | 3                   | 0               | 16.779           | 56.99                                 | 170.98                      | 23.796             |
 
 ```
-(base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc48.txt |grep -A 7 "Summary for concurrency"
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 8.347 s
-    Average throughput per req   : 74.76 tokens/s
-    Overall throughput (sum)     : 74.76 tokens/s
-    Batch duration (wall-clock)  : 8.352 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 16.248 s
-    Average throughput per req   : 63.78 tokens/s
-    Overall throughput (sum)     : 127.56 tokens/s
-    Batch duration (wall-clock)  : 21.386 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 13.939 s
-    Average throughput per req   : 65.47 tokens/s
-    Overall throughput (sum)     : 130.95 tokens/s
-    Batch duration (wall-clock)  : 18.746 s
-
---
-  Summary for concurrency 4:
-    Successful requests          : 2
-    Failed requests              : 2
-    Average TTFT per request     : 17.377 s
-    Average throughput per req   : 60.21 tokens/s
-    Overall throughput (sum)     : 120.42 tokens/s
-    Batch duration (wall-clock)  : 22.402 s
-
---
-  Summary for concurrency 5:
-    Successful requests          : 2
-    Failed requests              : 3
-    Average TTFT per request     : 14.266 s
-    Average throughput per req   : 65.39 tokens/s
-    Overall throughput (sum)     : 130.77 tokens/s
-    Batch duration (wall-clock)  : 18.840 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 8.835 s
-    Average throughput per req   : 79.23 tokens/s
-    Overall throughput (sum)     : 79.23 tokens/s
-    Batch duration (wall-clock)  : 8.839 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 14.554 s
-    Average throughput per req   : 62.45 tokens/s
-    Overall throughput (sum)     : 124.91 tokens/s
-    Batch duration (wall-clock)  : 19.864 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 15.182 s
-    Average throughput per req   : 60.29 tokens/s
-    Overall throughput (sum)     : 120.58 tokens/s
-    Batch duration (wall-clock)  : 19.113 s
-
---
-  Summary for concurrency 4:
-    Successful requests          : 2
-    Failed requests              : 2
-    Average TTFT per request     : 17.206 s
-    Average throughput per req   : 62.18 tokens/s
-    Overall throughput (sum)     : 124.37 tokens/s
-    Batch duration (wall-clock)  : 20.955 s
-
---
-  Summary for concurrency 5:
-    Successful requests          : 2
-    Failed requests              : 3
-    Average TTFT per request     : 15.526 s
-    Average throughput per req   : 61.92 tokens/s
-    Overall throughput (sum)     : 123.84 tokens/s
-    Batch duration (wall-clock)  : 19.806 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 13.329 s
-    Average throughput per req   : 86.73 tokens/s
-    Overall throughput (sum)     : 86.73 tokens/s
-    Batch duration (wall-clock)  : 13.334 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 14.185 s
-    Average throughput per req   : 63.47 tokens/s
-    Overall throughput (sum)     : 126.93 tokens/s
-    Batch duration (wall-clock)  : 19.196 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 15.376 s
-    Average throughput per req   : 61.93 tokens/s
-    Overall throughput (sum)     : 123.86 tokens/s
-    Batch duration (wall-clock)  : 20.004 s
-
---
-  Summary for concurrency 4:
-    Successful requests          : 2
-    Failed requests              : 2
-    Average TTFT per request     : 15.405 s
-    Average throughput per req   : 64.14 tokens/s
-    Overall throughput (sum)     : 128.29 tokens/s
-    Batch duration (wall-clock)  : 20.872 s
-
---
-  Summary for concurrency 5:
-    Successful requests          : 2
-    Failed requests              : 3
-    Average TTFT per request     : 14.909 s
-    Average throughput per req   : 63.94 tokens/s
-    Overall throughput (sum)     : 127.89 tokens/s
-    Batch duration (wall-clock)  : 19.572 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 8.002 s
-    Average throughput per req   : 81.48 tokens/s
-    Overall throughput (sum)     : 81.48 tokens/s
-    Batch duration (wall-clock)  : 8.006 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 16.834 s
-    Average throughput per req   : 64.28 tokens/s
-    Overall throughput (sum)     : 128.56 tokens/s
-    Batch duration (wall-clock)  : 21.731 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 11.225 s
-    Average throughput per req   : 60.16 tokens/s
-    Overall throughput (sum)     : 120.33 tokens/s
-    Batch duration (wall-clock)  : 14.274 s
-
---
-  Summary for concurrency 4:
-    Successful requests          : 2
-    Failed requests              : 2
-    Average TTFT per request     : 13.520 s
-    Average throughput per req   : 64.58 tokens/s
-    Overall throughput (sum)     : 129.16 tokens/s
-    Batch duration (wall-clock)  : 17.599 s
-
---
-  Summary for concurrency 5:
-    Successful requests          : 2
-    Failed requests              : 3
-    Average TTFT per request     : 13.541 s
-    Average throughput per req   : 59.00 tokens/s
-    Overall throughput (sum)     : 118.00 tokens/s
-    Batch duration (wall-clock)  : 16.613 s
+(base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-2-nc24.txt |grep -A 7 
 
 ```
 
+1-nc24
 
-
-```
-(base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-2-nc24.txt |grep -A 7 "Summary for concurrency"
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 9.659 s
-    Average throughput per req   : 62.63 tokens/s
-    Overall throughput (sum)     : 62.63 tokens/s
-    Batch duration (wall-clock)  : 9.664 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 11.663 s
-    Average throughput per req   : 65.23 tokens/s
-    Overall throughput (sum)     : 130.46 tokens/s
-    Batch duration (wall-clock)  : 13.617 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 3
-    Failed requests              : 0
-    Average TTFT per request     : 20.658 s
-    Average throughput per req   : 55.25 tokens/s
-    Overall throughput (sum)     : 165.74 tokens/s
-    Batch duration (wall-clock)  : 28.926 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 16.593 s
-    Average throughput per req   : 53.76 tokens/s
-    Overall throughput (sum)     : 53.76 tokens/s
-    Batch duration (wall-clock)  : 16.597 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 20.202 s
-    Average throughput per req   : 50.54 tokens/s
-    Overall throughput (sum)     : 101.09 tokens/s
-    Batch duration (wall-clock)  : 26.650 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 3
-    Failed requests              : 0
-    Average TTFT per request     : 19.131 s
-    Average throughput per req   : 58.53 tokens/s
-    Overall throughput (sum)     : 175.59 tokens/s
-    Batch duration (wall-clock)  : 29.766 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 12.825 s
-    Average throughput per req   : 66.27 tokens/s
-    Overall throughput (sum)     : 66.27 tokens/s
-    Batch duration (wall-clock)  : 12.829 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 12.664 s
-    Average throughput per req   : 67.27 tokens/s
-    Overall throughput (sum)     : 134.54 tokens/s
-    Batch duration (wall-clock)  : 13.328 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 3
-    Failed requests              : 0
-    Average TTFT per request     : 17.639 s
-    Average throughput per req   : 59.10 tokens/s
-    Overall throughput (sum)     : 177.30 tokens/s
-    Batch duration (wall-clock)  : 25.248 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 10.546 s
-    Average throughput per req   : 68.65 tokens/s
-    Overall throughput (sum)     : 68.65 tokens/s
-    Batch duration (wall-clock)  : 10.550 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 16.594 s
-    Average throughput per req   : 48.65 tokens/s
-    Overall throughput (sum)     : 97.31 tokens/s
-    Batch duration (wall-clock)  : 20.664 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 3
-    Failed requests              : 0
-    Average TTFT per request     : 16.779 s
-    Average throughput per req   : 56.99 tokens/s
-    Overall throughput (sum)     : 170.98 tokens/s
-    Batch duration (wall-clock)  : 23.796 s
-
-```
-
-
+| Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
+| ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
+| 1           | 1                   | 0               | 13.339           | 71.15                                 | 71.15                       | 13.344             |
+| 2           | 2                   | 0               | 21.675           | 49.30                                 | 98.61                       | 27.741             |
+| 3           | 2                   | 1               | 19.226           | 52.44                                 | 104.88                      | 26.149             |
+| 1           | 1                   | 0               | 14.241           | 69.38                                 | 69.38                       | 14.245             |
+| 2           | 2                   | 0               | 17.212           | 51.91                                 | 103.82                      | 23.023             |
+| 3           | 2                   | 1               | 19.061           | 52.79                                 | 105.58                      | 25.372             |
+| 1           | 1                   | 0               | 10.762           | 65.88                                 | 65.88                       | 10.765             |
+| 2           | 2                   | 0               | 20.992           | 52.80                                 | 105.59                      | 28.139             |
+| 3           | 2                   | 1               | 19.811           | 47.85                                 | 95.71                       | 24.749             |
+| 1           | 1                   | 0               | 10.182           | 66.19                                 | 66.19                       | 10.187             |
+| 2           | 2                   | 0               | 18.303           | 52.05                                 | 104.10                      | 24.445             |
+| 3           | 2                   | 1               | 11.118           | 48.83                                 | 97.65                       | 14.555             |
 
 ```
 (base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc24.txt |grep -A 7 "Summary for concurrency"
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 13.339 s
-    Average throughput per req   : 71.15 tokens/s
-    Overall throughput (sum)     : 71.15 tokens/s
-    Batch duration (wall-clock)  : 13.344 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 21.675 s
-    Average throughput per req   : 49.30 tokens/s
-    Overall throughput (sum)     : 98.61 tokens/s
-    Batch duration (wall-clock)  : 27.741 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 19.226 s
-    Average throughput per req   : 52.44 tokens/s
-    Overall throughput (sum)     : 104.88 tokens/s
-    Batch duration (wall-clock)  : 26.149 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 14.241 s
-    Average throughput per req   : 69.38 tokens/s
-    Overall throughput (sum)     : 69.38 tokens/s
-    Batch duration (wall-clock)  : 14.245 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 17.212 s
-    Average throughput per req   : 51.91 tokens/s
-    Overall throughput (sum)     : 103.82 tokens/s
-    Batch duration (wall-clock)  : 23.023 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 19.061 s
-    Average throughput per req   : 52.79 tokens/s
-    Overall throughput (sum)     : 105.58 tokens/s
-    Batch duration (wall-clock)  : 25.372 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 10.762 s
-    Average throughput per req   : 65.88 tokens/s
-    Overall throughput (sum)     : 65.88 tokens/s
-    Batch duration (wall-clock)  : 10.765 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 20.992 s
-    Average throughput per req   : 52.80 tokens/s
-    Overall throughput (sum)     : 105.59 tokens/s
-    Batch duration (wall-clock)  : 28.139 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 19.811 s
-    Average throughput per req   : 47.85 tokens/s
-    Overall throughput (sum)     : 95.71 tokens/s
-    Batch duration (wall-clock)  : 24.749 s
-
---
-  Summary for concurrency 1:
-    Successful requests          : 1
-    Failed requests              : 0
-    Average TTFT per request     : 10.182 s
-    Average throughput per req   : 66.19 tokens/s
-    Overall throughput (sum)     : 66.19 tokens/s
-    Batch duration (wall-clock)  : 10.187 s
-
---
-  Summary for concurrency 2:
-    Successful requests          : 2
-    Failed requests              : 0
-    Average TTFT per request     : 18.303 s
-    Average throughput per req   : 52.05 tokens/s
-    Overall throughput (sum)     : 104.10 tokens/s
-    Batch duration (wall-clock)  : 24.445 s
-
---
-  Summary for concurrency 3:
-    Successful requests          : 2
-    Failed requests              : 1
-    Average TTFT per request     : 11.118 s
-    Average throughput per req   : 48.83 tokens/s
-    Overall throughput (sum)     : 97.65 tokens/s
-    Batch duration (wall-clock)  : 14.555 s
+      
 ```
 
 
 
+#### microsoft-swinv2-base-patch4-window12-192-22k Series 
+
+```
+#python press-phi3v-20250315.py
+```
 
 
 
+Test result analyze：
 
 
 
