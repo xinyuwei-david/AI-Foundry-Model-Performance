@@ -631,55 +631,6 @@ The overall throughput averages 735.12 tokens/s, with a P90 of 1184.06 tokens/s,
 Please enter the Azure AI key: G485wnXwMrAYQKMQPSYpzf7PNLm3sui8qgsXcYFv5Yd3HOmvzZ2GJQQJ99BCACPV0roXJ3w3AAAAACOG9kt1
 Please enter the Azure AI endpoint URL: https://xinyu-m7zxv3ow-germanywestcentra.services.ai.azure.com/models
 Please enter the deployment name: Phi-4
-
->>> Testing Concurrency: 200, Prompt Length: 128, Total Requests: 10 <<<
-=== Non-Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 23.822
-  Average TTFT (s): 23.822
-  Average token throughput (tokens/s): 27.91
-  Overall throughput (tokens/s): 249.26
-
-=== Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 23.547
-  Average TTFT (s): 0.419
-  Average token throughput (tokens/s): 27.00
-  Overall throughput (tokens/s): 222.52
-
-
->>> Testing Concurrency: 200, Prompt Length: 128, Total Requests: 20 <<<
-=== Non-Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 22.429
-  Average TTFT (s): 22.429
-  Average token throughput (tokens/s): 30.64
-  Overall throughput (tokens/s): 463.46
-
-Unable to stream download: Response ended prematurely
-Attempt 1 failed: Response ended prematurely
-=== Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 21.512
-  Average TTFT (s): 0.970
-  Average token throughput (tokens/s): 29.54
-  Overall throughput (tokens/s): 417.09
-
-
->>> Testing Concurrency: 200, Prompt Length: 128, Total Requests: 30 <<<
-=== Non-Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 23.560
-  Average TTFT (s): 23.560
-  Average token throughput (tokens/s): 28.28
-  Overall throughput (tokens/s): 698.09
-
-=== Stream Mode | Concurrency: 200, Prompt length: 128, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 22.677
-  Average TTFT (s): 1.143
-  Average token throughput (tokens/s): 27.74
-  Overall throughput (tokens/s): 628.50
 ```
 
 **Max performance:**
@@ -691,473 +642,50 @@ Attempt 1 failed: Response ended prematurely
 
 The overall throughput averages 735.12 tokens/s, with a P90 of 1184.06 tokens/s. Full test results are as follows:
 
-```
->>> Testing Concurrency: 300, Prompt Length: 128, Total Requests: 20 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 42.786
-  Average TTFT (s): 42.786
-  Average token throughput (tokens/s): 16.25
-  Overall throughput (tokens/s): 259.47
+| Concurrency | Prompt Length | Total Requests | Mode       | Success Count | Fail Count | Average Latency (s) | Average TTFT (s) | Average Token Throughput (tokens/s) | Overall Throughput (tokens/s) |
+| ----------- | ------------- | -------------- | ---------- | ------------- | ---------- | ------------------- | ---------------- | ----------------------------------- | ----------------------------- |
+| 300         | 128           | 20             | Non-Stream | 20            | 0          | 42.786              | 42.786           | 16.25                               | 259.47                        |
+| 300         | 128           | 20             | Stream     | 20            | 0          | 41.799              | 0.971            | 15.86                               | 215.46                        |
+| 300         | 128           | 30             | Non-Stream | 30            | 0          | 36.526              | 36.526           | 18.79                               | 464.05                        |
+| 300         | 128           | 30             | Stream     | 30            | 0          | 29.335              | 1.016            | 22.19                               | 404.16                        |
+| 300         | 128           | 40             | Non-Stream | 40            | 0          | 34.573              | 34.573           | 19.98                               | 635.16                        |
+| 300         | 128           | 40             | Stream     | 40            | 0          | 37.575              | 1.096            | 17.29                               | 609.03                        |
+| 300         | 128           | 50             | Non-Stream | 50            | 0          | 25.340              | 25.340           | 26.43                               | 1092.32                       |
+| 300         | 128           | 50             | Stream     | 50            | 0          | 54.118              | 1.994            | 11.59                               | 438.72                        |
+| 300         | 256           | 10             | Non-Stream | 10            | 0          | 31.659              | 31.659           | 26.99                               | 217.86                        |
+| 300         | 256           | 10             | Stream     | 10            | 0          | 48.118              | 0.411            | 18.50                               | 90.95                         |
+| 300         | 256           | 20             | Non-Stream | 20            | 0          | 23.250              | 23.250           | 34.82                               | 623.39                        |
+| 300         | 256           | 20             | Stream     | 20            | 0          | 48.669              | 0.887            | 15.52                               | 259.49                        |
+| 300         | 256           | 30             | Non-Stream | 30            | 0          | 41.130              | 41.130           | 20.32                               | 456.73                        |
+| 300         | 256           | 30             | Stream     | 30            | 0          | 57.212              | 1.548            | 13.65                               | 323.89                        |
+| 300         | 256           | 40             | Non-Stream | 40            | 0          | 57.891              | 57.891           | 14.17                               | 496.40                        |
+| 300         | 256           | 40             | Stream     | 40            | 0          | 52.031              | 2.474            | 14.83                               | 435.96                        |
+| 300         | 256           | 50             | Non-Stream | 50            | 0          | 45.228              | 45.228           | 17.69                               | 725.04                        |
+| 300         | 256           | 50             | Stream     | 50            | 0          | 43.595              | 1.257            | 16.95                               | 712.82                        |
+| 300         | 512           | 10             | Non-Stream | 10            | 0          | 32.092              | 32.092           | 26.78                               | 242.20                        |
+| 300         | 512           | 10             | Stream     | 10            | 0          | 25.930              | 0.568            | 31.35                               | 245.37                        |
+| 300         | 512           | 20             | Non-Stream | 20            | 0          | 34.330              | 34.330           | 26.04                               | 444.89                        |
+| 300         | 512           | 20             | Stream     | 20            | 0          | 34.694              | 1.629            | 23.48                               | 408.55                        |
+| 300         | 512           | 30             | Non-Stream | 30            | 0          | 34.773              | 34.773           | 25.91                               | 632.48                        |
+| 300         | 512           | 30             | Stream     | 30            | 0          | 31.973              | 0.970            | 25.72                               | 632.10                        |
+| 300         | 512           | 40             | Non-Stream | 40            | 0          | 36.616              | 36.616           | 24.19                               | 851.76                        |
+| 300         | 512           | 40             | Stream     | 40            | 0          | 34.922              | 1.091            | 23.83                               | 783.17                        |
+| 300         | 512           | 50             | Non-Stream | 50            | 0          | 36.638              | 36.638           | 24.40                               | 1003.91                       |
+| 300         | 512           | 50             | Stream     | 50            | 0          | 34.217              | 1.433            | 23.82                               | 940.82                        |
+| 300         | 1024          | 10             | Non-Stream | 10            | 0          | 28.029              | 28.029           | 36.46                               | 305.37                        |
+| 300         | 1024          | 10             | Stream     | 10            | 0          | 30.585              | 0.428            | 31.08                               | 246.82                        |
+| 300         | 1024          | 20             | Non-Stream | 20            | 0          | 31.945              | 31.945           | 32.23                               | 559.50                        |
+| 300         | 1024          | 20             | Stream     | 20            | 0          | 24.585              | 0.949            | 37.25                               | 595.32                        |
+| 300         | 1024          | 30             | Non-Stream | 30            | 0          | 30.950              | 30.950           | 33.02                               | 852.51                        |
+| 300         | 1024          | 30             | Stream     | 30            | 0          | 25.622              | 1.014            | 36.02                               | 951.37                        |
+| 300         | 1024          | 40             | Non-Stream | 40            | 0          | 31.642              | 31.642           | 32.85                               | 1198.05                       |
+| 300         | 1024          | 40             | Stream     | 40            | 0          | 28.190              | 1.099            | 33.01                               | 1099.36                       |
+| 300         | 1024          | 50             | Non-Stream | 50            | 0          | 30.861              | 30.861           | 32.97                               | 1473.44                       |
+| 300         | 1024          | 50             | Stream     | 50            | 0          | 31.885              | 1.121            | 29.28                               | 1238.09                       |
+| 300         | 2048          | 10             | Non-Stream | 10            | 0          | 27.862              | 27.862           | 42.47                               | 348.38                        |
+| 300         | 2048          | 10             | Stream     | 10            | 0          | 27.356              | 0.439            | 36.49                               | 329.59                        |
 
-=== Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 41.799
-  Average TTFT (s): 0.971
-  Average token throughput (tokens/s): 15.86
-  Overall throughput (tokens/s): 215.46
 
-
->>> Testing Concurrency: 300, Prompt Length: 128, Total Requests: 30 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 36.526
-  Average TTFT (s): 36.526
-  Average token throughput (tokens/s): 18.79
-  Overall throughput (tokens/s): 464.05
-
-=== Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 29.335
-  Average TTFT (s): 1.016
-  Average token throughput (tokens/s): 22.19
-  Overall throughput (tokens/s): 404.16
-
-
->>> Testing Concurrency: 300, Prompt Length: 128, Total Requests: 40 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 34.573
-  Average TTFT (s): 34.573
-  Average token throughput (tokens/s): 19.98
-  Overall throughput (tokens/s): 635.16
-
-=== Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 37.575
-  Average TTFT (s): 1.096
-  Average token throughput (tokens/s): 17.29
-  Overall throughput (tokens/s): 609.03
-
-
->>> Testing Concurrency: 300, Prompt Length: 128, Total Requests: 50 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 25.340
-  Average TTFT (s): 25.340
-  Average token throughput (tokens/s): 26.43
-  Overall throughput (tokens/s): 1092.32
-
-=== Stream Mode | Concurrency: 300, Prompt length: 128, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 54.118
-  Average TTFT (s): 1.994
-  Average token throughput (tokens/s): 11.59
-  Overall throughput (tokens/s): 438.72
-
-
->>> Testing Concurrency: 300, Prompt Length: 256, Total Requests: 10 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 31.659
-  Average TTFT (s): 31.659
-  Average token throughput (tokens/s): 26.99
-  Overall throughput (tokens/s): 217.86
-
-=== Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 48.118
-  Average TTFT (s): 0.411
-  Average token throughput (tokens/s): 18.50
-  Overall throughput (tokens/s): 90.95
-
-
->>> Testing Concurrency: 300, Prompt Length: 256, Total Requests: 20 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 23.250
-  Average TTFT (s): 23.250
-  Average token throughput (tokens/s): 34.82
-  Overall throughput (tokens/s): 623.39
-
-=== Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 48.669
-  Average TTFT (s): 0.887
-  Average token throughput (tokens/s): 15.52
-  Overall throughput (tokens/s): 259.49
-
-
->>> Testing Concurrency: 300, Prompt Length: 256, Total Requests: 30 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 41.130
-  Average TTFT (s): 41.130
-  Average token throughput (tokens/s): 20.32
-  Overall throughput (tokens/s): 456.73
-
-=== Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 57.212
-  Average TTFT (s): 1.548
-  Average token throughput (tokens/s): 13.65
-  Overall throughput (tokens/s): 323.89
-
-
->>> Testing Concurrency: 300, Prompt Length: 256, Total Requests: 40 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 57.891
-  Average TTFT (s): 57.891
-  Average token throughput (tokens/s): 14.17
-  Overall throughput (tokens/s): 496.40
-
-=== Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 52.031
-  Average TTFT (s): 2.474
-  Average token throughput (tokens/s): 14.83
-  Overall throughput (tokens/s): 435.96
-
-
->>> Testing Concurrency: 300, Prompt Length: 256, Total Requests: 50 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 45.228
-  Average TTFT (s): 45.228
-  Average token throughput (tokens/s): 17.69
-  Overall throughput (tokens/s): 725.04
-
-=== Stream Mode | Concurrency: 300, Prompt length: 256, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 43.595
-  Average TTFT (s): 1.257
-  Average token throughput (tokens/s): 16.95
-  Overall throughput (tokens/s): 712.82
-
-
->>> Testing Concurrency: 300, Prompt Length: 512, Total Requests: 10 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 32.092
-  Average TTFT (s): 32.092
-  Average token throughput (tokens/s): 26.78
-  Overall throughput (tokens/s): 242.20
-
-=== Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 25.930
-  Average TTFT (s): 0.568
-  Average token throughput (tokens/s): 31.35
-  Overall throughput (tokens/s): 245.37
-
-
->>> Testing Concurrency: 300, Prompt Length: 512, Total Requests: 20 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 34.330
-  Average TTFT (s): 34.330
-  Average token throughput (tokens/s): 26.04
-  Overall throughput (tokens/s): 444.89
-
-=== Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 34.694
-  Average TTFT (s): 1.629
-  Average token throughput (tokens/s): 23.48
-  Overall throughput (tokens/s): 408.55
-
-
->>> Testing Concurrency: 300, Prompt Length: 512, Total Requests: 30 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 34.773
-  Average TTFT (s): 34.773
-  Average token throughput (tokens/s): 25.91
-  Overall throughput (tokens/s): 632.48
-
-=== Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 31.973
-  Average TTFT (s): 0.970
-  Average token throughput (tokens/s): 25.72
-  Overall throughput (tokens/s): 632.10
-
-
->>> Testing Concurrency: 300, Prompt Length: 512, Total Requests: 40 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 36.616
-  Average TTFT (s): 36.616
-  Average token throughput (tokens/s): 24.19
-  Overall throughput (tokens/s): 851.76
-
-=== Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 34.922
-  Average TTFT (s): 1.091
-  Average token throughput (tokens/s): 23.83
-  Overall throughput (tokens/s): 783.17
-
-
->>> Testing Concurrency: 300, Prompt Length: 512, Total Requests: 50 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 36.638
-  Average TTFT (s): 36.638
-  Average token throughput (tokens/s): 24.40
-  Overall throughput (tokens/s): 1003.91
-
-=== Stream Mode | Concurrency: 300, Prompt length: 512, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 34.217
-  Average TTFT (s): 1.433
-  Average token throughput (tokens/s): 23.82
-  Overall throughput (tokens/s): 940.82
-
-
->>> Testing Concurrency: 300, Prompt Length: 1024, Total Requests: 10 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 28.029
-  Average TTFT (s): 28.029
-  Average token throughput (tokens/s): 36.46
-  Overall throughput (tokens/s): 305.37
-
-=== Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 30.585
-  Average TTFT (s): 0.428
-  Average token throughput (tokens/s): 31.08
-  Overall throughput (tokens/s): 246.82
-
-
->>> Testing Concurrency: 300, Prompt Length: 1024, Total Requests: 20 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 31.945
-  Average TTFT (s): 31.945
-  Average token throughput (tokens/s): 32.23
-  Overall throughput (tokens/s): 559.50
-
-=== Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 24.585
-  Average TTFT (s): 0.949
-  Average token throughput (tokens/s): 37.25
-  Overall throughput (tokens/s): 595.32
-
-
->>> Testing Concurrency: 300, Prompt Length: 1024, Total Requests: 30 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 30.950
-  Average TTFT (s): 30.950
-  Average token throughput (tokens/s): 33.02
-  Overall throughput (tokens/s): 852.51
-
-=== Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 25.622
-  Average TTFT (s): 1.014
-  Average token throughput (tokens/s): 36.02
-  Overall throughput (tokens/s): 951.37
-
-
->>> Testing Concurrency: 300, Prompt Length: 1024, Total Requests: 40 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 31.642
-  Average TTFT (s): 31.642
-  Average token throughput (tokens/s): 32.85
-  Overall throughput (tokens/s): 1198.05
-
-=== Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 28.190
-  Average TTFT (s): 1.099
-  Average token throughput (tokens/s): 33.01
-  Overall throughput (tokens/s): 1099.36
-
-
->>> Testing Concurrency: 300, Prompt Length: 1024, Total Requests: 50 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 30.861
-  Average TTFT (s): 30.861
-  Average token throughput (tokens/s): 32.97
-  Overall throughput (tokens/s): 1473.44
-
-=== Stream Mode | Concurrency: 300, Prompt length: 1024, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 31.885
-  Average TTFT (s): 1.121
-  Average token throughput (tokens/s): 29.28
-  Overall throughput (tokens/s): 1238.09
-
-
->>> Testing Concurrency: 300, Prompt Length: 2048, Total Requests: 10 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 27.862
-  Average TTFT (s): 27.862
-  Average token throughput (tokens/s): 42.47
-  Overall throughput (tokens/s): 348.38
-
-=== Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 27.356
-  Average TTFT (s): 0.439
-  Average token throughput (tokens/s): 36.49
-  Overall throughput (tokens/s): 329.59
-
-
->>> Testing Concurrency: 300, Prompt Length: 2048, Total Requests: 20 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 29.009
-  Average TTFT (s): 29.009
-  Average token throughput (tokens/s): 39.40
-  Overall throughput (tokens/s): 690.07
-
-=== Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 30.951
-  Average TTFT (s): 0.935
-  Average token throughput (tokens/s): 33.85
-  Overall throughput (tokens/s): 527.14
-
-
->>> Testing Concurrency: 300, Prompt Length: 2048, Total Requests: 30 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 54.856
-  Average TTFT (s): 54.856
-  Average token throughput (tokens/s): 21.02
-  Overall throughput (tokens/s): 505.79
-
-=== Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 52.796
-  Average TTFT (s): 1.383
-  Average token throughput (tokens/s): 20.89
-  Overall throughput (tokens/s): 451.47
-
-
->>> Testing Concurrency: 300, Prompt Length: 2048, Total Requests: 40 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 49.235
-  Average TTFT (s): 49.235
-  Average token throughput (tokens/s): 23.15
-  Overall throughput (tokens/s): 836.75
-
-=== Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 45.512
-  Average TTFT (s): 1.923
-  Average token throughput (tokens/s): 23.20
-  Overall throughput (tokens/s): 752.37
-
-
->>> Testing Concurrency: 300, Prompt Length: 2048, Total Requests: 50 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 50.730
-  Average TTFT (s): 50.730
-  Average token throughput (tokens/s): 22.45
-  Overall throughput (tokens/s): 849.75
-
-=== Stream Mode | Concurrency: 300, Prompt length: 2048, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 52.496
-  Average TTFT (s): 1.712
-  Average token throughput (tokens/s): 19.05
-  Overall throughput (tokens/s): 736.86
-
-
->>> Testing Concurrency: 300, Prompt Length: 4096, Total Requests: 10 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 38.206
-  Average TTFT (s): 38.206
-  Average token throughput (tokens/s): 28.21
-  Overall throughput (tokens/s): 225.61
-
-=== Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 10 ===
-  Success count: 10, Fail count: 0
-  Average latency (s): 34.517
-  Average TTFT (s): 0.470
-  Average token throughput (tokens/s): 28.74
-  Overall throughput (tokens/s): 250.12
-
-
->>> Testing Concurrency: 300, Prompt Length: 4096, Total Requests: 20 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 32.739
-  Average TTFT (s): 32.739
-  Average token throughput (tokens/s): 33.77
-  Overall throughput (tokens/s): 556.52
-
-=== Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 20 ===
-  Success count: 20, Fail count: 0
-  Average latency (s): 32.623
-  Average TTFT (s): 1.371
-  Average token throughput (tokens/s): 28.39
-  Overall throughput (tokens/s): 484.34
-
-
->>> Testing Concurrency: 300, Prompt Length: 4096, Total Requests: 30 <<<
-Attempt 1 failed: (Timeout) The operation was timeout.
-Code: Timeout
-Message: The operation was timeout.
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 42.533
-  Average TTFT (s): 42.533
-  Average token throughput (tokens/s): 26.16
-  Overall throughput (tokens/s): 214.83
-
-=== Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 30 ===
-  Success count: 30, Fail count: 0
-  Average latency (s): 33.837
-  Average TTFT (s): 1.250
-  Average token throughput (tokens/s): 29.54
-  Overall throughput (tokens/s): 609.49
-
-
->>> Testing Concurrency: 300, Prompt Length: 4096, Total Requests: 40 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 34.546
-  Average TTFT (s): 34.546
-  Average token throughput (tokens/s): 33.39
-  Overall throughput (tokens/s): 1122.95
-
-=== Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 40 ===
-  Success count: 40, Fail count: 0
-  Average latency (s): 45.994
-  Average TTFT (s): 1.145
-  Average token throughput (tokens/s): 22.39
-  Overall throughput (tokens/s): 687.95
-
-
->>> Testing Concurrency: 300, Prompt Length: 4096, Total Requests: 50 <<<
-=== Non-Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 48.059
-  Average TTFT (s): 48.059
-  Average token throughput (tokens/s): 23.81
-  Overall throughput (tokens/s): 733.79
-
-=== Stream Mode | Concurrency: 300, Prompt length: 4096, Total requests: 50 ===
-  Success count: 50, Fail count: 0
-  Average latency (s): 45.475
-  Average TTFT (s): 1.221
-  Average token throughput (tokens/s): 21.21
-  Overall throughput (tokens/s): 809.73
-```
 
 
 
