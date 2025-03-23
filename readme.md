@@ -250,7 +250,7 @@ Concurrency = 1
 
 Full original test results are here:
 
-*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/phi4-test-results.md*
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/phi4-test-results.md*
 
 **microsoft/Phi-3-small-8k-instruct**
 
@@ -275,7 +275,7 @@ Full original test results are here:
 
 Full original test results are here:
 
-*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/Phi-3-small-8k-instruct-test-results.md*
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/Phi-3-small-8k-instruct-test-results.md*
 
 
 
@@ -301,8 +301,6 @@ Full original test results are here:
 | 8           | 4                   | 4               | 2.841            | 48.30                                 | 193.21                      | 8.953              |
 | 9           | 4                   | 5               | 2.996            | 41.86                                 | 167.43                      | 8.960              |
 | 10          | 4                   | 6               | 2.874            | 45.60                                 | 182.38                      | 8.958              |
-
-
 
 **Phi-3-vision-128k-instruct with single image input test result analyze：**
 
@@ -352,7 +350,9 @@ Full original test results are here:
 | 4           | 2                   | 2               | 13.520           | 64.58                                 | 129.16                      | 17.599             |
 | 5           | 2                   | 3               | 13.541           | 59.00                                 | 118.00                      | 16.613             |
 
-​	
+Full original test results are here:
+
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/output-financial-reports-analysis-1-nc48.txt*
 
 ```
 (base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc48.txt |grep -A 7 
@@ -375,6 +375,10 @@ Full original test results are here:
 | 2           | 2                   | 0               | 16.594           | 48.65                                 | 97.31                       | 20.664             |
 | 3           | 3                   | 0               | 16.779           | 56.99                                 | 170.98                      | 23.796             |
 
+Full original test results are here:
+
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/output-financial-reports-analysis-2-nc24.txt*
+
 ```
 (base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-2-nc24.txt |grep -A 7 
 
@@ -396,6 +400,10 @@ Full original test results are here:
 | 1           | 1                   | 0               | 10.182           | 66.19                                 | 66.19                       | 10.187             |
 | 2           | 2                   | 0               | 18.303           | 52.05                                 | 104.10                      | 24.445             |
 | 3           | 2                   | 1               | 11.118           | 48.83                                 | 97.65                       | 14.555             |
+
+Full original test results are here:
+
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/output-financial-reports-analysis-1-nc24.txt*
 
 ```
 (base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc24.txt |grep -A 7 "Summary for concurrency"
@@ -459,7 +467,9 @@ Test result analyze：
 | 9           | 6                   | 3               | 1.079            | 23.63                                 | 141.81                      | 8.951              |
 | 10          | 6                   | 4               | 1.075            | 23.71                                 | 142.28                      | 8.946              |
 
+Full original test results are here:
 
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/swinv2-base-results.txt*
 
 
 
