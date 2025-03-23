@@ -407,10 +407,8 @@ Full original test results are here:
 #### microsoft-swinv2-base-patch4-window12-192-22k Series 
 
 ```
-#python press-phi3v-20250315.py
+#python press-swinv2-20250322.py
 ```
-
-
 
 Test result analyze：
 
