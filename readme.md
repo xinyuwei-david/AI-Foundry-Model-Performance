@@ -483,9 +483,7 @@ Test result analyze：
 
 **1-NC96 mistralai-Mixtral-8x7B-Instruct-v01**
 
-
-
-### Scenario: Text Generation
+Scenario: Text Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -500,7 +498,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 3.877            | 57.85                                 | 231.41                      | 9.298              |
 | 10          | 4                   | 6               | 3.865            | 58.28                                 | 233.13                      | 9.297              |
 
-### Scenario: Question Answering
+Scenario: Question Answering
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -515,7 +513,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 3.865            | 57.71                                 | 230.86                      | 9.264              |
 | 10          | 4                   | 6               | 3.895            | 57.47                                 | 229.87                      | 9.321              |
 
-### Scenario: Translation
+Scenario: Translation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -530,9 +528,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 3.735            | 57.41                                 | 229.63                      | 9.272              |
 | 10          | 4                   | 6               | 3.876            | 57.53                                 | 230.10                      | 9.266              |
 
-
-
-### Scenario: Text Summarization
+Scenario: Text Summarization
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -547,7 +543,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 3.621            | 58.02                                 | 232.07                      | 8.990              |
 | 10          | 4                   | 6               | 3.820            | 56.86                                 | 227.45                      | 9.038              |
 
-### Scenario: Code Generation
+Scenario: Code Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -562,7 +558,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 3.870            | 62.59                                 | 250.36                      | 9.289              |
 | 10          | 4                   | 6               | 3.874            | 62.66                                 | 250.63                      | 9.272              |
 
-### Scenario: Chatbot
+Scenario: Chatbot
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -577,9 +573,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 3.884            | 58.09                                 | 232.38                      | 9.313              |
 | 10          | 4                   | 6               | 3.874            | 58.20                                 | 232.78                      | 9.281              |
 
-
-
-### Scenario: Sentiment Analysis / Classification
+Scenario: Sentiment Analysis / Classification
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -594,7 +588,7 @@ Test result analyze：
 | 9           | 6                   | 3               | 0.945            | 16.33                                 | 97.96                       | 8.991              |
 | 10          | 6                   | 4               | 0.915            | 14.43                                 | 86.57                       | 8.988              |
 
-### Scenario: Multi-turn Reasoning / Complex Tasks
+Scenario: Multi-turn Reasoning / Complex Tasks
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -679,8 +673,6 @@ Test result analyze：
 | 10          | 4         | 2.009    | 2.009               |
 | 10          | 5         | 2.755    | 2.755               |
 
-
-
 #### Nemotron-3-8B-Chat-4k-SteerLM  Series
 
 ```
@@ -689,7 +681,7 @@ Test result analyze：
 
 **On 1 NC24 A100 VM**
 
-### Text Generation
+Text Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -704,7 +696,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.984            | 72.11                                 | 144.22                      | 13.117             |
 | 10          | 2                   | 8               | 9.993            | 72.05                                 | 144.10                      | 13.130             |
 
-### Question Answering
+Question Answering
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -719,7 +711,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.985            | 70.14                                 | 140.28                      | 13.117             |
 | 10          | 2                   | 8               | 9.983            | 70.12                                 | 140.23                      | 13.116             |
 
-### Translation
+Translation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -734,7 +726,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.957            | 87.11                                 | 174.21                      | 13.078             |
 | 10          | 2                   | 8               | 9.968            | 86.99                                 | 173.97                      | 13.091             |
 
-### Text Summarization
+Text Summarization
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -749,7 +741,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.974            | 66.31                                 | 132.62                      | 13.108             |
 | 10          | 2                   | 8               | 9.969            | 66.35                                 | 132.69                      | 13.102             |
 
-### Code Generation
+Code Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -764,9 +756,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.966            | 90.01                                 | 180.02                      | 13.091             |
 | 10          | 2                   | 8               | 9.958            | 90.11                                 | 180.22                      | 13.081             |
 
-
-
-### Chatbot
+Chatbot
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -781,7 +771,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.956            | 62.97                                 | 125.93                      | 13.077             |
 | 10          | 2                   | 8               | 9.948            | 63.03                                 | 126.05                      | 13.067             |
 
-### Sentiment Analysis / Classification
+Sentiment Analysis / Classification
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -796,7 +786,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.968            | 58.79                                 | 117.58                      | 13.090             |
 | 10          | 2                   | 8               | 9.971            | 58.77                                 | 117.53                      | 13.096             |
 
-### Multi-turn Reasoning / Complex Tasks
+Multi-turn Reasoning / Complex Tasks
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -811,11 +801,9 @@ Test result analyze：
 | 9           | 2                   | 7               | 9.966            | 62.83                                 | 125.66                      | 13.098             |
 | 10          | 2                   | 8               | 9.951            | 62.88                                 | 125.75                      | 13.098             |
 
-
-
 **On 2-NC24 VM**
 
-### Text Generation
+Text Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -830,7 +818,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 9.981            | 72.17                                 | 288.67                      | 13.184             |
 | 10          | 4                   | 6               | 9.991            | 72.11                                 | 288.44                      | 13.206             |
 
-### Question Answering
+Question Answering
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -845,7 +833,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 10.004           | 70.01                                 | 280.02                      | 13.231             |
 | 10          | 4                   | 6               | 10.006           | 69.99                                 | 279.98                      | 13.204             |
 
-### Translation
+Translation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -860,7 +848,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 9.998            | 86.74                                 | 346.94                      | 13.199             |
 | 10          | 4                   | 6               | 9.992            | 86.84                                 | 347.36                      | 13.192             |
 
-### Text Summarization
+Text Summarization
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -875,7 +863,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 9.994            | 66.18                                 | 264.71                      | 13.191             |
 | 10          | 4                   | 6               | 9.990            | 66.19                                 | 264.78                      | 13.195             |
 
-### Code Generation
+Code Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -890,7 +878,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 10.003           | 89.85                                 | 359.42                      | 13.264             |
 | 10          | 4                   | 6               | 9.984            | 89.87                                 | 359.49                      | 13.168             |
 
-### Chatbot
+Chatbot
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -905,7 +893,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 9.976            | 62.84                                 | 251.36                      | 13.165             |
 | 10          | 4                   | 6               | 9.982            | 62.80                                 | 251.18                      | 13.175             |
 
-### Sentiment Analysis / Classification
+Sentiment Analysis / Classification
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -920,7 +908,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 9.989            | 58.68                                 | 234.72                      | 13.179             |
 | 10          | 4                   | 6               | 9.987            | 58.68                                 | 234.73                      | 13.187             |
 
-### Multi-turn Reasoning / Complex Tasks
+Multi-turn Reasoning / Complex Tasks
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -935,6 +923,16 @@ Test result analyze：
 | 9           | 4                   | 5               | 10.003           | 62.58                                 | 250.33                      | 13.203             |
 | 10          | 4                   | 6               | 9.995            | 62.65                                 | 250.61                      | 13.200             |
 
+
+
+#### stabilityai-stable-diffusion-xl-refiner-1-0 Series
+
+
+
+
+
+
+
 #### microsoft-Orca-2-7b  Series
 
 ```
@@ -943,7 +941,7 @@ Test result analyze：
 
 **On 1 NC24 A100 VM**
 
-### Scenario: Text Generation
+Scenario: Text Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -958,7 +956,7 @@ Test result analyze：
 | 9           | 6                   | 3               | 0.901            | 114.40                                | 686.38                      | 8.954              |
 | 10          | 6                   | 4               | 0.905            | 113.79                                | 682.73                      | 8.956              |
 
-### Scenario: Question Answering
+Scenario: Question Answering
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -973,7 +971,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 18.433           | 27.64                                 | 55.28                       | 24.266             |
 | 10          | 2                   | 8               | 21.777           | 24.86                                 | 49.72                       | 27.765             |
 
-### Scenario: Translation
+Scenario: Translation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -988,7 +986,7 @@ Test result analyze：
 | 9           | 6                   | 3               | 0.824            | 80.57                                 | 483.39                      | 8.958              |
 | 10          | 6                   | 4               | 0.825            | 80.48                                 | 482.88                      | 9.004              |
 
-### Scenario: Text Summarization
+Scenario: Text Summarization
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -1003,7 +1001,7 @@ Test result analyze：
 | 9           | 2                   | 7               | 20.703           | 28.43                                 | 56.85                       | 49.412             |
 | 10          | 2                   | 8               | 13.531           | 30.99                                 | 61.97                       | 34.817             |
 
-### Scenario: Code Generation
+Scenario: Code Generation
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -1018,7 +1016,7 @@ Test result analyze：
 | 9           | 6                   | 3               | 0.782            | 84.77                                 | 508.61                      | 8.961              |
 | 10          | 3                   | 7               | 5.550            | 35.41                                 | 106.23                      | 40.336             |
 
-### Scenario: Chatbot
+Scenario: Chatbot
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -1033,7 +1031,7 @@ Test result analyze：
 | 9           | 4                   | 5               | 2.291            | 43.31                                 | 173.23                      | 8.963              |
 | 10          | 6                   | 4               | 1.361            | 52.53                                 | 315.18                      | 8.955              |
 
-### Scenario: Sentiment Analysis / Classification
+Scenario: Sentiment Analysis / Classification
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
@@ -1048,7 +1046,7 @@ Test result analyze：
 | 9           | 3                   | 6               | 7.486            | 26.17                                 | 78.52                       | 12.986             |
 | 10          | 3                   | 7               | 7.258            | 26.31                                 | 78.93                       | 13.033             |
 
-### Scenario: Multi-turn Reasoning / Complex Tasks
+Scenario: Multi-turn Reasoning / Complex Tasks
 
 | Concurrency | Successful Requests | Failed Requests | Average TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
 | ----------- | ------------------- | --------------- | ---------------- | ------------------------------------- | --------------------------- | ------------------ |
