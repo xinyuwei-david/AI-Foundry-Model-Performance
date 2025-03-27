@@ -34,7 +34,7 @@ Next, we will use a Python script to automate the deployment of the model and us
 
 ### Fast Deploy AI Model on AML Model Catalog via Azure GPU VM
 
-By now, the AML names tested in this repo, their full names on Hugging Face, and the Azure GPU VM SKUs that can be deployed on AML are as follows: 
+By now, the AML names tested in this repo, their full names on Hugging Face, and the Azure GPU VM SKUs that can be deployed on AML are as follows.
 
 | **Model Name on AML**                         | **Model on HF** (tokenizers name)             | **Azure GPU VM SKU Support in AML**              |
 | --------------------------------------------- | --------------------------------------------- | ------------------------------------------------ |
@@ -53,7 +53,7 @@ By now, the AML names tested in this repo, their full names on Hugging Face, and
 | stabilityai-stable-diffusion-xl-refiner-1-0   | stabilityai/stable-diffusion-xl-refiner-1.0   | Standard_ND96amsr_A100_v4 or Standard_ND96asr_v4 |
 | microsoft-Orca-2-7b                           | microsoft/Orca-2-7b                           | NC24/48/96 A100                                  |
 
-
+This repository primarily focuses on the inference performance of the aforementioned models on 1x NC24 A100, 2 x NC24 A100, 1 x NC48 A100, 1 x NC40 H100, and 1 x NC80 H100. However, these models currently do not support deployment on H100. Therefore, as of March 2025, all validations are conducted based on NC100. 
 
 #### **Clone code and prepare shell environment**
 
@@ -102,6 +102,8 @@ Next, you need to execute a script for end-to-end model deployment. This script 
 - Specify the Azure GPU VM SKU and quantity to be used for deployment. 
 - Provide you with the endpoint and key of the successfully deployed model, allowing you to proceed with performance testing. 
 
+Before running the script, you need to check the table above to confirm the types of Azure GPU VMs supported by the AI model you plan to deploy. 
+
 ```
 #python deploymodels-linux.py
 ```
@@ -111,8 +113,6 @@ If you do test on powershell,  you should use:
 ```
 #python deploymodels-powershell.py
 ```
-
-
 
 The deploy process:
 
@@ -203,7 +203,7 @@ The primary goal of performance testing is to verify tokens/s and TTFT during th
 Before officially starting the test, you need to log in to HF on your terminal.
 
 ```
-huggingface-cli  login
+#huggingface-cli  login
 ```
 
 #### Phi Text2Text Series (Phi-4/Phi-3-small-8k-instruct)
