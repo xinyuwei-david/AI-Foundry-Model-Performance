@@ -196,6 +196,40 @@ SECONDARY_KEY=4dhy3og6WfVzkIijMU7FFUDLpz4WIWEYgIlXMGYUzgwafsW6GPrMJQQJ99BCAAAAAA
 
 
 
+**Fast delete endpoint**
+
+
+
+```
+#python deplete-endpoint-20250327.py
+```
+
+
+
+```
+lease enter your Azure Subscription ID: 08f95cfd-64fe-4187-99bb-7b3e661c4cde
+Please enter your Azure Resource Group name: A100VM_group
+Please enter your Azure ML Workspace name: aml-westus
+
+Retrieving the list of online Endpoints in the Workspace...
+
+List of online Endpoints:
+1. aml-westus-takfp
+2. aml-westus-aflqs
+
+Enter the numbers of the Endpoints you want to delete (e.g., 1, 3, 4). Press Enter to skip: 1, 2
+
+Deleting Endpoint: aml-westus-takfp...
+..............................................................................................................................Endpoint aml-westus-takfp deleted successfully.
+
+Deleting Endpoint: aml-westus-aflqs...
+.................................................................................Endpoint aml-westus-aflqs deleted successfully.
+
+The deletion process for all specified Endpoints has been completed. Exiting the script.
+```
+
+
+
 ###  Fast Performance Test AI Model on AML Model Catalog
 
 The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution(Refer to upper table of tokenizers name).
