@@ -198,16 +198,16 @@ SECONDARY_KEY=4dhy3og6WfVzkIijMU7FFUDLpz4WIWEYgIlXMGYUzgwafsW6GPrMJQQJ99BCAAAAAA
 
 **Fast delete endpoint**
 
-
+We know that GPU VMs are relatively expensive. Therefore, after completing performance testing, you should make use of the script below to delete the endpoint to avoid incurring excessive costs.
 
 ```
 #python deplete-endpoint-20250327.py
 ```
 
-
+Delete process:
 
 ```
-lease enter your Azure Subscription ID: 08f95cfd-64fe-4187-99bb-7b3e661c4cde
+lease enter your Azure Subscription ID: aaaaaaaaaaaaaaaa
 Please enter your Azure Resource Group name: A100VM_group
 Please enter your Azure ML Workspace name: aml-westus
 
@@ -310,8 +310,6 @@ Full original test results are here:
 Full original test results are here:
 
 *https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/Phi-3-small-8k-instruct-test-results.md*
-
-
 
 #### Phi vision series (Phi-3.5-vision-instruct/Phi-3-vision-128k-instruct)
 
@@ -637,7 +635,9 @@ Scenario: Multi-turn Reasoning / Complex Tasks
 | 9           | 4                   | 5               | 3.844            | 58.83                                 | 235.30                      | 9.244              |
 | 10          | 4                   | 6               | 3.846            | 58.59                                 | 234.35                      | 9.284              |
 
+Full original test results are here:
 
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/Mixtral-8x7B-Instruct-v0.1-result.txt*
 
 #### openai-whisper-large Series
 
@@ -957,7 +957,9 @@ Multi-turn Reasoning / Complex Tasks
 | 9           | 4                   | 5               | 10.003           | 62.58                                 | 250.33                      | 13.203             |
 | 10          | 4                   | 6               | 9.995            | 62.65                                 | 250.61                      | 13.200             |
 
+Full original test results are here:
 
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/motron-3-8b-chat-4k-steerlm-result.txt*
 
 #### stabilityai-stable-diffusion-xl-refiner-1-0 Series
 
@@ -1095,7 +1097,9 @@ Scenario: Multi-turn Reasoning / Complex Tasks
 | 9           | 2                   | 7               | 23.508           | 30.74                                 | 61.47                       | 59.669             |
 | 10          | 2                   | 8               | 21.661           | 22.80                                 | 45.60                       | 25.310             |
 
+Full original test results are here:
 
+*https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/orca-result.txt*
 
 
 
