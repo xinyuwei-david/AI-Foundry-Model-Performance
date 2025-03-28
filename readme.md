@@ -24,6 +24,8 @@ If you care about the performance data of this method, please skip to the last s
 
 
 
+If you want the deployed model to have more exclusive performance and lower latency, you can use the Managed Compute mode. 
+
 ## Performance test of AI models in Azure Machine Learning
 
 In this section, we focus on the models deployed on Managed Compute in the Model Catalogue on AML.
