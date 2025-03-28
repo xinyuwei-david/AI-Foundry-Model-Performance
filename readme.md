@@ -236,13 +236,13 @@ The deletion process for all specified Endpoints has been completed. Exiting the
 
 ***Note:***
 
-============================================================================================================================
+========
 
 1. The test results in this section are for reference only. You need to use my script to conduct tests in your actual environment.
 2. In my performance testing script, timeout and retry mechanisms are configured. Specifically, if a task fails to complete within the timeout period (default is 30 seconds), it will be marked as failed. Additionally, if a request encounters a 429 error during execution, it will trigger a backoff mechanism. If the 429 error occurs three consecutive times, the request will be marked as failed. When performing tests, you should adjust these parameters according to the requirements of your business scenario.
 3. When analyzing the test results, you need to consider multiple metrics, including request success rate, TTFT (Time to First Token), tokens/s, and TTFT again. You should not focus solely on a single indicator.
 
-============================================================================================================================
+========
 
 The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution(Refer to upper table of tokenizers name).
 
