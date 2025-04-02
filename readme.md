@@ -73,8 +73,6 @@ Next, find a shell environment where you can execute `az login` to log in to you
 #pip install -r requirements.txt  
 ```
 
-==Backup info for developing========
-
 #cat requirements.txt  
 
 ```
