@@ -228,17 +228,200 @@ Deleting Endpoint: aml-westus-aflqs...
 The deletion process for all specified Endpoints has been completed. Exiting the script.
 ```
 
+#### Maximally exploit the performance of the Endpoint
 
+***If you feel the default performance without adjusting the parameters is sufficient, then there is no need to modify these two settings, every adjustment is a trade-off, and there is no perfect solution.*** 
+
+There is no doubt that AI models deployed using the Managed Compute approach rely on the computational power of the underlying Azure GPU VM. But can we maximize its performance? Once the Endpoint is deployed, it runs as a container on the Azure GPU VM. Take the NC24 A100 as an example, its default `request_settings.max_concurrent_requests_per_instance` is set to 1. This means the model can only handle one concurrent request. If the concurrency exceeds this limit, a 429 error will be reported.
+
+You can increase this value, for example, to 10. However, at the same time, you also need to increase the `request_settings.request_timeout_ms` (default is 90 seconds), because as concurrency increases, the response time will significantly rise. If the timeout duration is not increased, it may lead to a large number of HTTPError 424 errors. For instance, you can increase the `request_settings.request_timeout_ms` to 180 seconds.
+
+Of course, increasing the values of these two parameters can boost peak throughput to some extent, but it will also increase TTFT (Time to First Token) and the total duration for processing requests. This adjustment depends on the SLA requirements of your business scenario (such as input/output tokens and TTFT requirements). 
+
+Next, I will use Phi4 on Azure NC24 A100 as an example to demonstrate the performance changes after adjusting `request_settings.max_concurrent_requests_per_instance` to 10 and `request_settings.request_timeout_ms` to 180 seconds. 
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/22.png)
+
+Modify request_settings.max_concurrent_requests_per_instance：
+
+```
+xinyu [ ~ ]$ az ml online-deployment update -g AIrg1 -w aml-9-PolandCentral -e aml-9-polandcentral-1-nc24 -n phi-4-7 --set request_settings.request_timeout_ms=180000
+
+{
+  "app_insights_enabled": false,
+  "creation_context": {
+    "created_at": "2025-04-03T01:18:50.017961+00:00",
+    "created_by": "Xinyu Wei",
+    "last_modified_at": "2025-04-03T01:18:50.017967+00:00"
+  },
+  "data_collector": {
+    "collections": {
+      "model_inputs": {
+        "data": {},
+        "enabled": "true"
+      },
+      "model_outputs": {
+        "data": {},
+        "enabled": "true"
+      }
+    },
+    "rolling_rate": "hour",
+    "sampling_rate": 1.0
+  },
+  "egress_public_network_access": "enabled",
+  "endpoint_name": "aml-9-polandcentral-1-nc24",
+  "environment": "azureml:/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/environments/DefaultNcdEnv-foundation-model-inference/versions/68",
+  "environment_variables": {
+    "AZUREML_MODEL_DIR": "/var/azureml-app/azureml-models/Phi-4/7"
+  },
+  "id": "/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/onlineEndpoints/aml-9-polandcentral-1-nc24/deployments/phi-4-7",
+  "instance_count": 1,
+  "instance_type": "Standard_NC24ads_A100_v4",
+  "liveness_probe": {
+    "failure_threshold": 30,
+    "initial_delay": 600,
+    "period": 10,
+    "success_threshold": 1,
+    "timeout": 2
+  },
+  "model": "azureml://registries/azureml/models/Phi-4/versions/7",
+  "name": "phi-4-7",
+  "properties": {
+    "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/providers/Microsoft.MachineLearningServices/locations/polandcentral/mfeOperationsStatus/odidp:0d21d1aa-4af1-45dd-af75-b183b872feca:7b3e4a6c-c68e-4fcf-88f0-0f6eaa5bd873?api-version=2023-04-01-preview"
+  },
+  "provisioning_state": "Succeeded",
+  "readiness_probe": {
+    "failure_threshold": 30,
+    "initial_delay": 10,
+    "period": 10,
+    "success_threshold": 1,
+    "timeout": 2
+  },
+  "request_settings": {
+    "max_concurrent_requests_per_instance": 5,
+    "request_timeout_ms": 180000
+  },
+  "resourceGroup": "AIrg1",
+  "scale_settings": {
+    "type": "default"
+  },
+  "tags": {},
+  "type": "managed"
+}
+
+```
+
+Modify request_settings.request_timeout_ms：
+
+```
+xinyu [ ~ ]$ az ml online-deployment update -g AIrg1 -w aml-9-PolandCentral -n phi-4-7 -e aml-9-polandcentral-1-nc24 --set request_settings.max_concurrent_requests_per_instance=5
+Class DataAsset: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
+Class DeploymentCollection: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
+Class DataCollector: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
+Check: endpoint aml-9-polandcentral-1-nc24 exists
+{
+  "app_insights_enabled": false,
+  "creation_context": {
+    "created_at": "2025-04-03T01:18:50.017961+00:00",
+    "created_by": "Xinyu Wei",
+    "last_modified_at": "2025-04-03T01:18:50.017967+00:00"
+  },
+  "data_collector": {
+    "collections": {
+      "model_inputs": {
+        "data": {},
+        "enabled": "true"
+      },
+      "model_outputs": {
+        "data": {},
+        "enabled": "true"
+      }
+    },
+    "rolling_rate": "hour",
+    "sampling_rate": 1.0
+  },
+  "egress_public_network_access": "enabled",
+  "endpoint_name": "aml-9-polandcentral-1-nc24",
+  "environment": "azureml:/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/environments/DefaultNcdEnv-foundation-model-inference/versions/68",
+  "environment_variables": {
+    "AZUREML_MODEL_DIR": "/var/azureml-app/azureml-models/Phi-4/7"
+  },
+  "id": "/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/onlineEndpoints/aml-9-polandcentral-1-nc24/deployments/phi-4-7",
+  "instance_count": 1,
+  "instance_type": "Standard_NC24ads_A100_v4",
+  "liveness_probe": {
+    "failure_threshold": 30,
+    "initial_delay": 600,
+    "period": 10,
+    "success_threshold": 1,
+    "timeout": 2
+  },
+  "model": "azureml://registries/azureml/models/Phi-4/versions/7",
+  "name": "phi-4-7",
+  "properties": {
+    "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/providers/Microsoft.MachineLearningServices/locations/polandcentral/mfeOperationsStatus/odidp:0d21d1aa-4af1-45dd-af75-b183b872feca:bb9958d2-86f6-428c-9d95-85fe8f579df7?api-version=2023-04-01-preview"
+  },
+  "provisioning_state": "Succeeded",
+  "readiness_probe": {
+    "failure_threshold": 30,
+    "initial_delay": 10,
+    "period": 10,
+    "success_threshold": 1,
+    "timeout": 2
+  },
+  "request_settings": {
+    "max_concurrent_requests_per_instance": 5,
+    "request_timeout_ms": 90000
+  },
+  "resourceGroup": "AIrg1",
+  "scale_settings": {
+    "type": "default"
+  },
+  "tags": {},
+  "type": "managed"
+}
+```
+
+
+
+Test rests after parameters modification:
+
+| Scenario  (Concurrency)            | Total Requests | Successful  Requests | Average TTFT  | Total Completion  Time (s) | Tokens/s  (Throughput) |
+| ---------------------------------- | -------------- | -------------------- | ------------- | -------------------------- | ---------------------- |
+| Text Generation, concurrency=1     | 1  (1+0)       | 1                    | 19.560  s     | 19.587  s                  | 44.63                  |
+| Text Generation, concurrency=2     | 2  (2+0)       | 2                    | 30.135  s     | 39.863  s                  | 78.24                  |
+| Text Generation, concurrency=3     | 3  (3+0)       | 3                    | 43.461  s     | 67.203  s                  | 86.36                  |
+| Text Generation, concurrency=4     | 4  (4+0)       | 4                    | 52.244  s     | 75.882  s                  | 72.48                  |
+| Text Generation, concurrency=5     | 5  (5+0)       | 5                    | 64.924  s     | 107.753  s                 | 103.56                 |
+| **Text Generation, concurrency=6** | **6  (6+0)**   | **6**                | **71.054  s** | **124.649  s**             | **112.44**             |
+| Text Generation, concurrency=7     | 7  (0+7)       | 0                    | nan           | 4.592  s                   | 0                      |
+| Text Generation, concurrency=8     | 8  (8+0)       | 8                    | 89.210  s     | 168.429  s                 | 129                    |
+| Text Generation, concurrency=9     | 9  (6+3)       | 6                    | 70.181  s     | 138.742  s                 | 111.47                 |
+| Text Generation, concurrency=10    | 10  (0+10)     | 0                    | nan           | 5.346  s                   | 0                      |
+
+Test rests before parameters modification:
+
+Concurrency = 2
+
+| Scenario            | VM 1 (1-nc48) Total TTT (s) | VM 2 (2-nc24) Total TTFT (s) | VM 3 (1-nc24) Total TTFT (s) | VM 1 (1-nc48) Total tokens/s | VM 2 (2-nc24) Total tokens/s | VM 3 (1-nc24) Total tokens/s |
+| ------------------- | --------------------------- | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- | ---------------------------- |
+| **Text Generation** | 19.291                      | 19.978                       | **24.576**                   | 110.94                       | 90.13                        | **79.26**                    |
+
+We can see that after modifying the parameters, for the same model and GPU VM—and using the same prompt and completion length—the peak throughput increased by about 40%, but the TTFT is now three times what it was before. Therefore, you need to find a balance among these various performance metrics.
 
 ###  Fast Performance Test AI Model on AML Model Catalog
 
 ***Note:***
 
 - The test results in this section are for reference only. You need to use my script to conduct tests in your actual environment.
+
 - In my performance testing script, timeout and retry mechanisms are configured. Specifically, if a task fails to complete within the timeout period (default is 30 seconds), it will be marked as failed. Additionally, if a request encounters a 429 error during execution, it will trigger a backoff mechanism. If the 429 error occurs three consecutive times, the request will be marked as failed. When performing tests, you should adjust these parameters according to the requirements of your business scenario.
+
 - When analyzing the test results, you need to consider multiple metrics, including request success rate, TTFT (Time to First Token), tokens/s, and TTFT again. You should not focus solely on a single indicator.
 
+- All the tests in this section are based on the model-deployed Endpoint, without adjusting the `request_settings.max_concurrent_requests_per_instance` and `request_settings.request_timeout_ms` parameters. 
 
+  
 
 The primary goal of performance testing is to verify tokens/s and TTFT during the inference process. To better simulate real-world scenarios, I have set up several common LLM/SLM use cases in the test script. Additionally, to ensure tokens/s performance, the test script needs to load the corresponding model's tokenizer during execution(Refer to upper table of tokenizers name).
 
