@@ -1,6 +1,6 @@
 # AML and AI Foundry Model Catalog Models performance Evaluation
 
-This repository is designed to test the performance of open-source models from the Azure Machine Learning Model Catalog. 
+This repository is designed to test the performance of open-source models from the Azure Machine Learning and AI Foundry Model Catalog. 
 
 
 
@@ -119,12 +119,8 @@ If you do test on powershell,  you should use:
 *The difference between the two scripts, deploymodels-linux.py and deploymodels-powershell.py, is not significant. The only difference is that PowerShell sometimes cannot parse "az" and can only parse "az.cmd," as shown in the following code snippet.* 
 
 ```
-  command = [  
-
     "az.cmd", "ml", "compute", "list-usage",  
 ```
-
-
 
 
 
