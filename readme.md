@@ -114,6 +114,20 @@ If you do test on powershell,  you should use:
 #python deploymodels-powershell.py
 ```
 
+**Note：**
+
+*The difference between the two scripts, deploymodels-linux.py and deploymodels-powershell.py, is not significant. The only difference is that PowerShell sometimes cannot parse "az" and can only parse "az.cmd," as shown in the following code snippet.* 
+
+```
+  command = [  
+
+    "az.cmd", "ml", "compute", "list-usage",  
+```
+
+
+
+
+
 The deploy process:
 
 ```
