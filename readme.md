@@ -1,4 +1,4 @@
-# AI Foundry Model Catalog Model performance
+# AML and AI Foundry Model Catalog Models performance Evaluation
 
 This repository is designed to test the performance of open-source models from the Azure Machine Learning Model Catalog. 
 
