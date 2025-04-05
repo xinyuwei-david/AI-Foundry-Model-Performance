@@ -105,13 +105,13 @@ Next, you need to execute a script for end-to-end model deployment. This script 
 Before running the script, you need to check the table above to confirm the types of Azure GPU VMs supported by the AI model you plan to deploy. 
 
 ```
-#python deploymodels-linux.py
+#python deploymodels-linux-20250405.py
 ```
 
 If you do test on powershell,  you should use:
 
 ```
-#python deploymodels-powershell.py
+#python deploymodels-powershell-20250405.py
 ```
 
 **Note：**
@@ -244,7 +244,7 @@ The deletion process for all specified Endpoints has been completed. Exiting the
 
 There is no doubt that AI models deployed using the Managed Compute approach rely on the computational power of the underlying Azure GPU VM. But can we maximize its performance? Once the Endpoint is deployed, it runs as a container on the Azure GPU VM. Take the NC24 A100 as an example, its default `request_settings.max_concurrent_requests_per_instance` is set to 1. This means the model can only handle one concurrent request. If the concurrency exceeds this limit, a 429 error will be reported.
 
-You can increase this value, for example, to 10. However, at the same time, you also need to increase the `request_settings.request_timeout_ms` (default is 90 seconds), because as concurrency increases, the response time will significantly rise. If the timeout duration is not increased, it may lead to a large number of HTTPError 424 errors. For instance, you can increase the `request_settings.request_timeout_ms` to 180 seconds.
+You can increase this value, for example, to 10. However, at the same time, you also need to increase the `request_settings.request_timeout_ms` (default is 90 seconds), because as concurrency increases, the response time will significantly rise. If the timeout duration is not increased, it may lead to a large number of HTTPError 424 errors. For instance, you can increase the `request_settings.request_timeout_ms` to 180 seconds. At the same time, you need to ensure that the timeout period set by the client (which is the stress testing script in the repo) is not less than the timeout period set by the server. 
 
 Of course, increasing the values of these two parameters can boost peak throughput to some extent, but it will also increase TTFT (Time to First Token) and the total duration for processing requests. This adjustment depends on the SLA requirements of your business scenario (such as input/output tokens and TTFT requirements). 
 
@@ -252,144 +252,27 @@ Next, I will use Phi4 on Azure NC24 A100 as an example to demonstrate the perfor
 
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/22.png)
 
-Modify request_settings.max_concurrent_requests_per_instance：
+Modify 2 parameters:
 
 ```
-xinyu [ ~ ]$ az ml online-deployment update -g AIrg1 -w aml-9-PolandCentral -e aml-9-polandcentral-1-nc24 -n phi-4-7 --set request_settings.request_timeout_ms=180000
-
-{
-  "app_insights_enabled": false,
-  "creation_context": {
-    "created_at": "2025-04-03T01:18:50.017961+00:00",
-    "created_by": "Xinyu Wei",
-    "last_modified_at": "2025-04-03T01:18:50.017967+00:00"
-  },
-  "data_collector": {
-    "collections": {
-      "model_inputs": {
-        "data": {},
-        "enabled": "true"
-      },
-      "model_outputs": {
-        "data": {},
-        "enabled": "true"
-      }
-    },
-    "rolling_rate": "hour",
-    "sampling_rate": 1.0
-  },
-  "egress_public_network_access": "enabled",
-  "endpoint_name": "aml-9-polandcentral-1-nc24",
-  "environment": "azureml:/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/environments/DefaultNcdEnv-foundation-model-inference/versions/68",
-  "environment_variables": {
-    "AZUREML_MODEL_DIR": "/var/azureml-app/azureml-models/Phi-4/7"
-  },
-  "id": "/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/onlineEndpoints/aml-9-polandcentral-1-nc24/deployments/phi-4-7",
-  "instance_count": 1,
-  "instance_type": "Standard_NC24ads_A100_v4",
-  "liveness_probe": {
-    "failure_threshold": 30,
-    "initial_delay": 600,
-    "period": 10,
-    "success_threshold": 1,
-    "timeout": 2
-  },
-  "model": "azureml://registries/azureml/models/Phi-4/versions/7",
-  "name": "phi-4-7",
-  "properties": {
-    "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/providers/Microsoft.MachineLearningServices/locations/polandcentral/mfeOperationsStatus/odidp:0d21d1aa-4af1-45dd-af75-b183b872feca:7b3e4a6c-c68e-4fcf-88f0-0f6eaa5bd873?api-version=2023-04-01-preview"
-  },
-  "provisioning_state": "Succeeded",
-  "readiness_probe": {
-    "failure_threshold": 30,
-    "initial_delay": 10,
-    "period": 10,
-    "success_threshold": 1,
-    "timeout": 2
-  },
-  "request_settings": {
-    "max_concurrent_requests_per_instance": 5,
-    "request_timeout_ms": 180000
-  },
-  "resourceGroup": "AIrg1",
-  "scale_settings": {
-    "type": "default"
-  },
-  "tags": {},
-  "type": "managed"
-}
-
+az ml online-deployment update -g <resource-group> -w <workspace-name> -n <deployment-name> -e <endpoint-name> --set request_settings.max_concurrent_requests_per_instance=<value> request_settings.max_concurrent_requests_per_instance=<value> 
 ```
 
-Modify request_settings.request_timeout_ms：
+custom-deployment is fix deployment name value in my deployment script 
 
 ```
-xinyu [ ~ ]$ az ml online-deployment update -g AIrg1 -w aml-9-PolandCentral -n phi-4-7 -e aml-9-polandcentral-1-nc24 --set request_settings.max_concurrent_requests_per_instance=5
-Class DataAsset: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
-Class DeploymentCollection: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
-Class DataCollector: This is an experimental class, and may change at any time. Please see https://aka.ms/azuremlexperimental for more information.
-Check: endpoint aml-9-polandcentral-1-nc24 exists
-{
-  "app_insights_enabled": false,
-  "creation_context": {
-    "created_at": "2025-04-03T01:18:50.017961+00:00",
-    "created_by": "Xinyu Wei",
-    "last_modified_at": "2025-04-03T01:18:50.017967+00:00"
-  },
-  "data_collector": {
-    "collections": {
-      "model_inputs": {
-        "data": {},
-        "enabled": "true"
-      },
-      "model_outputs": {
-        "data": {},
-        "enabled": "true"
-      }
-    },
-    "rolling_rate": "hour",
-    "sampling_rate": 1.0
-  },
-  "egress_public_network_access": "enabled",
-  "endpoint_name": "aml-9-polandcentral-1-nc24",
-  "environment": "azureml:/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/environments/DefaultNcdEnv-foundation-model-inference/versions/68",
-  "environment_variables": {
-    "AZUREML_MODEL_DIR": "/var/azureml-app/azureml-models/Phi-4/7"
-  },
-  "id": "/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/resourceGroups/AIrg1/providers/Microsoft.MachineLearningServices/workspaces/aml-9-PolandCentral/onlineEndpoints/aml-9-polandcentral-1-nc24/deployments/phi-4-7",
-  "instance_count": 1,
-  "instance_type": "Standard_NC24ads_A100_v4",
-  "liveness_probe": {
-    "failure_threshold": 30,
-    "initial_delay": 600,
-    "period": 10,
-    "success_threshold": 1,
-    "timeout": 2
-  },
-  "model": "azureml://registries/azureml/models/Phi-4/versions/7",
-  "name": "phi-4-7",
-  "properties": {
-    "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/53039473-9bbd-499d-90d7-d046d4fa63b6/providers/Microsoft.MachineLearningServices/locations/polandcentral/mfeOperationsStatus/odidp:0d21d1aa-4af1-45dd-af75-b183b872feca:bb9958d2-86f6-428c-9d95-85fe8f579df7?api-version=2023-04-01-preview"
-  },
-  "provisioning_state": "Succeeded",
-  "readiness_probe": {
-    "failure_threshold": 30,
-    "initial_delay": 10,
-    "period": 10,
-    "success_threshold": 1,
-    "timeout": 2
-  },
-  "request_settings": {
-    "max_concurrent_requests_per_instance": 5,
-    "request_timeout_ms": 90000
-  },
-  "resourceGroup": "AIrg1",
-  "scale_settings": {
-    "type": "default"
-  },
-  "tags": {},
-  "type": "managed"
-}
+xinyu [ ~ ]$  az ml online-deployment update -g A100VM_group -w xinyu-workspace-westus -n custom-deployment -e custom-endpoint-1743836288 --set request_settings.request_timeout_ms=180000 request_settings.max_concurrent_requests_per_instance=10
+```
+
+Check new parameters:
+
+```
+az ml online-deployment show \
+--name custom-deployment \
+--endpoint-name custom-endpoint-1743836288 \
+--resource-group A100VM_group \
+--workspace-name xinyu-workspace-westus \
+--output json
 ```
 
 
