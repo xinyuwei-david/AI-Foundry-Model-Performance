@@ -1,6 +1,22 @@
 # AML and AI Foundry Model Catalog Models performance Evaluation
 
-This repository is designed to test the performance of open-source models from the Azure Machine Learning and AI Foundry Model Catalog. 
+This repository is designed to test the performance of open-source models from the Azure Machine Learning and AI Foundry Model Catalog, includes:
+
+​       Automatically deploy and delete AI models.
+
+- Quickly deploy open-source AI models on AML/AI Foundry.
+
+- Fast delete Endpoint after PoC
+
+  
+
+  Rapidly evaluate the performance of these models on the corresponding AI infrastructure.
+
+- Utilize real prompt models to initiate stress testing across multiple scenarios.
+
+- Evaluate performance metrics from multiple dimensions. 
+
+- To achieve more accurate metrics, use each model's own tokenizer (GPT-2 will be used if not specified).
 
 
 
@@ -16,19 +32,9 @@ https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/deployments-overview
 | Billing bases                 | Token usage & PTU                                            | Token usage                                                  | Token usage                                                  | Compute core hours                                           |
 | Deployment instructions       | [Deploy to Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-openai) | [Deploy to Azure AI model inference](https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/how-to/create-model-deployments) | [Deploy to Serverless API](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-serverless) | [Deploy to Managed compute](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-managed) |
 
-Currently, an increasing number of new flagship models in the Azure AI Foundry model catalog, including OpenAI, will be deployed using the Azure AI model inference method. Models deployed in this way can be accessed via the AI Inference SDK (which now supports stream mode: https://learn.microsoft.com/en-us/python/api/overview/azure/ai-inference-readme?view=azure-python-preview). Open-source models include DeepSeek R1, V3, Phi, Mistral, and more. For a detailed list of models, please refer to:
-
-***https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/concepts/models***
-
-If you care about the performance data of this method, please skip to the last section of this repo.
-
-
-
-If you want the deployed model to have more exclusive performance and lower latency, you can use the Managed Compute mode. 
-
 ## Performance test of AI models deployed on Managed Compute in AML and AI Foundry
 
-In this section, we focus on the models deployed on Managed Compute in the Model Catalogue on AML.
+In this section, we focus on the models deployed on Managed Compute in the Model Catalogue on AML and AI Foundry.
 
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/19.png)
 
@@ -65,6 +71,27 @@ First, you need to create an Azure Machine Learning service in the Azure Portal.
 
 Next, find a shell environment where you can execute `az login` to log in to your Azure subscription.
 
+**Install conda：**
+
+For Linux
+
+```
+wget https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh
+bash Anaconda3-2024.10-1-Linux-x86_64.sh
+source ~/.bashrc
+conda init
+```
+
+For Windows Powershell:
+
+Download it from Edge and install it directly:
+
+ *https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Windows-x86_64.exe*
+
+
+
+**Clone code and do preparation:**
+
 ```
 #git clone https://github.com/xinyuwei-david/AI-Foundry-Model-Performance.git
 #conda create -n aml_env python=3.9 -y
@@ -72,6 +99,8 @@ Next, find a shell environment where you can execute `az login` to log in to you
 #cd AI-Foundry-Model-Performance
 #pip install -r requirements.txt  
 ```
+
+
 
 #cat requirements.txt  
 
@@ -1205,7 +1234,9 @@ Full original test results are here:
 
 ## Performance test on Azure AI model inference
 
-[images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/23.png)
+Currently, an increasing number of new flagship models in the Azure AI Foundry model catalog, including OpenAI, will be deployed using the Azure AI model inference method. Models deployed in this way can be accessed via the AI Inference SDK (which now supports stream mode: https://learn.microsoft.com/en-us/python/api/overview/azure/ai-inference-readme?view=azure-python-preview). Open-source models include DeepSeek R1, V3, Phi, Mistral, and more. 
+
+![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/23.png)
 
 Azure AI model inference has a default quota. If you feel that the quota for the model is insufficient, you can apply for an increase separately. 
 
