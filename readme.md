@@ -2,27 +2,22 @@
 
 This repository is designed to test the performance of open-source models from the Azure Machine Learning and AI Foundry Model Catalog, includes:
 
-​       Automatically deploy and delete AI models.
+**Automatically deploy and delete AI models.**
 
 - Quickly deploy open-source AI models on AML/AI Foundry.
-
 - Fast delete Endpoint after PoC
 
-  
-
-  Rapidly evaluate the performance of these models on the corresponding AI infrastructure.
+Rapidly evaluate the performance of these models on the corresponding AI infrastructure and AI model inference quota.
 
 - Utilize real prompt models to initiate stress testing across multiple scenarios.
-
 - Evaluate performance metrics from multiple dimensions. 
-
 - To achieve more accurate metrics, use each model's own tokenizer (GPT-2 will be used if not specified).
 
 
 
 ## Deploying models Methods
 
-https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/deployments-overview
+In this repository, I focus on the performance of open-source AI models deployed using Managed Compute and Azure AI Model Inference.
 
 | Name                          | Azure OpenAI service                                         | Azure AI model inference                                     | Serverless API                                               | Managed compute                                              |
 | :---------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
@@ -31,6 +26,8 @@ https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/deployments-overview
 | Best suited when              | You are planning to use only OpenAI models                   | You are planning to take advantage of the flagship models in Azure AI catalog, including OpenAI. | You are planning to use a single model from a specific provider (excluding OpenAI). | If you plan to use open models and you have enough compute quota available in your subscription. |
 | Billing bases                 | Token usage & PTU                                            | Token usage                                                  | Token usage                                                  | Compute core hours                                           |
 | Deployment instructions       | [Deploy to Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-openai) | [Deploy to Azure AI model inference](https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/how-to/create-model-deployments) | [Deploy to Serverless API](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-serverless) | [Deploy to Managed compute](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/deploy-models-managed) |
+
+
 
 ## Performance test of AI models deployed on Managed Compute in AML and AI Foundry
 
@@ -1090,12 +1087,6 @@ Full original test results are here:
 
 *https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/testlogs/motron-3-8b-chat-4k-steerlm-result.txt*
 
-#### stabilityai-stable-diffusion-xl-refiner-1-0 Series
-
-
-
-
-
 
 
 #### microsoft-Orca-2-7b  Series
@@ -1234,9 +1225,15 @@ Full original test results are here:
 
 ## Performance test on Azure AI model inference
 
-Currently, an increasing number of new flagship models in the Azure AI Foundry model catalog, including OpenAI, will be deployed using the Azure AI model inference method. Models deployed in this way can be accessed via the AI Inference SDK (which now supports stream mode: https://learn.microsoft.com/en-us/python/api/overview/azure/ai-inference-readme?view=azure-python-preview). Open-source models include DeepSeek R1, V3, Phi, Mistral, and more. 
+Currently, an increasing number of new flagship models in the Azure AI Foundry model catalog, including OpenAI, will be deployed using the Azure AI model inference method. 
+
+*https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/deployments-overview*
 
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/23.png)
+
+Models deployed in this way can be accessed via the AI Inference SDK,which now supports stream mode. Open-source models include DeepSeek R1, V3, Phi, Mistral, and more. 
+
+*https://learn.microsoft.com/en-us/python/api/overview/azure/ai-inference-readme?view=azure-python-preview*
 
 Azure AI model inference has a default quota. If you feel that the quota for the model is insufficient, you can apply for an increase separately. 
 
