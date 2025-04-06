@@ -51,7 +51,7 @@ def input_config():
     }  
   
   
-REQUEST_TIMEOUT = 30  # 每个请求超时时间（秒）  
+REQUEST_TIMEOUT = 90  # 每个请求超时时间（秒）  
   
 # --------------------------- 允许自签名 HTTPS 证书（如果需要） ---------------------------  
 def allow_self_signed_https(allowed: bool) -> None:  
@@ -235,7 +235,7 @@ def send_ph4_request_scenario(prompt: str, stream: bool) -> dict:
                 continue  
   
 # --------------------------- 定义并发级别（每个场景的同时请求数） ---------------------------  
-CONCURRENCY_LEVELS = [1, 2]  
+CONCURRENCY_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
   
 # --------------------------- 针对单个场景运行测试 ---------------------------  
 def run_scenario_test(scenario: str, stream: bool = False) -> None:  

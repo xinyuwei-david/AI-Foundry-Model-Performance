@@ -20,7 +20,7 @@ URL = None
 API_KEY = None  
 HEADERS = None  
 tokenizer = None  
-REQUEST_TIMEOUT = 30  # Timeout for each individual request (in seconds)  
+REQUEST_TIMEOUT = 90  # Timeout for each individual request (in seconds)  
   
 # --------------------------- Input Configuration ---------------------------  
 def input_config():  

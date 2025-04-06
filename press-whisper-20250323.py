@@ -15,7 +15,7 @@ URL = None
 API_KEY = None  
 HEADERS = None  
 ENCODED_AUDIO = None  
-REQUEST_TIMEOUT = 30  # Timeout for each request (in seconds)  
+REQUEST_TIMEOUT = 90  # Timeout for each request (in seconds)  
 CONCURRENCY_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # Levels of concurrency for testing  
   
 # --------------------------- Allow Self-Signed HTTPS Certificates ---------------------------  

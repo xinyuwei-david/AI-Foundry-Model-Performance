@@ -28,7 +28,7 @@ BASE_PROMPT = "What are in this image? Reply in 3000 tokens"
 IMAGE_URL1 = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"  
   
 DEFAULT_TEMPERATURE = 0.7  
-REQUEST_TIMEOUT = 60  
+REQUEST_TIMEOUT = 90  
 CONCURRENCY_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
   
 tokenizer = None  

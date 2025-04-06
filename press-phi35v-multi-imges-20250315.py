@@ -27,8 +27,8 @@ IMAGE_URL1 = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisc
 IMAGE_URL2 = "https://www.ilankelman.org/stopsigns/australia.jpg"  
   
 DEFAULT_TEMPERATURE = 0.7  
-REQUEST_TIMEOUT = 30  
-CONCURRENCY_LEVELS = [1, 2, 3, 4, 5]  
+REQUEST_TIMEOUT = 90 
+CONCURRENCY_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
 tokenizer = None  
   
 # --------------------------- Allow Self-Signed HTTPS Certificates ---------------------------  

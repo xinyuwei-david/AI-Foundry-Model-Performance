@@ -31,8 +31,8 @@ FINREPORT_URL = None
 API_KEY = None  
 DEPLOYMENT_NAME = None  
 HEADERS = {}  
-REQUEST_TIMEOUT = 30  # Timeout (in seconds) for each request  
-CONCURRENCY_LEVELS = [1, 2, 3, 4, 5]  
+REQUEST_TIMEOUT = 90  # Timeout (in seconds) for each request  
+CONCURRENCY_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
 tokenizer = None  
   
 # -----------------------------------------------------  

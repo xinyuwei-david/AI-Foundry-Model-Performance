@@ -244,7 +244,25 @@ The deletion process for all specified Endpoints has been completed. Exiting the
 
 There is no doubt that AI models deployed using the Managed Compute approach rely on the computational power of the underlying Azure GPU VM. But can we maximize its performance? Once the Endpoint is deployed, it runs as a container on the Azure GPU VM. Take the NC24 A100 as an example, its default `request_settings.max_concurrent_requests_per_instance` is set to 1. This means the model can only handle one concurrent request. If the concurrency exceeds this limit, a 429 error will be reported.
 
-You can increase this value, for example, to 10. However, at the same time, you also need to increase the `request_settings.request_timeout_ms` (default is 90 seconds), because as concurrency increases, the response time will significantly rise. If the timeout duration is not increased, it may lead to a large number of HTTPError 424 errors. For instance, you can increase the `request_settings.request_timeout_ms` to 180 seconds. At the same time, you need to ensure that the timeout period set by the client (which is the stress testing script in the repo) is not less than the timeout period set by the server. 
+Endpoint Default parameters value
+
+| Parameter                                             | Value |
+| ----------------------------------------------------- | ----- |
+| instance_count                                        | 1     |
+| liveness_probe.failure_threshold                      | 30    |
+| liveness_probe.initial_delay                          | 600   |
+| liveness_probe.period                                 | 10    |
+| liveness_probe.success_threshold                      | 1     |
+| liveness_probe.timeout                                | 2     |
+| readiness_probe.failure_threshold                     | 30    |
+| readiness_probe.initial_delay                         | 10    |
+| readiness_probe.period                                | 10    |
+| readiness_probe.success_threshold                     | 1     |
+| readiness_probe.timeout                               | 2     |
+| request_settings.max_concurrent_requests_per_instance | 1     |
+| request_settings.request_timeout_ms                   | 90000 |
+
+You can increase this value, for example, to 10. However, at the same time, you also need to increase the `request_settings.request_timeout_ms` (default is 90 seconds), because as concurrency increases, the response time will significantly rise. If the timeout duration is not increased, it may lead to a large number of HTTPError 424 errors. At the same time, you need to ensure that the timeout period set by the client (which is the stress testing script in the repo) is not less than the timeout period set by the server. 
 
 Of course, increasing the values of these two parameters can boost peak throughput to some extent, but it will also increase TTFT (Time to First Token) and the total duration for processing requests. This adjustment depends on the SLA requirements of your business scenario (such as input/output tokens and TTFT requirements). 
 
@@ -308,7 +326,7 @@ We can see that after modifying the parameters, for the same model and GPU VM—
 
 - The test results in this section are for reference only. You need to use my script to conduct tests in your actual environment.
 
-- In my performance testing script, timeout and retry mechanisms are configured. Specifically, if a task fails to complete within the timeout period (default is 30 seconds), it will be marked as failed. Additionally, if a request encounters a 429 error during execution, it will trigger a backoff mechanism. If the 429 error occurs three consecutive times, the request will be marked as failed. When performing tests, you should adjust these parameters according to the requirements of your business scenario.
+- In my performance testing script, timeout and retry mechanisms are configured. Specifically, if a task fails to complete within the timeout period (default is 90 seconds, which is same as the default value request_settings.request_timeout_ms in Endpoint), it will be marked as failed. Additionally, if a request encounters a 429 error during execution, it will trigger a backoff mechanism. If the 429 error occurs three consecutive times, the request will be marked as failed. When performing tests, you should adjust these parameters according to the requirements of your business scenario.
 
 - When analyzing the test results, you need to consider multiple metrics, including request success rate, TTFT (Time to First Token), tokens/s, and TTFT again. You should not focus solely on a single indicator.
 
@@ -438,7 +456,7 @@ Full original test results are here:
 #### **financial-reports-analysis Series test**
 
 ```
-#python press-phi3v-20250315.py
+#python press.financial-reports-analysis-20250321.py
 ```
 
 **1-nc48**
@@ -1189,6 +1207,8 @@ Full original test results are here:
 
 ## Performance test on Azure AI model inference
 
+[images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/23.png)
+
 Azure AI model inference has a default quota. If you feel that the quota for the model is insufficient, you can apply for an increase separately. 
 
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/14.png)
@@ -1221,10 +1241,18 @@ Prepare test env:
 Run test script, after entering the following three variables, the stress test will begin:
 
 ```
-#python callaiinference.py
-Please enter the Azure AI key: 
-Please enter the Azure AI endpoint URL:
-Please enter the deployment name:
+#python callaiinference-20250406.py 
+```
+
+```
+Please enter the Azure AI endpoint URL, such as https://xinyu.services.ai.azure.com/models format: https://ai-hubeastus869020590911.services.ai.azure.com/models
+
+Please enter the Azure AI key: 4TSBez23vMtPSLPIXgye84oRznpvuYSTDKTr72t***RazJQQJ99BBACYeBjFXJ3w3AAAAACOGmXdu
+
+Please enter the deployment name: DeepSeek-R1 
+
+Please enter concurrency levels separated by commas (e.g. 1,2,3): 10,300
+Received concurrency levels: [10, 300]
 ```
 
 
@@ -1304,7 +1332,7 @@ The overall throughput averages 735.12 tokens/s, with a P90 of 1184.06 tokens/s,
 ![images](https://github.com/xinyuwei-david/AI-Foundry-Model-Performance/blob/main/images/13.png)
 
 ```
-(AIF) root@pythonvm:~/AIFperformance# python callapinormal.py 
+(AIF) root@pythonvm:~/AIFperformance# python callaiinference-20250406.py
 Please enter the Azure AI key: G485wnXwMrAYQKMQPSYpzf7PNLm3sui8qgsXcYFv5Yd3HOmvzZ2GJQQJ99BCACPV0roXJ3w3AAAAACOG9kt1
 Please enter the Azure AI endpoint URL: https://xinyu-m7zxv3ow-germanywestcentra.services.ai.azure.com/models
 Please enter the deployment name: Phi-4

@@ -21,7 +21,7 @@ URL = None
 API_KEY = None  
 HEADERS = None  
 tokenizer = None  
-REQUEST_TIMEOUT = 30  # Timeout duration (seconds) for each request  
+REQUEST_TIMEOUT = 90  # Timeout duration (seconds) for each request  
   
 # --------------------------- Input Configuration: URL, API Key, and HF Model Name ---------------------------  
 def input_config():  
