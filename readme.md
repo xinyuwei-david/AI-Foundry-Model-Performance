@@ -26,7 +26,7 @@ If you care about the performance data of this method, please skip to the last s
 
 If you want the deployed model to have more exclusive performance and lower latency, you can use the Managed Compute mode. 
 
-## Performance test of AI models in Azure Machine Learning
+## Performance test of AI models deployed on Managed Compute in AML and AI Foundry
 
 In this section, we focus on the models deployed on Managed Compute in the Model Catalogue on AML.
 
@@ -34,7 +34,7 @@ In this section, we focus on the models deployed on Managed Compute in the Model
 
 Next, we will use a Python script to automate the deployment of the model and use another program to evaluate the model's performance.
 
-### Fast Deploy AI Model on AML Model Catalog via Azure GPU VM
+### Fast Deploy AI Model on Model Catalog via Azure GPU VM
 
 By now, the AML names tested in this repo, their full names on Hugging Face, and the Azure GPU VM SKUs that can be deployed on AML are as follows.
 
@@ -122,15 +122,13 @@ If you do test on powershell,  you should use:
     "az.cmd", "ml", "compute", "list-usage",  
 ```
 
-
-
 The deploy process:
 
 ```
 ========== Enter Basic Information ==========
-Subscription ID: 53039473-9bbd-499d-90d7-d046d4fa63b6
+Subscription ID: 53039473-****-d046d4fa63b6
 Resource Group: AIrg1
-Workspace Name: aml-david-1
+AML Workspace Name or AI Foundry Poject Name: aml-david-1
 
 ========== Model Name Examples ==========
  - Phi-4

@@ -6,14 +6,10 @@ import subprocess
 import json  
 import time  
 import logging  
+  
 from azure.identity import DefaultAzureCredential  
 from azure.ai.ml import MLClient  
 from azure.ai.ml.entities import ManagedOnlineEndpoint, ManagedOnlineDeployment, OnlineRequestSettings, ProbeSettings  
-  
-###############################################################################  
-# Force input for subscription ID, resource group, and workspace  
-###############################################################################  
-IS_PRODUCTION = False  
   
 ###############################################################################  
 # Logger setup  
@@ -24,20 +20,16 @@ logger = logging.getLogger(__name__)
 ###############################################################################  
 # Helper: prompt_or_default  
 ###############################################################################  
-def prompt_or_default(prompt_text, default_value, is_production):  
-    """Prompt the user for input, with a default value fallback.  
-    If is_production=True, input is mandatory."""  
+def prompt_or_default(prompt_text, default_value=None):  
+    """Prompt the user for input, with a default value fallback."""  
     while True:  
         user_input = input(prompt_text).strip()  
         if user_input:  
             return user_input  
-        if is_production:  
-            print("Input is mandatory in this environment. Please try again.")  
+        if default_value is not None:  
+            return default_value  
         else:  
-            if default_value:  
-                return default_value  
-            else:  
-                print("No default value available. Please try again.")  
+            print("Input is mandatory. Please try again.")  
   
 ###############################################################################  
 # Query GPU quotas (optional)  
@@ -189,6 +181,7 @@ headers = {{"Authorization": "Bearer {primary_key}", "Content-Type": "applicatio
 data = {{"input_data": {{"input_string": [{{"role": "user","content": "Your prompt here"}}],"parameters": {{"max_new_tokens": 50}}}}}}  
 response = requests.post("{scoring_uri}", headers=headers, json=data)  
 print(response.json())'''  
+  
     logger.info("You can test the deployment using the following code:\n" + example_code)  
   
     return endpoint_name, scoring_uri, primary_key, secondary_key  
@@ -199,13 +192,13 @@ print(response.json())'''
 def main():  
     # 1) Collect subscription, resource group, and workspace information  
     print("========== Enter Basic Information ==========")  
-    subscription_id = prompt_or_default("Subscription ID: ", "08f95cfd-64fe-4187-99bb-7b3e661c4cde", IS_PRODUCTION)  
-    resource_group = prompt_or_default("Resource Group: ", "A100VM_group", IS_PRODUCTION)  
-    workspace_name = prompt_or_default("Workspace Name: ", "david-workspace-westeurope", IS_PRODUCTION)  
+    subscription_id = prompt_or_default("Subscription ID: ")  
+    resource_group = prompt_or_default("Resource Group: ")  
+    workspace_name = prompt_or_default("AML Workspace Name or AI Foundry Poject Name: ")  
   
     # 2) Set CLI subscription  
     try:  
-        subprocess.run(["az", "account", "set", "--subscription", subscription_id], check=True)  
+        subprocess.run(["az.cmd", "account", "set", "--subscription", subscription_id], check=True)  
     except subprocess.CalledProcessError as e:  
         logger.error(f"Failed to set subscription: {e}")  
         sys.exit(1)  
@@ -227,11 +220,11 @@ def main():
         print(f" - {m}")  
     print("==========================================\n")  
   
-    partial_str = prompt_or_default("Enter the model name to search (e.g., 'Phi-4'): ", "Phi-4", IS_PRODUCTION)  
+    partial_str = prompt_or_default("Enter the model name to search (e.g., 'Phi-4'): ", "Phi-4")  
     print("\n========== Matching Models ==========")  
     try:  
         subprocess.run([  
-            "az", "ml", "model", "list",  
+            "az.cmd", "ml", "model", "list",  
             "--registry-name", "AzureML",  
             "--query", f"[?contains(name, '{partial_str}')]",  
             "-o", "table"  
@@ -312,4 +305,4 @@ def main():
     print(f"SECONDARY_KEY={secondary_key}")  
   
 if __name__ == "__main__":  
-    main()
+    main()  
