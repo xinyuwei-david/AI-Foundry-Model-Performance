@@ -371,7 +371,7 @@ Before officially starting the test, you need to log in to HF on your terminal.
 **Run the test script:**
 
 ```
-(aml_env) root@pythonvm:~/AIFperformance# python press-phi4-0314.py
+(aml_env) root@pythonvm:~/AIFperformance# python press-phi4-0403.py
 Please enter the API service URL: https://david-workspace-westeurop-ldvdq.westeurope.inference.ml.azure.com/score
 Please enter the API Key: Ef9DFpATsXs4NiWyoVhEXeR4PWPvFy17xcws5ySCvV2H8uOUfgV4JQQJ99BCAAAAAAAAAAAAINFRAZML3eIO
 Please enter the full name of the HuggingFace model for tokenizer loading: microsoft/phi-4
@@ -567,6 +567,18 @@ Full original test results are here:
 (base) root@linuxworkvm:~/AIFperformance# cat output-financial-reports-analysis-1-nc24.txt |grep -A 7 "Summary for concurrency"
       
 ```
+
+#### Llama-3.2-11B-Vision-Instruct (meta-llama/Llama-3.2-11B-Vision-Instruct)
+
+**Run the test script:**
+
+```\
+#python press-llama3.211bv-20250407.py
+```
+
+Test result analyze：
+
+
 
 
 

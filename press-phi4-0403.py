@@ -1,5 +1,6 @@
 #!/usr/bin/env python3  
-# -- coding: utf-8 --  
+# -*- coding: utf-8 -*-  
+  
 import urllib.request  
 import urllib.error  
 import json  
@@ -12,36 +13,41 @@ import random
 try:  
     from transformers import AutoTokenizer  
 except ImportError as e:  
-    print("请先安装 transformers 库。错误：", e)  
+    print("Please install the transformers library first. Error:", e)  
     exit(1)  
   
-# --------------------------- 全局变量声明 ---------------------------  
+# --------------------------- Global Variables ---------------------------  
 URL = None  
 API_KEY = None  
 HEADERS = None  
 tokenizer = None  
+REQUEST_TIMEOUT = 90  # Timeout for each individual request (in seconds)  
   
-# --------------------------- 配置输入：URL、API Key 以及 HF 模型名称 ---------------------------  
+# --------------------------- Input Configuration ---------------------------  
 def input_config():  
+    """  
+    Prompt the user to input the API service URL, the API Key,  
+    and the HuggingFace model name for loading the tokenizer.  
+    """  
     global URL, API_KEY, HEADERS, tokenizer  
   
     URL = input("Please enter the API service URL: ").strip()  
     if not URL:  
-        raise Exception("URL 不能为空！")  
+        raise Exception("URL cannot be empty!")  
   
     API_KEY = input("Please enter the API Key: ").strip()  
     if not API_KEY:  
-        raise Exception("API Key 不能为空！")  
+        raise Exception("API Key cannot be empty!")  
   
-    model_name = input("Please enter the full name of the HuggingFace model for tokenizer loading: ").strip()  
+    model_name = input("Please enter the model name for tokenizer loading: ").strip()  
     if not model_name:  
-        raise Exception("模型名称不能为空！")  
+        raise Exception("Model name cannot be empty!")  
   
     try:  
         tokenizer = AutoTokenizer.from_pretrained(model_name)  
         print("Tokenizer loaded successfully:", model_name)  
     except Exception as e:  
-        print("加载 tokenizer 失败，请检查模型名称或依赖。错误：", e)  
+        print("Failed to load tokenizer. Please check the model name or dependencies. Error:", e)  
         tokenizer = None  
   
     HEADERS = {  
@@ -50,15 +56,16 @@ def input_config():
         "Authorization": "Bearer " + API_KEY,  
     }  
   
-  
-REQUEST_TIMEOUT = 90  # 每个请求超时时间（秒）  
-  
-# --------------------------- 允许自签名 HTTPS 证书（如果需要） ---------------------------  
+# --------------------------- Allow Self-Signed HTTPS Certificates (if needed) ---------------------------  
 def allow_self_signed_https(allowed: bool) -> None:  
+    """  
+    If your inference service uses a self-signed certificate, this function  
+    allows skipping certificate verification.  
+    """  
     if allowed and not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None):  
         ssl._create_default_https_context = ssl._create_unverified_context  
   
-# --------------------------- 场景提示文本 ---------------------------  
+# --------------------------- Scenario Prompts ---------------------------  
 scenario_prompts = {  
     "Text Generation": (  
         "Please craft a unique imaginative story that merges elements of hard "  
@@ -131,28 +138,36 @@ scenario_prompts = {
     ),  
 }  
   
-# --------------------------- 生成场景对应的提示语 ---------------------------  
+# --------------------------- Helper: Generate Prompt for a Given Scenario ---------------------------  
 def generate_prompt(scenario: str) -> str:  
     return scenario_prompts.get(scenario, f"Generate a response for scenario: {scenario}")  
   
-# --------------------------- 发送单个请求 ---------------------------  
+# --------------------------- Send Single Request to phi4 (Retry & 429 Backoff Included) ---------------------------  
 def send_ph4_request_scenario(prompt: str, stream: bool) -> dict:  
+    """  
+    Single request logic for phi4, which includes retry (3 times) and exponential backoff for 429.  
+    If all three attempts fail, it returns {"success": False} to record this request as a failure.  
+    """  
     RETRY_COUNT = 3  
     for attempt in range(RETRY_COUNT):  
         try:  
-            # 统计输入提示语的 token 数量  
+            # Optionally count input tokens using the loaded tokenizer.  
             if tokenizer:  
                 prompt_tokens_list = tokenizer.tokenize(prompt)  
                 prompt_token_count = len(prompt_tokens_list)  
             else:  
                 prompt_token_count = len(prompt.split())  
   
+            # Example payload for phi4. Adjust to actual usage if needed.  
             payload = {  
                 "input_data": {  
                     "input_string": [{"role": "user", "content": prompt}],  
-                    "parameters": {"max_new_tokens": 4096},  
+                    "parameters": {  
+                        "max_new_tokens": 4096  
+                    }  
                 }  
             }  
+  
             body = json.dumps(payload).encode("utf-8")  
             req = urllib.request.Request(URL, data=body, headers=HEADERS)  
   
@@ -199,12 +214,23 @@ def send_ph4_request_scenario(prompt: str, stream: bool) -> dict:
                 "throughput": tokens_per_second,  
                 "success": True,  
             }  
+  
         except urllib.error.HTTPError as e:  
             if e.code == 429:  
-                backoff_time = 2 ** attempt  # 指数退避: 1, 2, 4 秒  
-                print(f"Attempt {attempt + 1}: 收到 429 Too Many Requests，退避 {backoff_time} 秒.")  
+                backoff_time = 2 ** attempt  
+                print(f"Attempt {attempt + 1}: Received 429 Too Many Requests. Backing off for {backoff_time} seconds.")  
                 time.sleep(backoff_time)  
-                continue  
+                if attempt == RETRY_COUNT - 1:  
+                    return {  
+                        "latency": None,  
+                        "ttft": None,  
+                        "prompt_tokens": prompt_token_count if 'prompt_token_count' in locals() else 0,  
+                        "output_tokens": 0,  
+                        "throughput": 0,  
+                        "success": False,  
+                    }  
+                else:  
+                    continue  
             else:  
                 print(f"Attempt {attempt + 1}: HTTPError {e.code}: {e.reason}")  
                 if attempt == RETRY_COUNT - 1:  
@@ -219,6 +245,7 @@ def send_ph4_request_scenario(prompt: str, stream: bool) -> dict:
                 else:  
                     time.sleep(1)  
                     continue  
+  
         except Exception as e:  
             print(f"Attempt {attempt + 1} failed: {e}")  
             if attempt == RETRY_COUNT - 1:  
@@ -234,10 +261,10 @@ def send_ph4_request_scenario(prompt: str, stream: bool) -> dict:
                 time.sleep(1)  
                 continue  
   
-# --------------------------- 定义并发级别（每个场景的同时请求数） ---------------------------  
+# --------------------------- Concurrency Levels ---------------------------  
 CONCURRENCY_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
   
-# --------------------------- 针对单个场景运行测试 ---------------------------  
+# --------------------------- Run Test for Each Scenario ---------------------------  
 def run_scenario_test(scenario: str, stream: bool = False) -> None:  
     for concurrency in CONCURRENCY_LEVELS:  
         prompt = generate_prompt(scenario)  
@@ -247,10 +274,7 @@ def run_scenario_test(scenario: str, stream: bool = False) -> None:
         fail_count = 0  
   
         with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as executor:  
-            futures = [  
-                executor.submit(send_ph4_request_scenario, prompt, stream)  
-                for _ in range(concurrency)  
-            ]  
+            futures = [executor.submit(send_ph4_request_scenario, prompt, stream) for _ in range(concurrency)]  
             for future in concurrent.futures.as_completed(futures):  
                 try:  
                     res = future.result(timeout=REQUEST_TIMEOUT + 10)  
@@ -262,10 +286,12 @@ def run_scenario_test(scenario: str, stream: bool = False) -> None:
         end_time = time.time()  
         batch_duration = end_time - start_time  
   
-        success_results = [r for r in results if r.get("success")]  
+        success_results = [r for r in results if r and r.get("success")]  
         success_count = len(success_results)  
   
-        # 打印每个请求的详细统计  
+        # Anything that is None or {"success": False} is considered a failure  
+        fail_count += sum(1 for r in results if not r or not r.get("success"))  
+  
         for idx, r in enumerate(success_results):  
             print(f"  Request {idx + 1}:")  
             print(f"    TTFT          : {r['ttft']:.3f} s")  
@@ -285,15 +311,17 @@ def run_scenario_test(scenario: str, stream: bool = False) -> None:
         print(f"    Overall throughput (sum)     : {overall_throughput:.2f} tokens/s")  
         print(f"    Batch duration (wall-clock)  : {batch_duration:.3f} s")  
   
-# --------------------------- 主函数 ---------------------------  
+# --------------------------- Main Function ---------------------------  
 def main():  
-    # 提示用户输入 URL、API Key 和 HF 模型名称，并加载 tokenizer  
+    # Prompt user inputs for URL, API Key, and HF model name  
     input_config()  
+  
+    # If using a self-signed certificate, set True; otherwise False  
     allow_self_signed_https(True)  
   
-    # 针对 scenario_prompts 中的每个测试场景运行压测  
+    # Run tests for each scenario in scenario_prompts  
     for scenario in scenario_prompts.keys():  
         run_scenario_test(scenario, stream=False)  
   
 if __name__ == "__main__":  
-    main()  
+    main()
