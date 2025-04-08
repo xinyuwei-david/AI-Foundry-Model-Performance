@@ -578,9 +578,65 @@ Full original test results are here:
 
 Test result analyze：
 
+| Scenario           | Concurrency | VM Type       | Successful Requests | Failed Requests (429 errors) | Avg TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
+| ------------------ | ----------- | ------------- | ------------------- | ---------------------------- | ------------ | ------------------------------------- | --------------------------- | ------------------ |
+| Text Generation    | 1           | VM1 (1-NC-24) | 1                   | 0                            | 17.439       | 52.98                                 | 52.98                       | 17.477             |
+| Text Generation    | 1           | VM2 (2-NC-24) | 1                   | 0                            | 17.400       | 53.10                                 | 53.10                       | 17.432             |
+| Text Generation    | 1           | VM3 (1-NC-48) | 1                   | 0                            | 16.988       | 54.39                                 | 54.39                       | 17.019             |
+| Text Generation    | 2           | VM1 (1-NC-24) | 2                   | 0                            | 21.813       | 40.63                                 | 81.26                       | 28.467             |
+| Text Generation    | 2           | VM2 (2-NC-24) | 2                   | 0                            | 22.046       | 40.25                                 | 80.50                       | 28.810             |
+| Text Generation    | 2           | VM3 (1-NC-48) | 2                   | 0                            | 21.544       | 41.16                                 | 82.31                       | 28.132             |
+| Text Generation    | 3           | VM1 (1-NC-24) | 2                   | 1                            | 21.969       | 40.09                                 | 80.18                       | 28.545             |
+| Text Generation    | 3           | VM2 (2-NC-24) | 2                   | 1                            | 22.135       | 39.84                                 | 79.68                       | 28.813             |
+| Text Generation    | 3           | VM3 (1-NC-48) | 2                   | 1                            | 21.531       | 41.05                                 | 82.10                       | 28.096             |
+| Question Answering | 1           | VM1 (1-NC-24) | 1                   | 0                            | 2.952        | 24.73                                 | 24.73                       | 2.977              |
+| Question Answering | 1           | VM2 (2-NC-24) | 1                   | 0                            | 2.967        | 24.60                                 | 24.60                       | 2.992              |
+| Question Answering | 1           | VM3 (1-NC-48) | 1                   | 0                            | 2.953        | 24.72                                 | 24.72                       | 2.978              |
+| Question Answering | 2           | VM1 (1-NC-24) | 2                   | 0                            | 4.100        | 18.98                                 | 37.97                       | 4.946              |
+| Question Answering | 2           | VM2 (2-NC-24) | 2                   | 0                            | 4.078        | 19.13                                 | 38.25                       | 4.933              |
+| Question Answering | 2           | VM3 (1-NC-48) | 2                   | 0                            | 4.037        | 19.24                                 | 38.49                       | 4.863              |
+| Question Answering | 3           | VM1 (1-NC-24) | 3                   | 0                            | 13.402       | 23.74                                 | 71.21                       | 20.676             |
+| Question Answering | 3           | VM2 (2-NC-24) | 3                   | 0                            | 13.592       | 23.48                                 | 70.45                       | 20.966             |
+| Question Answering | 3           | VM3 (1-NC-48) | 3                   | 0                            | 13.274       | 23.96                                 | 71.89                       | 20.488             |
+| Translation        | 1           | VM1 (1-NC-24) | 1                   | 0                            | 4.005        | 35.21                                 | 35.21                       | 4.029              |
+| Translation        | 1           | VM2 (2-NC-24) | 1                   | 0                            | 4.096        | 34.42                                 | 34.42                       | 4.123              |
+| Translation        | 1           | VM3 (1-NC-48) | 1                   | 0                            | 3.999        | 35.26                                 | 35.26                       | 4.026              |
+| Translation        | 2           | VM1 (1-NC-24) | 2                   | 0                            | 6.270        | 29.04                                 | 58.08                       | 8.055              |
+| Translation        | 2           | VM2 (2-NC-24) | 2                   | 0                            | 6.347        | 28.83                                 | 57.65                       | 8.211              |
+| Translation        | 2           | VM3 (1-NC-48) | 2                   | 0                            | 6.143        | 29.77                                 | 59.54                       | 7.938              |
+| Translation        | 3           | VM1 (1-NC-24) | 3                   | 0                            | 8.659        | 31.32                                 | 93.97                       | 15.831             |
+| Translation        | 3           | VM2 (2-NC-24) | 3                   | 0                            | 8.679        | 31.26                                 | 93.78                       | 15.833             |
+| Translation        | 3           | VM3 (1-NC-48) | 3                   | 0                            | 8.561        | 31.59                                 | 94.78                       | 15.623             |
 
-
-
+| Scenario           | Concurrency | VM Type       | Successful Requests | Failed Requests (429 errors) | Avg TTFT (s) | Avg Throughput per Request (tokens/s) | Total Throughput (tokens/s) | Batch Duration (s) |
+| ------------------ | ----------- | ------------- | ------------------- | ---------------------------- | ------------ | ------------------------------------- | --------------------------- | ------------------ |
+| Text Summarization | 1           | VM1 (1-NC-24) | 1                   | 0                            | 2.134        | 8.91                                  | 8.91                        | 2.158              |
+| Text Summarization | 1           | VM2 (2-NC-24) | 1                   | 0                            | 2.061        | 9.22                                  | 9.22                        | 2.086              |
+| Text Summarization | 1           | VM3 (1-NC-48) | 1                   | 0                            | 2.057        | 9.24                                  | 9.24                        | 2.080              |
+| Text Summarization | 2           | VM1 (1-NC-24) | 2                   | 0                            | 2.632        | 7.53                                  | 15.05                       | 3.198              |
+| Text Summarization | 2           | VM2 (2-NC-24) | 2                   | 0                            | 2.640        | 7.52                                  | 15.04                       | 3.222              |
+| Text Summarization | 2           | VM3 (1-NC-48) | 2                   | 0                            | 2.568        | 7.73                                  | 15.45                       | 3.132              |
+| Text Summarization | 3           | VM1 (1-NC-24) | 3                   | 0                            | 2.947        | 12.87                                 | 38.62                       | 5.140              |
+| Text Summarization | 3           | VM2 (2-NC-24) | 3                   | 0                            | 3.009        | 12.62                                 | 37.85                       | 5.249              |
+| Text Summarization | 3           | VM3 (1-NC-48) | 3                   | 0                            | 2.973        | 12.76                                 | 38.29                       | 5.211              |
+| Code Generation    | 1           | VM1 (1-NC-24) | 1                   | 0                            | 32.118       | 64.76                                 | 64.76                       | 32.146             |
+| Code Generation    | 1           | VM2 (2-NC-24) | 1                   | 0                            | 32.268       | 64.46                                 | 64.46                       | 32.298             |
+| Code Generation    | 1           | VM3 (1-NC-48) | 1                   | 0                            | 31.698       | 65.62                                 | 65.62                       | 31.726             |
+| Code Generation    | 2           | VM1 (1-NC-24) | 2                   | 0                            | 42.762       | 44.21                                 | 88.42                       | 53.003             |
+| Code Generation    | 2           | VM2 (2-NC-24) | 2                   | 0                            | 42.834       | 44.11                                 | 88.23                       | 53.065             |
+| Code Generation    | 2           | VM3 (1-NC-48) | 2                   | 0                            | 41.980       | 45.02                                 | 90.05                       | 52.024             |
+| Code Generation    | 3           | VM1 (1-NC-24) | 2                   | 1                            | 21.515       | 47.86                                 | 95.72                       | 29.578             |
+| Code Generation    | 3           | VM2 (2-NC-24) | 2                   | 1                            | 21.605       | 47.72                                 | 95.44                       | 29.735             |
+| Code Generation    | 3           | VM3 (1-NC-48) | 2                   | 1                            | 21.152       | 48.81                                 | 97.63                       | 29.160             |
+| Chatbot            | 1           | VM1 (1-NC-24) | 1                   | 0                            | 10.092       | 49.94                                 | 49.94                       | 10.117             |
+| Chatbot            | 1           | VM2 (2-NC-24) | 1                   | 0                            | 10.101       | 49.90                                 | 49.90                       | 10.126             |
+| Chatbot            | 1           | VM3 (1-NC-48) | 1                   | 0                            | 9.761        | 51.63                                 | 51.63                       | 9.787              |
+| Chatbot            | 2           | VM1 (1-NC-24) | 2                   | 0                            | 18.097       | 38.82                                 | 77.64                       | 22.841             |
+| Chatbot            | 2           | VM2 (2-NC-24) | 2                   | 0                            | 18.149       | 38.75                                 | 77.50                       | 22.930             |
+| Chatbot            | 2           | VM3 (1-NC-48) | 2                   | 0                            | 17.827       | 39.34                                 | 78.68                       | 22.455             |
+| Chatbot            | 3           | VM1 (1-NC-24) | 2                   | 1                            | 14.984       | 38.19                                 | 76.38                       | 19.321             |
+| Chatbot            | 3           | VM2 (2-NC-24) | 2                   | 1                            | 15.016       | 38.02                                 | 76.03                       | 19.312             |
+| Chatbot            | 3           | VM3 (1-NC-48) | 2                   | 1                            | 14.847       | 38.43                                 | 76.85                       | 19.080             |
 
 #### microsoft-swinv2-base-patch4-window12-192-22k Series 
 
