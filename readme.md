@@ -58,7 +58,17 @@ By now, the AML names tested in this repo, their full names on Hugging Face, and
 | stabilityai-stable-diffusion-xl-refiner-1-0   | stabilityai/stable-diffusion-xl-refiner-1.0   | Standard_ND96amsr_A100_v4 or Standard_ND96asr_v4 |
 | microsoft-Orca-2-7b                           | microsoft/Orca-2-7b                           | NC24/48/96 A100; NC 40/80 H100                   |
 
-This repository primarily focuses on the inference performance of the aforementioned models on 1x NC24 A100, 2 x NC24 A100, 1 x NC48 A100, 1 x NC40 H100, and 1 x NC80 H100. However, these models currently do not support deployment on H100. Therefore, as of March 2025, all validations are conducted based on NC100. 
+This repository primarily focuses on the inference performance of the aforementioned models on 1x NC24 A100, 2 x NC24 A100, 1 x NC48 A100, 1 x NC40 H100, and 1 x NC80 H100. 
+
+Till now, more and more Models have supported Azure H100 GPU VM, including:
+
+- Llama-3.2-1B-Instruct                     
+- Llama-3.2-11B-Vision-Instruct       
+- llama-3.3-70b Series: unsloth-llama-3.3-70b-instruct,huihui-ai-llama-3.3-70b-instruct-abliterated, nanidao-llama-3-3-70b-instruct-ablated ,infermatic-llama-3.3-70b-instruct-fp8-dynamic 
+- Phi-4                                   
+- Phi-4-multimodal-instruct           
+- nvidia-llama3-chatqa-1.5-70b        
+- databricks-dbrx-instruct              
 
 #### **Clone code and prepare shell environment**
 
